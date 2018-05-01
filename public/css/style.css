@@ -1,0 +1,104 @@
+html, body, header, nav, footer, section, div, span, h1, h2, h3, p, a, blockquote, cite, img, ol, ul, li, form, fieldset, input, label, legend {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  font-weight: normal; }
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff; }
+
+h1 {
+  margin-bottom: 25px;
+  align-self: flex-start;
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: .1rem;
+  color: #40434e; }
+
+h2 {
+  border-bottom: 1px solid #ffffff;
+  text-align: left;
+  font-size: 1.5rem;
+  color: #ffffff; }
+
+h1, h2, label {
+  font-family: "Ubuntu", sans-serif; }
+
+p, button, input, a {
+  font-family: "Raleway", sans-serif;
+  color: #40434e; }
+
+form {
+  border-radius: .5px;
+  padding: .5rem;
+  color: #ffffff;
+  background-color: #6d454c;
+  box-shadow: 3px 4px 3px rgba(0, 0, 80, 0.3); }
+  form h2 {
+    margin: .5rem .5rem 2rem; }
+  form label {
+    margin: .5rem;
+    display: block;
+    font-size: 1.2rem; }
+  form input {
+    margin: .5rem;
+    padding: .2rem; }
+
+#main {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; }
+  #main .menuMain {
+    border-radius: 5px;
+    padding: 1rem .8rem;
+    background-color: #6d454c;
+    box-shadow: 3px 4px 3px rgba(0, 0, 80, 0.3); }
+    #main .menuMain h2 {
+      margin-bottom: 2rem;
+      margin-left: .2rem; }
+    #main .menuMain .button {
+      margin: 0 .2rem; }
+
+.error {
+  margin: .5rem 0;
+  color: red;
+  font-size: 1rem; }
+
+.disabled {
+  display: none; }
+
+.formOk {
+  border-bottom-right-radius: 25px; }
+  .formOk button {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px; }
+
+.button {
+  margin: .5rem;
+  border-radius: 10px;
+  border: none;
+  padding: .3rem .5rem;
+  text-decoration: none;
+  font-size: 1.2rem;
+  background-color: #ede19e;
+  transition: background-color .5s, box-shadow 1s; }
+  .button:hover {
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px #ede19e; }
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,12 @@
+<h1>Lobby</h1>
+<form class="formOk" action="/" method="post">
+	<h2>Connexion</h2>
+    <label for="pseudo">Veuillez choisir un pseudo</label>
+    <input name="pseudo" id="pseudo">
+    <button class="button" type="submit">OK</button>
+</form>
+<% if (locals.alert && locals.alert.error) { %>
+<p class="error">
+    <%= alert.error %>
+</p>
+<% } %>
