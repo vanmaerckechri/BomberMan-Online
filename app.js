@@ -46,98 +46,91 @@ app.use(require('./middlewares/alert'));
 app.get('/', (req, res) =>
 {
 	req.session.playerInfo = {};
-    res.render('pages/index',
-    {
-    	main: 'connexion'
-    });
+    res.render('pages/connexion');
 });
 
-// Choisir un Pseudo.
-app.post('/', (req, res) =>
+let lobbies = [];
+let pplByLobby = 4;
+io.sockets.on('connection', function(socket)
 {
-	let pseudo = ent.encode(req.body.pseudo);
-	if (pseudo === undefined || pseudo === '')
+	app.post('/', (req, res) =>
 	{
-		req.alert('error', "Vous n'avez pas entré de pseudo!");
-		res.redirect('/');
-	}
-	else
-	{
-		let reg = /^[a-z0-9]+$/i;
-		let contentFilter = pseudo.match(reg);
-		if (contentFilter === null)
+		console.log(socket.id);
+		let pseudo = ent.encode(req.body.pseudo);
+		if (pseudo === undefined || pseudo === '')
 		{
-			req.alert('error', "Le pseudo ne peut être composé que de lettres et de chiffres!");
+			req.alert('error', "Vous n'avez pas entré de pseudo!");
 			res.redirect('/');
 		}
 		else
 		{
-			if (pseudo.length < 4 || pseudo.length > 16)
+			let reg = /^[a-z0-9]+$/i;
+			let contentFilter = pseudo.match(reg);
+			if (contentFilter === null)
 			{
-				req.alert('error', "Le pseudo doit comporter entre 4 et 16 caractères");
+				req.alert('error', "Le pseudo ne peut être composé que de lettres et de chiffres!");
 				res.redirect('/');
 			}
 			else
 			{
-				req.session.playerInfo = {};
-				req.session.playerInfo['pseudo'] = pseudo;
-				res.render('pages/index',
+				if (pseudo.length < 4 || pseudo.length > 16)
 				{
-					main: 'menu'
-				});
+					req.alert('error', "Le pseudo doit comporter entre 4 et 16 caractères");
+					res.redirect('/');
+				}
+				else
+				{
+					socket.name = pseudo
+					res.render('pages/index',
+					{
+						main: 'menu'
+					});
+				}
 			}
 		}
-	}
-});
+	});
 
-// Créer un Lobby.
-let lobbies = [];
-app.get('/create', (req, res) =>
-{
-	if (req.session.playerInfo === undefined || req.session.playerInfo === '' || req.session.playerInfo['pseudo'] === undefined || req.session.playerInfo['pseudo'] === '')
+	// Créer un Lobby.
+	app.get('/create', (req, res) =>
 	{
-		req.alert('error', "Vous n'avez pas entré de pseudo!");
-		res.redirect('/');
-	}
-	else
+		if (req.session.playerInfo === undefined || req.session.playerInfo === '' || req.session.playerInfo['pseudo'] === undefined || req.session.playerInfo['pseudo'] === '')
+		{
+			req.alert('error', "Vous n'avez pas entré de pseudo!");
+			res.redirect('/');
+		}
+		else
+		{
+			socket.join(socket.id);
+			socket.room = socket.id;
+			// let lobby = [id room, nom du manager, ppl2, ppl3, ...(en fonction de 'pplByLobby'), true pour room ouverte(il reste de la place)]
+			let lobby = [socket.id, socket.name];
+			for (let i = 0, length = pplByLobby.length - 1; i < lenght; i++)
+			{
+				lobby.push('');
+			}
+			lobby.push('true');
+			lobbies.push(lobby);
+		}
+	});
+	// Entrer dans le Lobby.
+	app.get('/lobby', (req, res) =>
 	{
-		// session = [joueur1Pseudo, joueur2Pseudo, joueur3Pseudo, joueur4Pseudo, lobby accessible]
-		/*let lobby = [req.session.playerInfo['pseudo'], false, false, false, true];
-		lobbies[socket.id] = lobby;*/
-	}
-});
-
-// Entrer dans le Lobby.
-app.get('/lobby', (req, res) =>
-{
-	if (req.session.playerInfo === undefined || req.session.playerInfo === '' || req.session.playerInfo['pseudo'] === undefined || req.session.playerInfo['pseudo'] === '')
-	{
-		req.alert('error', "Vous n'avez pas entré de pseudo!");
-		res.redirect('/');
-	}
-	else
-	{
-		res.locals.playerInfo = {};
-		res.locals.playerInfo['pseudo'] = req.session.playerInfo['pseudo'];
-	    res.render('pages/index',
-	    {
-	    	main: 'lobby'
-	    });
-	}
-		console.log(req.session.playerInfo['pseudo']);
-
-});
-
-io.sockets.on('connection', function(socket)
-{
-	console.log(socket.id);
+		if (req.session.playerInfo === undefined || req.session.playerInfo === '' || req.session.playerInfo['pseudo'] === undefined || req.session.playerInfo['pseudo'] === '')
+		{
+			req.alert('error', "Vous n'avez pas entré de pseudo!");
+			res.redirect('/');
+		}
+		else
+		{
+			res.locals.playerInfo = {};
+			res.locals.playerInfo['pseudo'] = req.session.playerInfo['pseudo'];
+		    res.render('pages/index',
+		    {
+		    	main: 'lobby'
+		    });
+		}
+	});
 });
 
 // COMMUNICATIONS CLIENT -> SERVEUR -> CLIENT!
 /*var io = require('socket.io').listen(httpServer);
-
-// Lors de la connexion client -> attribution d'un socket.
-io.sockets.on('connection', function(socket)
-{
-	console.log('nv utilisateur');
-});*/
