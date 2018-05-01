@@ -53,9 +53,9 @@ let lobbies = [];
 let pplByLobby = 4;
 io.sockets.on('connection', function(socket)
 {
+	// Enregistrement du Pseudo.
 	app.post('/', (req, res) =>
 	{
-		console.log(socket.id);
 		let pseudo = ent.encode(req.body.pseudo);
 		if (pseudo === undefined || pseudo === '')
 		{
@@ -80,7 +80,8 @@ io.sockets.on('connection', function(socket)
 				}
 				else
 				{
-					socket.name = pseudo
+					socket.name = pseudo;
+					req.session.playerInfo['pseudo'] = pseudo;
 					res.render('pages/index',
 					{
 						main: 'menu'
@@ -104,16 +105,22 @@ io.sockets.on('connection', function(socket)
 			socket.room = socket.id;
 			// let lobby = [id room, nom du manager, ppl2, ppl3, ...(en fonction de 'pplByLobby'), true pour room ouverte(il reste de la place)]
 			let lobby = [socket.id, socket.name];
-			for (let i = 0, length = pplByLobby.length - 1; i < lenght; i++)
+			for (let i = 0, length = pplByLobby - 1; i < length; i++)
 			{
 				lobby.push('');
 			}
 			lobby.push('true');
 			lobbies.push(lobby);
+			console.log(lobbies);
+			socket.broadcast.emit('refreshLobbiesList', lobbies);
+			res.render('pages/index',
+			{
+				main: 'lobby'
+			});
 		}
 	});
-	// Entrer dans le Lobby.
-	app.get('/lobby', (req, res) =>
+	// Afficher la Page des Lobbies.
+	app.get('/lobbiesList', (req, res) =>
 	{
 		if (req.session.playerInfo === undefined || req.session.playerInfo === '' || req.session.playerInfo['pseudo'] === undefined || req.session.playerInfo['pseudo'] === '')
 		{
@@ -122,15 +129,15 @@ io.sockets.on('connection', function(socket)
 		}
 		else
 		{
-			res.locals.playerInfo = {};
-			res.locals.playerInfo['pseudo'] = req.session.playerInfo['pseudo'];
 		    res.render('pages/index',
 		    {
-		    	main: 'lobby'
+		    	main: 'lobbiesList'
 		    });
 		}
 	});
+	// Refresh la Liste des Lobbies.
+	socket.on('refreshLobbiesList', function (list)
+	{
+		socket.emit('refreshLobbiesList', lobbies);
+	});
 });
-
-// COMMUNICATIONS CLIENT -> SERVEUR -> CLIENT!
-/*var io = require('socket.io').listen(httpServer);
