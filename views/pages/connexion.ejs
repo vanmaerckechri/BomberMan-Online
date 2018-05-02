@@ -1,22 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <% include head %>
-    <body>
-        <div id="main">
-			<h1>Lobby</h1>
-			<form class="formOk" action="/" method="post">
-				<h2>Connexion</h2>
-			    <label for="pseudo">Veuillez choisir un pseudo</label>
-			    <input name="pseudo" id="pseudo">
-			    <button class="button" type="submit">OK</button>
-			</form>
-			<% if (locals.alert && locals.alert.error) { %>
-			<p class="error">
-			    <%= alert.error %>
-			</p>
-			<% } %>
-		</div>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/assets/js/client.js"></script>
-    </body>
-</html>
+<h1>Lobby</h1>
+<form class="formOk" action="/" method="post">
+	<h2>Connexion</h2>
+    <label for="pseudo">Veuillez choisir un pseudo</label>
+    <input name="pseudo" id="pseudo">
+    <button id="submitPseudo" class="button" type="submit">OK</button>
+</form>
+<p class="error"></p>
