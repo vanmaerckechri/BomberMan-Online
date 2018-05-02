@@ -47,24 +47,6 @@ app.get('/', (req, res) =>
 	});
 });
 
-// Page Lobby.
-app.get('/lobby', (req, res) =>
-{
-	res.render('pages/index',
-	{
-		main: 'lobby'
-	});
-});
-
-// Page Liste Lobbies.
-app.get('/lobbiesList', (req, res) =>
-{
-    res.render('pages/index',
-    {
-    	main: 'lobbieslist'
-    });
-});
-
 function validatePseudo(pseudo)
 {
 	let errorSms;
@@ -94,8 +76,6 @@ let lobbies = [];
 let pplByLobby = 4;
 function createLobby(socket)
 {
-
-	//socket.room = socket.id;
 	// let lobby = [id room, nom du manager, ppl2, ppl3, ...(en fonction de 'pplByLobby'), true pour room ouverte(il reste de la place)]
 	let lobby = [socket.id, socket.name];
 	for (let i = 0, length = pplByLobby - 1; i < length; i++)
@@ -105,7 +85,6 @@ function createLobby(socket)
 	lobby.push('true');
 	lobbies.push(lobby);
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
-	console.log(lobbies);
 }
 
 io.sockets.on('connection', function(socket)
@@ -118,8 +97,6 @@ io.sockets.on('connection', function(socket)
 
 	socket.on('recordNewPlayerInfo', function(pseudo)
 	{
-			console.log(socket.id);
-
 		pseudoEncode = ent.encode(pseudo);
 		let pseudoValide = validatePseudo(pseudo)
 
@@ -148,8 +125,9 @@ io.sockets.on('connection', function(socket)
 	{
 		socket.join(roomId);
 		socket.broadcast.to(roomId).emit('message', 'test');
-		console.log((io.sockets.adapter.rooms[roomId]).length);
+		
+		// le nombre de clients dans une room...
+		//console.log((io.sockets.adapter.rooms[roomId]).length);
 
-  		//socket.join('some room');
 	});
 });
