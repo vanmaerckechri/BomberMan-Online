@@ -72,6 +72,11 @@ form {
       margin-left: .2rem; }
     #main .menuMain .button {
       margin: 0 .2rem; }
+    #main .menuMain .lobbiesList .button {
+      margin-bottom: .5rem;
+      display: block;
+      width: 100%;
+      text-align: center; }
 
 .error {
   margin: .5rem 0;

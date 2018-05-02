@@ -47,6 +47,24 @@ app.get('/', (req, res) =>
 	});
 });
 
+// Page Lobby.
+app.get('/lobby', (req, res) =>
+{
+	res.render('pages/index',
+	{
+		main: 'lobby'
+	});
+});
+
+// Page Liste Lobbies.
+app.get('/lobbiesList', (req, res) =>
+{
+    res.render('pages/index',
+    {
+    	main: 'lobbieslist'
+    });
+});
+
 function validatePseudo(pseudo)
 {
 	let errorSms;
@@ -76,8 +94,8 @@ let lobbies = [];
 let pplByLobby = 4;
 function createLobby(socket)
 {
-	socket.join(socket.id);
-	socket.room = socket.id;
+
+	//socket.room = socket.id;
 	// let lobby = [id room, nom du manager, ppl2, ppl3, ...(en fonction de 'pplByLobby'), true pour room ouverte(il reste de la place)]
 	let lobby = [socket.id, socket.name];
 	for (let i = 0, length = pplByLobby - 1; i < length; i++)
@@ -121,23 +139,17 @@ io.sockets.on('connection', function(socket)
 	// Créer un Lobby.
 	socket.on('createLobby', function()
 	{
-		createLobby(socket)
+		socket.join(socket.id);
+		createLobby(socket);
 	});
-});
 
-// Créer un Lobby.
-app.get('/createLobby', (req, res) =>
-{
-	res.render('pages/index',
+	// Joindre un Lobby
+	socket.on('joinLobby', function(roomId)
 	{
-		main: 'lobby'
+		socket.join(roomId);
+		socket.broadcast.to(roomId).emit('message', 'test');
+		console.log((io.sockets.adapter.rooms[roomId]).length);
+
+  		//socket.join('some room');
 	});
-});
-// Afficher la Page des Lobbies.
-app.get('/lobbiesList', (req, res) =>
-{
-    res.render('pages/index',
-    {
-    	main: 'lobbieslist'
-    });
 });
