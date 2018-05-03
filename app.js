@@ -84,6 +84,7 @@ function createLobby(socket)
 	}
 	lobby.push(true);
 	lobbies.push(lobby);
+	socket.room = socket.id;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
 }
 
@@ -110,6 +111,7 @@ function joinLobby(socket, roomId)
 					{
 						lobbies[i][j] = socket.name;
 						socket.join(roomId);
+						socket.room = roomId;
 						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[i]);
 						socket.emit('refreshLobby', lobbies[i]);
 						if (j === lastIndex - 1)
@@ -125,8 +127,33 @@ function joinLobby(socket, roomId)
 	}
 }
 
+function leaveLobby(membersSocket)
+{
+	console.log(membersSocket);
+}
+
 io.sockets.on('connection', function(socket)
 {
+	/*socket.on('disconnect', function()
+	{
+		leaveLobby(socket);
+	});*/
+
+	socket.on('disconnect', function()
+	{
+		for (let i = 0, length = lobbies.length; i < length; i++)
+		{
+			if (lobbies[i][0] === socket.room)
+			{
+				let membersSocket = [];
+				for (let j = 1, membersLength = lobbies[i].length - 1; j < membersLength; j++)
+				{
+					membersSocket.push(socket.to(lobbies[i][j]));
+				}
+				leaveLobby(membersSocket);
+			}
+		}
+	});
 
 	socket.on('pullPseudo', function()
 	{
