@@ -42,10 +42,17 @@ window.addEventListener('load', function()
 							{
 								let lobbiesListContainer = document.querySelector('#lobbiesList');
 								lobbiesListContainer.innerHTML = '';
-								for (let i = 0, length = list.length; i < length; i++)
+								if (list.length > 0)
 								{
-									let room = "'"+list[i][0]+"'";
-									lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
+									let lastIndex = list[0].length - 1;
+									for (let i = 0, length = list.length; i < length; i++)
+									{
+										if (list[i][lastIndex] === true)
+										{
+											let room = "'"+list[i][0]+"'";
+											lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
+										}
+									}
 								}
 							}
 						});
@@ -115,7 +122,6 @@ socket.on('refreshLobby', function(names)
 
 function refreshLobby(names)
 {
-	console.log(names);
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
 	for (let i = 1, length = names.length - 1; i < length; i++)

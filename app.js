@@ -100,9 +100,11 @@ function joinLobby(socket, roomId)
 				socket.emit('refreshLobby', lobbies[i]);
 				return;
 			}
+			// ajoute un membre à la room et affiche les membres. 
 			else if (lobbies[i][0] === roomId)
 			{
-				for (let j = 2; j < pplByLobby + 1; j++)
+				let lastIndex = lobbies[i].length - 1;
+				for (let j = 2; j < lastIndex; j++)
 				{
 					if (lobbies[i][j] === '')
 					{
@@ -110,6 +112,11 @@ function joinLobby(socket, roomId)
 						socket.join(roomId);
 						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[i]);
 						socket.emit('refreshLobby', lobbies[i]);
+						if (j === lastIndex - 1)
+						{
+							lobbies[i][lastIndex] = false;
+							socket.emit('refreshLobbiesList', lobbies);
+						}
 						return;
 					}
 				}
