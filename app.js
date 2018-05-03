@@ -127,8 +127,9 @@ function joinLobby(socket, roomId)
 	}
 }
 
-function leaveLobby(membersSocket)
+function leaveLobby(memberWhoLeave, membersSocket)
 {
+	memberWhoLeave.room = '';
 	console.log(membersSocket);
 }
 
@@ -146,11 +147,11 @@ io.sockets.on('connection', function(socket)
 			if (lobbies[i][0] === socket.room)
 			{
 				let membersSocket = [];
-				for (let j = 1, membersLength = lobbies[i].length - 1; j < membersLength; j++)
+				for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
 				{
 					membersSocket.push(socket.to(lobbies[i][j]));
 				}
-				leaveLobby(membersSocket);
+				leaveLobby(socket, membersSocket);
 			}
 		}
 	});
