@@ -77,6 +77,8 @@ form {
       display: block;
       width: 100%;
       text-align: center; }
+    #main .menuMain .lobbyMembers p {
+      color: #ffffff; }
 
 .error {
   margin: .5rem 0;

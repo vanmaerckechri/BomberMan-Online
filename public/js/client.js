@@ -65,33 +65,36 @@ window.addEventListener('load', function()
 function loadMainMenu()
 {
 	let main = document.querySelector('#main');
-	let menu = '<h1>Lobby</h1>';
-	menu +=	'<div class="menuMain">';
-	menu +=	'<h2>Menu Principal</h2>';
-	menu += '<button id="createLobby" class="button">Créer un Lobby</button>';
-	menu +=	'<button id="loadLobbiesList" class="button">Rejoindre un Lobby</button>';
-	menu +=	'</div>';
-	main.innerHTML = menu;
+	let menuContent = '<h1>Lobby</h1>';
+	menuContent +=	'<div class="menuMain">';
+	menuContent +=	'<h2>Menu Principal</h2>';
+	menuContent += '<button id="createLobby" class="button">Créer un Lobby</button>';
+	menuContent +=	'<button id="loadLobbiesList" class="button">Rejoindre un Lobby</button>';
+	menuContent +=	'</div>';
+	main.innerHTML = menuContent;
 }
 
 // Charger liste des Lobbies.
 function loadLobbiesList()
 {
 	let main = document.querySelector('#main');
-	let menu = '<h1>Lobby</h1>';
-	menu += '<div class="menuMain">';
-	menu += '<h2>Liste des Lobbies</h2>';
-	menu += '<div id="lobbiesList" class="lobbiesList">';
-	menu += '</div></div>';
-	main.innerHTML = menu;
+	let lobbyListContent = '<h1>Lobby</h1>';
+	lobbyListContent += '<div class="menuMain">';
+	lobbyListContent += '<h2>Liste des Lobbies</h2>';
+	lobbyListContent += '<div id="lobbiesList" class="lobbiesList">';
+	lobbyListContent += '</div></div>';
+	main.innerHTML = lobbyListContent;
 }
 
 // Charger le Lobby.
 function loadLobby()
 {
 	let main = document.querySelector('#main');
-	let menu = '<h1>Lobby</h1>';
-	main.innerHTML = menu;
+	let lobbyContent = '<h1>Lobby</h1>';
+	lobbyContent += '<div class="menuMain">';
+	lobbyContent += '<div id="lobbyMembers" class="lobbyMembers">';
+	lobbyContent += '</div></div>';
+	main.innerHTML = lobbyContent;
 }
 
 // Joindre un Lobby.
@@ -101,9 +104,22 @@ function joinLobby(room)
 	loadLobby()
 }
 
-// Test message entre les membres d'une room...
-socket.on('message', function(sms)
+// Update l'affichage Membres du Lobby.
+socket.on('refreshLobby', function(names)
 {
-	console.log(sms);
+		console.log(names);
+
+	refreshLobby(names);
 	//socket.join('some room');
 });
+
+function refreshLobby(names)
+{
+	console.log(names);
+	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
+	lobbyMembersContainer.innerHTML = '';
+	for (let i = 1, length = names.length - 1; i < length; i++)
+	{
+		lobbyMembersContainer.innerHTML += '<p>'+names[i]+'</p>';
+	}	
+}

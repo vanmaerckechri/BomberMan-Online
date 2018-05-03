@@ -82,9 +82,40 @@ function createLobby(socket)
 	{
 		lobby.push('');
 	}
-	lobby.push('true');
+	lobby.push(true);
 	lobbies.push(lobby);
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
+}
+
+function joinLobby(socket, roomId)
+{
+	if ((io.sockets.adapter.rooms[roomId]).length < pplByLobby)
+	{
+
+		for (let i = 0, length = lobbies.length; i < length; i++)
+		{
+			// affichage membre lors de la creation du lobby.
+			if (lobbies[i][0] === socket.id)
+			{
+				socket.emit('refreshLobby', lobbies[i]);
+				return;
+			}
+			else if (lobbies[i][0] === roomId)
+			{
+				for (let j = 2; j < pplByLobby + 1; j++)
+				{
+					if (lobbies[i][j] === '')
+					{
+						lobbies[i][j] = socket.name;
+						socket.join(roomId);
+						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[i]);
+						socket.emit('refreshLobby', lobbies[i]);
+						return;
+					}
+				}
+			}
+		}
+	}
 }
 
 io.sockets.on('connection', function(socket)
@@ -118,16 +149,14 @@ io.sockets.on('connection', function(socket)
 	{
 		socket.join(socket.id);
 		createLobby(socket);
+		joinLobby(socket, socket.id)
 	});
 
 	// Joindre un Lobby
 	socket.on('joinLobby', function(roomId)
 	{
-		socket.join(roomId);
-		socket.broadcast.to(roomId).emit('message', 'test');
-		
+		joinLobby(socket, roomId);
 		// le nombre de clients dans une room...
 		//console.log((io.sockets.adapter.rooms[roomId]).length);
-
 	});
 });
