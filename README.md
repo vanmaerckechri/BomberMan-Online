@@ -2,7 +2,7 @@
 
 ## La Démarche
 
-* Apprendre Node.js et quelques modules(express.js, socket.io, etc.).
+Apprendre Node.js et quelques modules (express.js, socket.io, etc.).
 
 ## Contexte
 
