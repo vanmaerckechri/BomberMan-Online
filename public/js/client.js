@@ -48,7 +48,7 @@ window.addEventListener('load', function()
 									let lastIndex = list[0].length - 1;
 									for (let i = 0, length = list.length; i < length; i++)
 									{
-										if (list[i][lastIndex] === true)
+										if (list[i][lastIndex] === true && list[i][0] != '')
 										{
 											let room = "'"+list[i][0]+"'";
 											lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
