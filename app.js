@@ -142,7 +142,7 @@ function checkLobbyIndex(socket)
 
 function leaveLobby(socket)
 {
-	if (lobbies.length > 0)
+	if (lobbies.length > 0 && socket.room != undefined)
 	{
 		socket.leave(socket.room);
 		let lobbyIndex = checkLobbyIndex(socket);
@@ -153,11 +153,8 @@ function leaveLobby(socket)
 		for (let i = 1; i < length; i++)
 		{
 			// Réorganisation de l'array en fonction de l'utilisateur manquant.
-			if (lobbies[lobbyIndex][i] === socket.room && lobbies[lobbyIndex][i] === '')
-			{
-				lobbies[lobbyIndex][i] = lobbies[lobbyIndex][i] + 1;
-				lobbies[lobbyIndex][i + 1] = '';
-			}
+			lobbies[lobbyIndex][i] = lobbies[lobbyIndex][i + 1];
+			lobbies[lobbyIndex][i + 1] = '';
 		}
 		// Renommer le lobby avec l'id du nouvel hébergeur.
 		lobbies[lobbyIndex][0] = newMain;
