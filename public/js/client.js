@@ -147,8 +147,11 @@ function refreshLobby(names)
 // Afficher Message.
 socket.on('sendMessage', function(message)
 {
-	let messages = document.querySelector('.messages');
-	let newSms = '<p class="user">'+message.broadcaster+': ';
-	newSms += '<span class="message">'+message.sms+'</p>';
-	messages.innerHTML += newSms;
+	if (message.sms != undefined && message.sms != '')
+	{
+		let messages = document.querySelector('.messages');
+		let newSms = '<p class="user">'+message.broadcaster+': ';
+		newSms += '<span class="message">'+message.sms+'</p>';
+		messages.innerHTML += newSms;
+	}
 });
