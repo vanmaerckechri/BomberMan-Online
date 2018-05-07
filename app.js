@@ -128,30 +128,43 @@ function joinLobby(socket, roomId)
 	}
 }
 
-/*function checkRoomMembers(socket)
+function checkLobbyIndex(socket)
 {
 	for (let i = 0, length = lobbies.length; i < length; i++)
 	{
 		// Detecter le lobby dans lequel se trouve l'utilisateur.
 		if (lobbies[i][0] === socket.room)
 		{
-			let membersSocket = [];
-			for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
-			{
-				if (socket.to(lobbies[i][j]))
-				{
-					membersSocket.push(socket.to(lobbies[i][j]));
-				}
-			}
-			return membersSocket;
+			return i;
 		}
 	}	
-}*/
+}
 
 function leaveLobby(socket)
 {
-	//checkRoomMembers(socket);
-	//memberWhoLeave.room = '';
+	if (lobbies.length > 0)
+	{
+		socket.leave(socket.room);
+		let lobbyIndex = checkLobbyIndex(socket);
+		let roomSockets = io.sockets.adapter.rooms[socket.room].sockets;
+		let newMain = Object.getOwnPropertyNames(roomSockets)[0];
+		socket.room = '';
+		let length = (lobbies[lobbyIndex].length) - 2;
+		for (let i = 1; i < length; i++)
+		{
+			// Réorganisation de l'array en fonction de l'utilisateur manquant.
+			if (lobbies[lobbyIndex][i] === socket.room && lobbies[lobbyIndex][i] === '')
+			{
+				lobbies[lobbyIndex][i] = lobbies[lobbyIndex][i] + 1;
+				lobbies[lobbyIndex][i + 1] = '';
+			}
+		}
+		// Renommer le lobby avec l'id du nouvel hébergeur.
+		lobbies[lobbyIndex][0] = newMain;
+		// Ouvrir le lobby aux nouveaux joueurs.
+		lobbies[lobbyIndex][length + 1] = true;
+		console.log(lobbies[lobbyIndex]);
+	}
 }
 
 io.sockets.on('connection', function(socket)
@@ -160,7 +173,6 @@ io.sockets.on('connection', function(socket)
 	{
 		leaveLobby(socket);
 	});*/
-
 	socket.on('disconnect', function()
 	{
 		leaveLobby(socket);
@@ -210,9 +222,7 @@ io.sockets.on('connection', function(socket)
 	socket.on('sendMessage', function(message)
 	{
 		let messageEncode = ent.encode(message);
-
-		socket.to(socket.id).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
-
+		socket.to(socket.room).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
 		socket.emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
 	});
 });
