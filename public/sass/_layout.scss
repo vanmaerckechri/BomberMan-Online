@@ -32,11 +32,70 @@
 				text-align: center;
 			}
 		}
+	}
+	.lobby
+	{
+		padding: 0 20px;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
 		.lobbyMembers
-		{
+		{		
+			margin-right: 10px;
 			p
 			{
-				color: $color-light;
+				margin-bottom: 10px;
+				border: 1px solid $color-dark;
+				padding: 15px;
+				color: $color-dark;
+				background-color: $color-light;
+			}
+		}
+		.talkBoard
+		{
+			border: 1px solid $color-dark;
+			padding: 15px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: flex-start;
+			min-height: 500px;
+			min-width: 300px;
+			background-color: $color-dark;
+			.messages
+			{
+				.user
+				{
+					margin-bottom: 15px;
+					width: 100%;
+					font-weight: 700;
+					color: $color-light;
+				}
+				.message
+				{
+					color: $color-light;
+				}
+			}
+			.inputMessageContainer
+			{
+				display: flex;
+				align-items: center;
+				width: 100%;
+				.inputMessage
+				{
+					border: 1px solid $color-dark;
+					padding: 0 5px;
+					display: inline-block;
+					flex: 1;
+					height: 60px;
+					resize: none;
+				}
+				.button
+				{
+					margin: 0 0 0 15px;
+					font-size: 1rem;
+					height: 100%;
+				}
 			}
 		}
 	}

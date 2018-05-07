@@ -98,9 +98,14 @@ function loadLobby()
 {
 	let main = document.querySelector('#main');
 	let lobbyContent = '<h1>Lobby</h1>';
-	lobbyContent += '<div class="menuMain">';
-	lobbyContent += '<div id="lobbyMembers" class="lobbyMembers">';
-	lobbyContent += '</div></div>';
+	lobbyContent +=	'<div class="lobby">';
+	lobbyContent +=	'<div id="lobbyMembers" class="lobbyMembers"></div>';
+	lobbyContent += '<div class="talkBoard">';
+	lobbyContent += '<div class="messages"></div>';
+	lobbyContent += '<div class="inputMessageContainer">';
+	lobbyContent += '<textarea name="textarea" class="inputMessage"></textarea>';
+	lobbyContent += '<button class="button">Envoyer</button>';
+	lobbyContent += '</div></div></div>';
 	main.innerHTML = lobbyContent;
 }
 
@@ -108,16 +113,13 @@ function loadLobby()
 function joinLobby(room)
 {
 	socket.emit('joinLobby', room);
-	loadLobby()
+	loadLobby();
 }
 
 // Update l'affichage Membres du Lobby.
 socket.on('refreshLobby', function(names)
 {
-		console.log(names);
-
 	refreshLobby(names);
-	//socket.join('some room');
 });
 
 function refreshLobby(names)
@@ -126,6 +128,9 @@ function refreshLobby(names)
 	lobbyMembersContainer.innerHTML = '';
 	for (let i = 1, length = names.length - 1; i < length; i++)
 	{
-		lobbyMembersContainer.innerHTML += '<p>'+names[i]+'</p>';
+		if (names[i] != '')
+		{
+			lobbyMembersContainer.innerHTML += '<p>'+names[i]+'</p>';
+		}
 	}	
 }

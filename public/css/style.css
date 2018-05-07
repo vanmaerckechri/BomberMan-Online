@@ -1,4 +1,4 @@
-html, body, header, nav, footer, section, div, span, h1, h2, h3, p, a, blockquote, cite, img, ol, ul, li, form, fieldset, input, label, legend {
+html, body, header, nav, footer, section, div, span, h1, h2, h3, p, a, blockquote, cite, img, ol, ul, li, form, fieldset, input, textarea, label, legend {
   margin: 0;
   padding: 0;
   border: 0;
@@ -77,8 +77,51 @@ form {
       display: block;
       width: 100%;
       text-align: center; }
-    #main .menuMain .lobbyMembers p {
-      color: #ffffff; }
+  #main .lobby {
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; }
+    #main .lobby .lobbyMembers {
+      margin-right: 10px; }
+      #main .lobby .lobbyMembers p {
+        margin-bottom: 10px;
+        border: 1px solid #40434e;
+        padding: 15px;
+        color: #40434e;
+        background-color: #ffffff; }
+    #main .lobby .talkBoard {
+      border: 1px solid #40434e;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      min-height: 500px;
+      min-width: 300px;
+      background-color: #40434e; }
+      #main .lobby .talkBoard .messages .user {
+        margin-bottom: 15px;
+        width: 100%;
+        font-weight: 700;
+        color: #ffffff; }
+      #main .lobby .talkBoard .messages .message {
+        color: #ffffff; }
+      #main .lobby .talkBoard .inputMessageContainer {
+        display: flex;
+        align-items: center;
+        width: 100%; }
+        #main .lobby .talkBoard .inputMessageContainer .inputMessage {
+          border: 1px solid #40434e;
+          padding: 0 5px;
+          display: inline-block;
+          flex: 1;
+          height: 60px;
+          resize: none; }
+        #main .lobby .talkBoard .inputMessageContainer .button {
+          margin: 0 0 0 15px;
+          font-size: 1rem;
+          height: 100%; }
 
 .error {
   margin: .5rem 0;
