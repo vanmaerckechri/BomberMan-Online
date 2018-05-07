@@ -38,6 +38,7 @@ window.addEventListener('load', function()
 						socket.emit('refreshLobbiesList');
 						socket.on('refreshLobbiesList', function(list)
 						{
+							console.log(list);
 							if (document.querySelector('#lobbiesList'))
 							{
 								let lobbiesListContainer = document.querySelector('#lobbiesList');

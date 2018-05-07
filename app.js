@@ -128,10 +128,11 @@ function joinLobby(socket, roomId)
 	}
 }
 
-function checkRoomMembers(socket)
+/*function checkRoomMembers(socket)
 {
 	for (let i = 0, length = lobbies.length; i < length; i++)
 	{
+		// Detecter le lobby dans lequel se trouve l'utilisateur.
 		if (lobbies[i][0] === socket.room)
 		{
 			let membersSocket = [];
@@ -145,11 +146,11 @@ function checkRoomMembers(socket)
 			return membersSocket;
 		}
 	}	
-}
+}*/
 
 function leaveLobby(socket)
 {
-	checkRoomMembers(socket);
+	//checkRoomMembers(socket);
 	//memberWhoLeave.room = '';
 }
 
@@ -209,15 +210,9 @@ io.sockets.on('connection', function(socket)
 	socket.on('sendMessage', function(message)
 	{
 		let messageEncode = ent.encode(message);
-		let members = checkRoomMembers(socket);
-		if (members.length > 0)
-		{
-			for (let i = 0, membersLength = members.length; i < membersLength; i++)
-			{
-				socket.to(members[i]).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
-			}
-		}
-		console.log(members);
+
+		socket.to(socket.id).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
+
 		socket.emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
 	});
 });
