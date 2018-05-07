@@ -142,24 +142,38 @@ function checkLobbyIndex(socket)
 
 function leaveLobby(socket)
 {
-	if (lobbies.length > 0 && socket.room != undefined)
+	let lobbyIndex = checkLobbyIndex(socket);
+	if (lobbies[lobbyIndex] && lobbies[lobbyIndex].length > 2)
 	{
-		socket.leave(socket.room);
-		let lobbyIndex = checkLobbyIndex(socket);
+
 		let roomSockets = io.sockets.adapter.rooms[socket.room].sockets;
 		let newMain = Object.getOwnPropertyNames(roomSockets)[0];
+		let socketId = "";
+
+		socket.leave(socket.room);
 		socket.room = '';
-		let length = (lobbies[lobbyIndex].length) - 2;
-		for (let i = 1; i < length; i++)
+
+		let lobbyLength = (lobbies[lobbyIndex].length) - 2;
+		for (let i = 1; i < lobbyLength; i++)
 		{
+			if (Object.getOwnPropertyNames(roomSockets)[i - 1])
+			{
+				socketId = Object.getOwnPropertyNames(roomSockets)[i - 1];
+			}
+
 			// Réorganisation de l'array en fonction de l'utilisateur manquant.
 			lobbies[lobbyIndex][i] = lobbies[lobbyIndex][i + 1];
 			lobbies[lobbyIndex][i + 1] = '';
+			lobbies[lobbyIndex][i].room = newMain;
+			io.sockets.connected[socketId].join(newMain);
+			io.sockets.connected[socketId].room = newMain;
 		}
 		// Renommer le lobby avec l'id du nouvel hébergeur.
 		lobbies[lobbyIndex][0] = newMain;
 		// Ouvrir le lobby aux nouveaux joueurs.
-		lobbies[lobbyIndex][length + 1] = true;
+		lobbies[lobbyIndex][lobbyLength + 1] = true;
+		socket.broadcast.emit('refreshLobbiesList', lobbies);
+		socket.broadcast.to(newMain).emit('refreshLobby', lobbies[lobbyIndex]);
 		console.log(lobbies[lobbyIndex]);
 	}
 }
@@ -210,6 +224,7 @@ io.sockets.on('connection', function(socket)
 	socket.on('joinLobby', function(roomId)
 	{
 		joinLobby(socket, roomId);
+		socket.broadcast.emit('refreshLobbiesList', lobbies);
 		// le nombre de clients dans une room...
 		//console.log((io.sockets.adapter.rooms[roomId]).length);
 	});
