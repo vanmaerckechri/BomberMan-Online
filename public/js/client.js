@@ -112,6 +112,7 @@ function loadLobby()
 	chatSend.addEventListener('click', function()
 	{
 		socket.emit('sendMessage', smsContainer.value);
+		smsContainer.value = '';
 	})
 }
 
@@ -146,7 +147,6 @@ function refreshLobby(names)
 // Afficher Message.
 socket.on('sendMessage', function(message)
 {
-	console.log('ici');
 	let messages = document.querySelector('.messages');
 	let newSms = '<p class="user">'+message.broadcaster+': ';
 	newSms += '<span class="message">'+message.sms+'</p>';

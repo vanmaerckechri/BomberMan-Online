@@ -128,10 +128,29 @@ function joinLobby(socket, roomId)
 	}
 }
 
-function leaveLobby(memberWhoLeave, membersSocket)
+function checkRoomMembers(socket)
 {
-	memberWhoLeave.room = '';
-	console.log(membersSocket);
+	for (let i = 0, length = lobbies.length; i < length; i++)
+	{
+		if (lobbies[i][0] === socket.room)
+		{
+			let membersSocket = [];
+			for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
+			{
+				if (socket.to(lobbies[i][j]))
+				{
+					membersSocket.push(socket.to(lobbies[i][j]));
+				}
+			}
+			return membersSocket;
+		}
+	}	
+}
+
+function leaveLobby(socket)
+{
+	checkRoomMembers(socket);
+	//memberWhoLeave.room = '';
 }
 
 io.sockets.on('connection', function(socket)
@@ -141,39 +160,9 @@ io.sockets.on('connection', function(socket)
 		leaveLobby(socket);
 	});*/
 
-	function checkRoomMembers()
-	{
-		for (let i = 0, length = lobbies.length; i < length; i++)
-		{
-			if (lobbies[i][0] === socket.room)
-			{
-				let membersSocket = [];
-				for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
-				{
-					if (socket.to(lobbies[i][j]))
-					{
-						membersSocket.push(socket.to(lobbies[i][j]));
-					}
-				}
-				return membersSocket;
-			}
-		}	
-	}
-
 	socket.on('disconnect', function()
 	{
-		for (let i = 0, length = lobbies.length; i < length; i++)
-		{
-			if (lobbies[i][0] === socket.room)
-			{
-				let membersSocket = [];
-				for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
-				{
-					membersSocket.push(socket.to(lobbies[i][j]));
-				}
-				leaveLobby(socket, membersSocket);
-			}
-		}
+		leaveLobby(socket);
 	});
 
 	socket.on('pullPseudo', function()
@@ -220,7 +209,7 @@ io.sockets.on('connection', function(socket)
 	socket.on('sendMessage', function(message)
 	{
 		let messageEncode = ent.encode(message);
-		let members = checkRoomMembers();
+		let members = checkRoomMembers(socket);
 		if (members.length > 0)
 		{
 			for (let i = 0, membersLength = members.length; i < membersLength; i++)
