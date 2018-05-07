@@ -114,6 +114,7 @@ function joinLobby(socket, roomId)
 						socket.room = roomId;
 						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[i]);
 						socket.emit('refreshLobby', lobbies[i]);
+						// lobby full.
 						if (j === lastIndex - 1)
 						{
 							lobbies[i][lastIndex] = false;
@@ -139,6 +140,25 @@ io.sockets.on('connection', function(socket)
 	{
 		leaveLobby(socket);
 	});*/
+
+	function checkRoomMembers()
+	{
+		for (let i = 0, length = lobbies.length; i < length; i++)
+		{
+			if (lobbies[i][0] === socket.room)
+			{
+				let membersSocket = [];
+				for (let j = 0, membersLength = lobbies[i].length - 1; j < membersLength; j++)
+				{
+					if (socket.to(lobbies[i][j]))
+					{
+						membersSocket.push(socket.to(lobbies[i][j]));
+					}
+				}
+				return membersSocket;
+			}
+		}	
+	}
 
 	socket.on('disconnect', function()
 	{
@@ -187,11 +207,28 @@ io.sockets.on('connection', function(socket)
 		joinLobby(socket, socket.id)
 	});
 
-	// Joindre un Lobby
+	// Joindre un Lobby.
 	socket.on('joinLobby', function(roomId)
 	{
 		joinLobby(socket, roomId);
 		// le nombre de clients dans une room...
 		//console.log((io.sockets.adapter.rooms[roomId]).length);
+	});
+
+	// CHAT!
+	// Send Message.
+	socket.on('sendMessage', function(message)
+	{
+		let messageEncode = ent.encode(message);
+		let members = checkRoomMembers();
+		if (members.length > 0)
+		{
+			for (let i = 0, membersLength = members.length; i < membersLength; i++)
+			{
+				socket.to(members[i]).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
+			}
+		}
+		console.log(members);
+		socket.emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
 	});
 });

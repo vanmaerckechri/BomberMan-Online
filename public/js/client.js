@@ -103,10 +103,16 @@ function loadLobby()
 	lobbyContent += '<div class="talkBoard">';
 	lobbyContent += '<div class="messages"></div>';
 	lobbyContent += '<div class="inputMessageContainer">';
-	lobbyContent += '<textarea name="textarea" class="inputMessage"></textarea>';
-	lobbyContent += '<button class="button">Envoyer</button>';
+	lobbyContent += '<textarea name="inputMessage" class="inputMessage"></textarea>';
+	lobbyContent += '<button class="button chatSend">Envoyer</button>';
 	lobbyContent += '</div></div></div>';
 	main.innerHTML = lobbyContent;
+	let chatSend = document.querySelector('.chatSend');
+	let smsContainer = document.querySelector('.inputMessage');
+	chatSend.addEventListener('click', function()
+	{
+		socket.emit('sendMessage', smsContainer.value);
+	})
 }
 
 // Joindre un Lobby.
@@ -134,3 +140,15 @@ function refreshLobby(names)
 		}
 	}	
 }
+
+// CHAT
+
+// Afficher Message.
+socket.on('sendMessage', function(message)
+{
+	console.log('ici');
+	let messages = document.querySelector('.messages');
+	let newSms = '<p class="user">'+message.broadcaster+': ';
+	newSms += '<span class="message">'+message.sms+'</p>';
+	messages.innerHTML += newSms;
+});
