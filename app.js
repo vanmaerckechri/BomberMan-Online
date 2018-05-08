@@ -156,9 +156,10 @@ function leaveLobby(socket)
 		lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = false;
 		if (io.sockets.adapter.rooms[room] != undefined)
 		{
+			socket.leave(room);
 			let roomSockets = returnSocketsId(room);
+			console.log(roomSockets)
 			// Attribution d'un nouvel ID au lobby.
-			let oldRoom = lobbies[lobbyIndex][0];
 			lobbies[lobbyIndex][0] = roomSockets[0];
 			for (let i = 1, lobbyLength = (lobbies[lobbyIndex].length) - 1; i < lobbyLength; i++)
 			{
@@ -167,10 +168,6 @@ function leaveLobby(socket)
 				{
 					lobbies[lobbyIndex][i] = io.sockets.connected[roomSockets[i - 1]].name;
 
-					if (room != oldRoom)
-					{
-						io.sockets.connected[roomSockets[i - 1]].leave(room);
-					}
 					io.sockets.connected[roomSockets[i - 1]].join(lobbies[lobbyIndex][0]);
 					io.sockets.connected[roomSockets[i - 1]].room = lobbies[lobbyIndex][0];
 				}
