@@ -62,8 +62,18 @@
 			min-height: 500px;
 			min-width: 300px;
 			background-color: $color-dark;
+			.taskbar
+			{
+				width: 100%;
+				text-align: right;
+				.button
+				{
+					margin: 0;
+				}
+			}
 			.messages
 			{
+				flex: 1;
 				.user
 				{
 					margin-bottom: 15px;

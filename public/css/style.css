@@ -100,13 +100,20 @@ form {
       min-height: 500px;
       min-width: 300px;
       background-color: #40434e; }
-      #main .lobby .talkBoard .messages .user {
-        margin-bottom: 15px;
+      #main .lobby .talkBoard .taskbar {
         width: 100%;
-        font-weight: 700;
-        color: #ffffff; }
-      #main .lobby .talkBoard .messages .message {
-        color: #ffffff; }
+        text-align: right; }
+        #main .lobby .talkBoard .taskbar .button {
+          margin: 0; }
+      #main .lobby .talkBoard .messages {
+        flex: 1; }
+        #main .lobby .talkBoard .messages .user {
+          margin-bottom: 15px;
+          width: 100%;
+          font-weight: 700;
+          color: #ffffff; }
+        #main .lobby .talkBoard .messages .message {
+          color: #ffffff; }
       #main .lobby .talkBoard .inputMessageContainer {
         display: flex;
         align-items: center;

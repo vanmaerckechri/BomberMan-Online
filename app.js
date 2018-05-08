@@ -166,10 +166,7 @@ function leaveLobby(socket)
 			if (roomSockets[i - 1])
 			{
 				lobbies[lobbyIndex][i] = io.sockets.connected[roomSockets[i - 1]].name;
-				if (room != lobbies[lobbyIndex][0])
-				{
-					io.sockets.connected[roomSockets[i - 1]].leave(room);
-				}
+
 				io.sockets.connected[roomSockets[i - 1]].join(lobbies[lobbyIndex][0]);
 				io.sockets.connected[roomSockets[i - 1]].room = lobbies[lobbyIndex][0];
 			}
@@ -190,6 +187,13 @@ io.sockets.on('connection', function(socket)
 	socket.on('disconnect', function()
 	{
 		leaveLobby(socket);
+	});
+
+	socket.on('leaveLobby', function()
+	{
+		let room = socket.room;
+		leaveLobby(socket);
+		socket.leave(room);
 	});
 
 	socket.on('pullPseudo', function()

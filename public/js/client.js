@@ -23,41 +23,6 @@ window.addEventListener('load', function()
 				{
 					// Menu Principal.
 					loadMainMenu()
-					let create = document.querySelector('#createLobby');
-					create.addEventListener('click', function()
-					{
-						// Lobby.
-						loadLobby();
-						socket.emit('createLobby');
-					});
-					let lobbiesListButton = document.querySelector('#loadLobbiesList');
-					lobbiesListButton.addEventListener('click', function()
-					{
-						// Liste des Lobbies.
-						loadLobbiesList()
-						socket.emit('refreshLobbiesList');
-						socket.on('refreshLobbiesList', function(list)
-						{
-							console.log(list);
-							if (document.querySelector('#lobbiesList'))
-							{
-								let lobbiesListContainer = document.querySelector('#lobbiesList');
-								lobbiesListContainer.innerHTML = '';
-								if (list.length > 0)
-								{
-									let lastIndex = list[0].length - 1;
-									for (let i = 0, length = list.length; i < length; i++)
-									{
-										if (list[i][lastIndex] === true && list[i][0] != '')
-										{
-											let room = "'"+list[i][0]+"'";
-											lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
-										}
-									}
-								}
-							}
-						});
-					});
 				}
 				else
 				{
@@ -80,6 +45,41 @@ function loadMainMenu()
 	menuContent +=	'<button id="loadLobbiesList" class="button">Rejoindre un Lobby</button>';
 	menuContent +=	'</div>';
 	main.innerHTML = menuContent;
+	let create = document.querySelector('#createLobby');
+	create.addEventListener('click', function()
+	{
+		// Lobby.
+		loadLobby();
+		socket.emit('createLobby');
+	});
+	let lobbiesListButton = document.querySelector('#loadLobbiesList');
+	lobbiesListButton.addEventListener('click', function()
+	{
+		// Liste des Lobbies.
+		loadLobbiesList()
+		socket.emit('refreshLobbiesList');
+		socket.on('refreshLobbiesList', function(list)
+		{
+			console.log(list);
+			if (document.querySelector('#lobbiesList'))
+			{
+				let lobbiesListContainer = document.querySelector('#lobbiesList');
+				lobbiesListContainer.innerHTML = '';
+				if (list.length > 0)
+				{
+					let lastIndex = list[0].length - 1;
+					for (let i = 0, length = list.length; i < length; i++)
+					{
+						if (list[i][lastIndex] === true && list[i][0] != '')
+						{
+							let room = "'"+list[i][0]+"'";
+							lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
+						}
+					}
+				}
+			}
+		});
+	});
 }
 
 // Charger liste des Lobbies.
@@ -102,6 +102,7 @@ function loadLobby()
 	lobbyContent +=	'<div class="lobby">';
 	lobbyContent +=	'<div id="lobbyMembers" class="lobbyMembers"></div>';
 	lobbyContent += '<div class="talkBoard">';
+	lobbyContent += '<div class="taskbar"><button class="button backToMainMenu">X</button></div>';
 	lobbyContent += '<div class="messages"></div>';
 	lobbyContent += '<div class="inputMessageContainer">';
 	lobbyContent += '<textarea name="inputMessage" class="inputMessage"></textarea>';
@@ -114,6 +115,12 @@ function loadLobby()
 	{
 		socket.emit('sendMessage', smsContainer.value);
 		smsContainer.value = '';
+	})
+	let backToMainMenuButton = document.querySelector('.backToMainMenu');
+	backToMainMenuButton.addEventListener('click', function()
+	{
+		loadMainMenu();
+		socket.emit('leaveLobby');
 	})
 }
 
