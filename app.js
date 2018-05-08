@@ -128,12 +128,12 @@ function joinLobby(socket, roomId)
 	}
 }
 
-function checkLobbyIndex(socket)
+function checkLobbyIndex(room)
 {
 	for (let i = 0, length = lobbies.length; i < length; i++)
 	{
 		// Detecter le lobby dans lequel se trouve l'utilisateur.
-		if (lobbies[i][0] === socket.room)
+		if (lobbies[i][0] === room)
 		{
 			return i;
 		}
@@ -149,35 +149,39 @@ function returnSocketsId(room)
 function leaveLobby(socket)
 {
 	// S'il reste d'autres utilisateurs dans le lobby...
-	let room = socket.room;
-	if (lobbies.length > 0 && io.sockets.adapter.rooms[room] != undefined)
+	if (lobbies.length > 0)
 	{
-		let roomSockets = returnSocketsId(room);
-
-		console.log('roomSockets:');
-		console.log(roomSockets);
-
-		let lobbyIndex = checkLobbyIndex(io.sockets.connected[roomSockets[0]]);
-		// Attribution d'un nouvel ID au lobby.
-		lobbies[lobbyIndex][0] = roomSockets[0];
-		for (let i = 1, lobbyLength = (lobbies[lobbyIndex].length) - 1; i < lobbyLength; i++)
+		let room = socket.room;
+		let lobbyIndex = checkLobbyIndex(room);
+		lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = false;
+		if (io.sockets.adapter.rooms[room] != undefined)
 		{
-			// Réorganisation du lobby.
-			if (roomSockets[i - 1])
+			let roomSockets = returnSocketsId(room);
+			// Attribution d'un nouvel ID au lobby.
+			lobbies[lobbyIndex][0] = roomSockets[0];
+			for (let i = 1, lobbyLength = (lobbies[lobbyIndex].length) - 1; i < lobbyLength; i++)
 			{
-				lobbies[lobbyIndex][i] = io.sockets.connected[roomSockets[i - 1]].name;
+				// Réorganisation du lobby.
+				if (roomSockets[i - 1])
+				{
+					lobbies[lobbyIndex][i] = io.sockets.connected[roomSockets[i - 1]].name;
 
-				io.sockets.connected[roomSockets[i - 1]].join(lobbies[lobbyIndex][0]);
-				io.sockets.connected[roomSockets[i - 1]].room = lobbies[lobbyIndex][0];
+					if (room != lobbies[lobbyIndex][0])
+					{
+						io.sockets.connected[roomSockets[i - 1]].leave(room);
+					}
+					io.sockets.connected[roomSockets[i - 1]].join(lobbies[lobbyIndex][0]);
+					io.sockets.connected[roomSockets[i - 1]].room = lobbies[lobbyIndex][0];
+				}
+				else
+				{
+					lobbies[lobbyIndex][i] = '';
+				}
 			}
-			else
-			{
-				lobbies[lobbyIndex][i] = '';
-			}
+			lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = true;
+			// Mettre à jour la liste des joueurs du lobby.
+			socket.broadcast.to(lobbies[lobbyIndex][0]).emit('refreshLobby', lobbies[lobbyIndex]);
 		}
-		lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = true;
-		// Mettre à jour la liste des joueurs du lobby.
-		socket.broadcast.to(lobbies[lobbyIndex][0]).emit('refreshLobby', lobbies[lobbyIndex]);
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}
 }
@@ -186,6 +190,7 @@ io.sockets.on('connection', function(socket)
 {
 	socket.on('disconnect', function()
 	{
+		let room = socket.room;
 		leaveLobby(socket);
 	});
 
@@ -193,7 +198,7 @@ io.sockets.on('connection', function(socket)
 	{
 		let room = socket.room;
 		leaveLobby(socket);
-		socket.leave(room);
+		socket.leave(socket);
 	});
 
 	socket.on('pullPseudo', function()
