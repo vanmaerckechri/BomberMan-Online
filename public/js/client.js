@@ -128,7 +128,6 @@ function loadLobby()
 // Joindre un Lobby.
 function joinLobby(room)
 {
-	console.log('click')
 	socket.emit('joinLobby', room);
 	loadLobby();
 }
@@ -143,7 +142,6 @@ function refreshLobby(names)
 {
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
-			console.log('names');
 
 	for (let i = 0, lobbyLength = names.length; i < lobbyLength; i++)
 	{
