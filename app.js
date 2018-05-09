@@ -93,34 +93,32 @@ function joinLobby(socket, roomId)
 {
 	if (lobbies[roomId].options.open === true)
 	{
-		let roomsId = Object.keys(lobbies);
-		for (let i = 0, lobbiesLength = roomsId.length; i < lobbiesLength; i++)
+		let rooms = Object.keys(lobbies);
+		for (let i = 0, lobbiesLength = rooms.length; i < lobbiesLength; i++)
 		{
 			// affichage membre lors de la creation du lobby.
-			if (roomsId[i] === socket.id)
+			if (rooms[i] === socket.id)
 			{
-				socket.emit('refreshLobby', lobbies[roomsId[i]].socketName);
+				socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
 				return;
 			}
 			// ajoute un membre à la room et affiche les membres. 
-			else if (roomsId[i] === roomId)
+			else if (rooms[i] === roomId)
 			{
-				for (let j = 0, roomLength = lobbies[roomsId[i]].socketName.length; j < roomLength; j++)
+				for (let j = 0, roomLength = lobbies[rooms[i]].socketName.length; j < roomLength; j++)
 				{
-					if (lobbies[roomsId[i]].socketName[j] === '')
+					if (lobbies[rooms[i]].socketName[j] === '')
 					{
-						lobbies[roomsId[i]].socketName[j] = socket.name;
+						lobbies[rooms[i]].socketName[j] = socket.name;
 						socket.join(roomId);
 						socket.room = roomId;
-						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[roomsId[i]].socketName);
-						socket.emit('refreshLobby', lobbies[roomsId[i]].socketName);
+						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[rooms[i]].socketName);
+						socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
 						// lobby full.
-						console.log('j:'+j);
-						console.log(roomLength);
 						if (j === roomLength - 1)
 						{
-							lobbies[roomsId[i]].options.open = false;
-							socket.emit('refreshLobbiesList', lobbies[roomsId[i]]);
+							lobbies[rooms[i]].options.open = false;
+							socket.emit('refreshLobbiesList', lobbies);
 						}
 						return;
 					}
@@ -130,7 +128,7 @@ function joinLobby(socket, roomId)
 	}
 }
 
-function checkLobbyIndex(room)
+/*function checkLobbyIndex(room)
 {
 	for (let i = 0, length = lobbies.length; i < length; i++)
 	{
@@ -140,7 +138,7 @@ function checkLobbyIndex(room)
 			return i;
 		}
 	}	
-}
+}*/
 
 function returnSocketsId(room)
 {
@@ -151,36 +149,43 @@ function returnSocketsId(room)
 function leaveLobby(socket)
 {
 	// S'il reste d'autres utilisateurs dans le lobby...
-	if (lobbies.length > 0)
+	let rooms = Object.keys(lobbies);
+	if (rooms.length > 0 && socket.room)
 	{
+		console.log(1)
 		let room = socket.room;
-		let lobbyIndex = checkLobbyIndex(room);
-		lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = false;
+		lobbies[room].options.open = false;
 		if (io.sockets.adapter.rooms[room] != undefined)
 		{
+			console.log(2)
 			socket.leave(room);
 			let roomSockets = returnSocketsId(room);
-			console.log(roomSockets)
-			// Attribution d'un nouvel ID au lobby.
-			lobbies[lobbyIndex][0] = roomSockets[0];
-			for (let i = 1, lobbyLength = (lobbies[lobbyIndex].length) - 1; i < lobbyLength; i++)
+			// Effacer l'ancien lobby et en créer un nv.
+			let newRoomId = roomSockets[0];
+			delete lobbies[room];
+			lobbies[newRoomId] =
+			{
+				options: {},
+				socketName: []
+			};
+			for (let i = 0; i < pplByLobby; i++)
 			{
 				// Réorganisation du lobby.
-				if (roomSockets[i - 1])
+				if (roomSockets[i])
 				{
-					lobbies[lobbyIndex][i] = io.sockets.connected[roomSockets[i - 1]].name;
+					lobbies[newRoomId].socketName[i] = io.sockets.connected[roomSockets[i]].name;
 
-					io.sockets.connected[roomSockets[i - 1]].join(lobbies[lobbyIndex][0]);
-					io.sockets.connected[roomSockets[i - 1]].room = lobbies[lobbyIndex][0];
+					io.sockets.connected[roomSockets[i]].join(newRoomId);
+					io.sockets.connected[roomSockets[i]].room = newRoomId;
 				}
 				else
 				{
-					lobbies[lobbyIndex][i] = '';
+					lobbies[newRoomId].socketName[i] = '';
 				}
 			}
-			lobbies[lobbyIndex][(lobbies[lobbyIndex].length) - 1] = true;
+			lobbies[newRoomId].options.open = true;
 			// Mettre à jour la liste des joueurs du lobby.
-			socket.broadcast.to(lobbies[lobbyIndex][0]).emit('refreshLobby', lobbies[lobbyIndex]);
+			socket.broadcast.to(newRoomId).emit('refreshLobby', lobbies[newRoomId].socketName);
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}
