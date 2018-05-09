@@ -100,6 +100,7 @@ function joinLobby(socket, roomId)
 			if (rooms[i] === socket.id)
 			{
 				socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
+				socket.emit('refreshLobbyAdmin');
 				return;
 			}
 			// ajoute un membre à la room et affiche les membres. 
@@ -114,6 +115,7 @@ function joinLobby(socket, roomId)
 						socket.room = roomId;
 						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[rooms[i]].socketName);
 						socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
+						io.sockets.connected[roomId].emit('refreshLobbyAdmin');
 						// lobby full.
 						if (j === roomLength - 1)
 						{
@@ -184,6 +186,7 @@ function leaveLobby(socket)
 			lobbies[newRoomId].options.open = true;
 			// Mettre à jour la liste des joueurs du lobby.
 			socket.broadcast.to(newRoomId).emit('refreshLobby', lobbies[newRoomId].socketName);
+			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin');
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}

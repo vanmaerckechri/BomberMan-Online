@@ -138,6 +138,19 @@ socket.on('refreshLobby', function(names)
 	refreshLobby(names);
 });
 
+// Update l'affichage des commandes admin dans le lobby.
+socket.on('refreshLobbyAdmin', function()
+{
+	if (document.querySelectorAll('.eject'))
+	{
+		let ejectButton = document.querySelectorAll('.eject')
+		for (let i = 1, ejectLength = ejectButton.length; i < ejectLength; i++)
+		{
+			ejectButton[i].innerHTML = '<button class="button formOk">X</span>';
+		}
+	}
+});
+
 function refreshLobby(names)
 {
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
@@ -147,7 +160,7 @@ function refreshLobby(names)
 	{
 		if (names[i] != '')
 		{
-			lobbyMembersContainer.innerHTML += '<p>'+names[i]+'</p>';
+			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+names[i]+'<span class="eject"></span></div>';
 		}
 	}	
 }

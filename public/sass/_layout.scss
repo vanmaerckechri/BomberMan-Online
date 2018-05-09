@@ -42,13 +42,20 @@
 		.lobbyMembers
 		{		
 			margin-right: 10px;
-			p
+			.pseudo
 			{
 				margin-bottom: 10px;
 				border: 1px solid $color-dark;
 				padding: 15px;
 				color: $color-dark;
 				background-color: $color-light;
+				.eject
+				{
+					.button
+					{
+						margin-right: 0;
+					}
+				}
 			}
 		}
 		.talkBoard

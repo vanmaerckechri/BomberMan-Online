@@ -84,12 +84,14 @@ form {
     align-items: flex-start; }
     #main .lobby .lobbyMembers {
       margin-right: 10px; }
-      #main .lobby .lobbyMembers p {
+      #main .lobby .lobbyMembers .pseudo {
         margin-bottom: 10px;
         border: 1px solid #40434e;
         padding: 15px;
         color: #40434e;
         background-color: #ffffff; }
+        #main .lobby .lobbyMembers .pseudo .eject .button {
+          margin-right: 0; }
     #main .lobby .talkBoard {
       border: 1px solid #40434e;
       padding: 15px;
