@@ -47,12 +47,16 @@
 				margin-bottom: 10px;
 				border: 1px solid $color-dark;
 				padding: 15px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
 				color: $color-dark;
 				background-color: $color-light;
 				.eject
 				{
 					.button
 					{
+						margin-left: 15px;
 						margin-right: 0;
 					}
 				}

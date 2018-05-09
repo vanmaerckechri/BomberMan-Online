@@ -146,7 +146,7 @@ socket.on('refreshLobbyAdmin', function()
 		let ejectButton = document.querySelectorAll('.eject')
 		for (let i = 1, ejectLength = ejectButton.length; i < ejectLength; i++)
 		{
-			ejectButton[i].innerHTML = '<button class="button formOk">X</span>';
+			ejectButton[i].innerHTML = '<button class="button">X</span>';
 		}
 	}
 });
@@ -161,6 +161,10 @@ function refreshLobby(names)
 		if (names[i] != '')
 		{
 			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+names[i]+'<span class="eject"></span></div>';
+		}
+		else
+		{
+			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+names[i]+'</div>';			
 		}
 	}	
 }
