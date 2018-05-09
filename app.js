@@ -72,33 +72,35 @@ function validatePseudo(pseudo)
 	return [true, pseudo];
 }
 
-let lobbies = [];
+let lobbies = {};
 let pplByLobby = 4;
+
 function createLobby(socket)
 {
-	// let lobby = [id room, nom du manager, ppl2, ppl3, ...(en fonction de 'pplByLobby'), true pour room ouverte(il reste de la place)]
-	let lobby = [socket.id, socket.name];
-	for (let i = 0, length = pplByLobby - 1; i < length; i++)
+	let options = {open: true};
+	let socketName = [socket.name]
+	let lobby = {options, socketName};
+	for (let i = 0; i < pplByLobby - 1; i++)
 	{
-		lobby.push('');
+		lobby.socketName.push('');
 	}
-	lobby.push(true);
-	lobbies.push(lobby);
+	lobbies[socket.id] = lobby;
 	socket.room = socket.id;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
 }
 
 function joinLobby(socket, roomId)
 {
-	if ((io.sockets.adapter.rooms[roomId]).length < pplByLobby)
-	{
-
-		for (let i = 0, length = lobbies.length; i < length; i++)
+	if (lobbies[roomId].socketName.length < pplByLobby)
+	{	console.log(1)
+		let roomsId = Object.keys(lobbies);
+		for (let i = 0, lobbiesLength = roomsId.length; i < lobbiesLength; i++)
 		{
 			// affichage membre lors de la creation du lobby.
-			if (lobbies[i][0] === socket.id)
+			if (roomId[i] === socket.id)
 			{
-				socket.emit('refreshLobby', lobbies[i]);
+				console.log(2)
+				socket.emit('refreshLobby', lobbies[roomId[i]]);
 				return;
 			}
 			// ajoute un membre à la room et affiche les membres. 

@@ -65,15 +65,16 @@ function loadMainMenu()
 			{
 				let lobbiesListContainer = document.querySelector('#lobbiesList');
 				lobbiesListContainer.innerHTML = '';
-				if (list.length > 0)
+				let roomsId = Object.keys(list);
+				if (roomsId.length > 0)
 				{
-					let lastIndex = list[0].length - 1;
-					for (let i = 0, length = list.length; i < length; i++)
+					for (let i = 0, roomsLength = roomsId.length; i < roomsLength; i++)
 					{
-						if (list[i][lastIndex] === true && list[i][0] != '')
+						if (list[roomsId[i]].options.open === true && roomsId[i] != '')
 						{
-							let room = "'"+list[i][0]+"'";
-							lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+room+')">'+list[i][1]+'</button>';
+							let roomId = "'"+roomsId[i]+"'";
+							let roomName = list[roomsId[i]].socketName[0];
+							lobbiesListContainer.innerHTML += '<button class="button" onclick="joinLobby('+roomId+')">'+roomName+'</button>';
 						}
 					}
 				}
@@ -127,6 +128,7 @@ function loadLobby()
 // Joindre un Lobby.
 function joinLobby(room)
 {
+	console.log('click')
 	socket.emit('joinLobby', room);
 	loadLobby();
 }
@@ -141,7 +143,9 @@ function refreshLobby(names)
 {
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
-	for (let i = 1, length = names.length - 1; i < length; i++)
+			console.log('names');
+
+	for (let i = 0, lobbyLength = names.length; i < lobbyLength; i++)
 	{
 		if (names[i] != '')
 		{
