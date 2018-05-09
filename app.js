@@ -152,17 +152,15 @@ function leaveLobby(socket)
 	let rooms = Object.keys(lobbies);
 	if (rooms.length > 0 && socket.room)
 	{
-		console.log(1)
 		let room = socket.room;
 		lobbies[room].options.open = false;
+		socket.leave(room);
+		delete lobbies[room];
 		if (io.sockets.adapter.rooms[room] != undefined)
 		{
-			console.log(2)
-			socket.leave(room);
 			let roomSockets = returnSocketsId(room);
 			// Effacer l'ancien lobby et en créer un nv.
 			let newRoomId = roomSockets[0];
-			delete lobbies[room];
 			lobbies[newRoomId] =
 			{
 				options: {},
