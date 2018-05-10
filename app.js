@@ -100,7 +100,8 @@ function joinLobby(socket, roomId)
 			if (rooms[i] === socket.id)
 			{
 				socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
-				socket.emit('refreshLobbyAdmin');
+				let usersList = returnSocketsId(rooms[i]);
+				socket.emit('refreshLobbyAdmin', usersList);
 				return;
 			}
 			// ajoute un membre à la room et affiche les membres. 
@@ -115,7 +116,8 @@ function joinLobby(socket, roomId)
 						socket.room = roomId;
 						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[rooms[i]].socketName);
 						socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
-						io.sockets.connected[roomId].emit('refreshLobbyAdmin');
+						let usersList = returnSocketsId(rooms[i]);
+						io.sockets.connected[roomId].emit('refreshLobbyAdmin', usersList);
 						// lobby full.
 						if (j === roomLength - 1)
 						{
@@ -129,18 +131,6 @@ function joinLobby(socket, roomId)
 		}
 	}
 }
-
-/*function checkLobbyIndex(room)
-{
-	for (let i = 0, length = lobbies.length; i < length; i++)
-	{
-		// Detecter le lobby dans lequel se trouve l'utilisateur.
-		if (lobbies[i][0] === room)
-		{
-			return i;
-		}
-	}	
-}*/
 
 function returnSocketsId(room)
 {
@@ -186,11 +176,42 @@ function leaveLobby(socket)
 			lobbies[newRoomId].options.open = true;
 			// Mettre à jour la liste des joueurs du lobby.
 			socket.broadcast.to(newRoomId).emit('refreshLobby', lobbies[newRoomId].socketName);
-			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin');
+			let usersList = returnSocketsId(newRoomId);
+			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', usersList);
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}
 }
+
+// Tester l'authenticité de l'admin lors d'une action sur un autre utilisateur du même lobby.
+function checkAdminAuth(admin, user)
+{
+	// Récupération de tous les utilisateurs du lobby de l'admin.
+	let lobbyUsers = returnSocketsId(admin);
+	for (let i = 0, usersLength = lobbyUsers.length; i < usersLength; i++)
+	{
+		if (admin === lobbyUsers[0])
+		{
+			if (user === lobbyUsers[i])
+			{
+				return true
+			}
+		}
+		else
+		{
+			return "Vous n'avez pas les droit pour effectuer cette action!";
+		}
+	}
+	return "Utilisateur introuvable!";
+}
+
+// Envoyer un message d'alerte.
+function sendAlert(socket, sms)
+{
+	socket.emit('sendAlert', sms);
+}
+
+// SOCKET.IO!
 
 io.sockets.on('connection', function(socket)
 {
@@ -222,7 +243,7 @@ io.sockets.on('connection', function(socket)
 	});
 
 	// Refresh la Liste des Lobbies.
-	socket.on('refreshLobbiesList', function(list)
+	socket.on('refreshLobbiesList', function()
 	{
 		socket.emit('refreshLobbiesList', lobbies);
 	});
@@ -238,18 +259,37 @@ io.sockets.on('connection', function(socket)
 	// Joindre un Lobby.
 	socket.on('joinLobby', function(roomId)
 	{
-		joinLobby(socket, roomId);
+		let room = ent.encode(roomId);
+		joinLobby(socket, room);
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 		// le nombre de clients dans une room...
 		//console.log((io.sockets.adapter.rooms[roomId]).length);
 	});
 
 	// CHAT!
+
 	// Send Message.
 	socket.on('sendMessage', function(message)
 	{
 		let messageEncode = ent.encode(message);
 		socket.to(socket.room).emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
 		socket.emit('sendMessage', {sms: messageEncode, broadcaster: socket.name});
+	});
+
+	// Ejecter Utilisateur.
+	socket.on('ejectUser', function(userId)
+	{
+		let user = ent.encode(userId);
+		let auth = checkAdminAuth(socket.id, user);
+		if (auth === true)
+		{
+			let sms = "Vous avez été exclu!"
+			leaveLobby(io.sockets.connected[user]);
+			io.sockets.connected[user].emit('backToMainMenu', sms);
+		}
+		else
+		{
+			sendAlert(socket, auth);
+		}
 	});
 });

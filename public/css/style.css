@@ -87,14 +87,16 @@ form {
       #main .lobby .lobbyMembers .pseudo {
         margin-bottom: 10px;
         border: 1px solid #40434e;
-        padding: 15px;
+        padding: 0 10px;
+        height: 52px;
+        width: 232px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         color: #40434e;
         background-color: #ffffff; }
         #main .lobby .lobbyMembers .pseudo .eject .button {
-          margin-left: 15px;
+          margin-left: 10px;
           margin-right: 0; }
     #main .lobby .talkBoard {
       border: 1px solid #40434e;

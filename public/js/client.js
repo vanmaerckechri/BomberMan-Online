@@ -1,10 +1,5 @@
 let socket = io.connect(window.location.host);
 
-socket.on('checkSocket', function ()
-{
-	socket.emit('checkSocket');
-});
-
 window.addEventListener('load', function()
 {
 	// Connexion
@@ -18,7 +13,6 @@ window.addEventListener('load', function()
 			socket.emit('recordNewPlayerInfo', pseudo.value);
 			socket.on('validatePseudo', function (pseudoValide)
 			{
-				console.log(pseudoValide);
 				if (pseudoValide[0] === true)
 				{
 					// Menu Principal.
@@ -26,8 +20,7 @@ window.addEventListener('load', function()
 				}
 				else
 				{
-					let errorSms = document.querySelector('.error');
-					errorSms.innerHTML = pseudoValide[1];
+					displayAlert(pseudoValide[1])
 				}
 			});
 
@@ -44,6 +37,7 @@ function loadMainMenu()
 	menuContent += '<button id="createLobby" class="button">Créer un Lobby</button>';
 	menuContent +=	'<button id="loadLobbiesList" class="button">Rejoindre un Lobby</button>';
 	menuContent +=	'</div>';
+	menuContent += '<div class="error"></div>';
 	main.innerHTML = menuContent;
 	let create = document.querySelector('#createLobby');
 	create.addEventListener('click', function()
@@ -90,8 +84,9 @@ function loadLobbiesList()
 	let lobbyListContent = '<h1>Lobby</h1>';
 	lobbyListContent += '<div class="menuMain">';
 	lobbyListContent += '<h2>Liste des Lobbies</h2>';
-	lobbyListContent += '<div id="lobbiesList" class="lobbiesList">';
-	lobbyListContent += '</div></div>';
+	lobbyListContent += '<div id="lobbiesList" class="lobbiesList"></div>';
+	lobbyListContent += '</div>';
+	lobbyListContent += '<div class="error"></div>';
 	main.innerHTML = lobbyListContent;
 }
 
@@ -109,6 +104,7 @@ function loadLobby()
 	lobbyContent += '<textarea name="inputMessage" class="inputMessage"></textarea>';
 	lobbyContent += '<button class="button chatSend">Envoyer</button>';
 	lobbyContent += '</div></div></div>';
+	lobbyContent += '<div class="error"></div>';
 	main.innerHTML = lobbyContent;
 	let chatSend = document.querySelector('.chatSend');
 	let smsContainer = document.querySelector('.inputMessage');
@@ -125,6 +121,18 @@ function loadLobby()
 	})
 }
 
+// Messages d'Alerte.
+socket.on('sendAlert', function(sms)
+{
+	displayAlert(sms);
+});
+
+function displayAlert(sms)
+{
+	let errorSms = document.querySelector('.error');
+	errorSms.innerHTML = sms;
+}
+
 // Joindre un Lobby.
 function joinLobby(room)
 {
@@ -136,19 +144,6 @@ function joinLobby(room)
 socket.on('refreshLobby', function(names)
 {
 	refreshLobby(names);
-});
-
-// Update l'affichage des commandes admin dans le lobby.
-socket.on('refreshLobbyAdmin', function()
-{
-	if (document.querySelectorAll('.eject'))
-	{
-		let ejectButton = document.querySelectorAll('.eject')
-		for (let i = 1, ejectLength = ejectButton.length; i < ejectLength; i++)
-		{
-			ejectButton[i].innerHTML = '<button class="button">X</span>';
-		}
-	}
 });
 
 function refreshLobby(names)
@@ -169,8 +164,21 @@ function refreshLobby(names)
 	}	
 }
 
-// CHAT
+// Update l'affichage des commandes admin dans le lobby.
+socket.on('refreshLobbyAdmin', function(list)
+{
+	if (document.querySelectorAll('.eject'))
+	{
+		let ejectButton = document.querySelectorAll('.eject')
+		for (let i = 1, ejectLength = ejectButton.length; i < ejectLength; i++)
+		{
+			let userId = "'"+list[i]+"'";
+			ejectButton[i].innerHTML = '<button class="button" onclick="ejectUser('+userId+')">X</span>';
+		}
+	}
+});
 
+// CHAT
 // Afficher Message.
 socket.on('sendMessage', function(message)
 {
@@ -181,4 +189,15 @@ socket.on('sendMessage', function(message)
 		newSms += '<span class="message">'+message.sms+'</p>';
 		messages.innerHTML += newSms;
 	}
+});
+
+// Ejecter Utilisateur.
+function ejectUser(user)
+{
+	socket.emit('ejectUser', user);
+}
+socket.on('backToMainMenu', function(sms)
+{
+	loadMainMenu();
+	displayAlert(sms);
 });
