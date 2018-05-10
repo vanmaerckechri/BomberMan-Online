@@ -140,18 +140,19 @@ function returnSocketsId(room)
 
 function leaveLobby(socket)
 {
-	// S'il reste d'autres utilisateurs dans le lobby...
 	let rooms = Object.keys(lobbies);
 	if (rooms.length > 0 && socket.room)
 	{
+		// Effacer le lobby actuel.
 		let room = socket.room;
 		lobbies[room].options.open = false;
 		socket.leave(room);
+		socket.room = undefined;
 		delete lobbies[room];
 		if (io.sockets.adapter.rooms[room] != undefined)
 		{
+			// Créer un nouveau lobby.
 			let roomSockets = returnSocketsId(room);
-			// Effacer l'ancien lobby et en créer un nv.
 			let newRoomId = roomSockets[0];
 			lobbies[newRoomId] =
 			{
@@ -160,7 +161,6 @@ function leaveLobby(socket)
 			};
 			for (let i = 0; i < pplByLobby; i++)
 			{
-				// Réorganisation du lobby.
 				if (roomSockets[i])
 				{
 					lobbies[newRoomId].socketName[i] = io.sockets.connected[roomSockets[i]].name;
