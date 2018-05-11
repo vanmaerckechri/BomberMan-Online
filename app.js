@@ -312,15 +312,24 @@ io.sockets.on('connection', function(socket)
 		{
 			lobbies[id].options.pplByLobby--;
 			let users = returnSocketsId(id);
+			if (users[lobbies[id].options.pplByLobby])
+			{
+				let sms = "Vous avez été exclu!"
+				leaveLobby(io.sockets.connected[users[lobbies[id].options.pplByLobby]]);
+				io.sockets.connected[users[lobbies[id].options.pplByLobby]].emit('backToMainMenu', sms);
+			}
+			else
+			{
+				socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+				socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+				let usersList = returnSocketsId(id);
+				io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
+				socket.broadcast.emit('refreshLobbiesList', lobbies);
+			}
 			if (lobbies[id].options.pplByLobby <= users.length)
 			{
 				lobbies[id].options.open = false;
 			}
-			socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-			socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-			let usersList = returnSocketsId(id);
-			io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
-			socket.broadcast.emit('refreshLobbiesList', lobbies);
 		}
 		else
 		{
