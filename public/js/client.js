@@ -54,7 +54,6 @@ function loadMainMenu()
 		socket.emit('refreshLobbiesList');
 		socket.on('refreshLobbiesList', function(list)
 		{
-			console.log(list);
 			if (document.querySelector('#lobbiesList'))
 			{
 				let lobbiesListContainer = document.querySelector('#lobbiesList');
@@ -167,7 +166,6 @@ function refreshLobby(lobbyInfos)
 // Update l'affichage des commandes admin dans le lobby.
 socket.on('refreshLobbyAdmin', function(lobbyInfos)
 {
-	console.log(lobbyInfos);
 	if (document.querySelectorAll('.eject'))
 	{
 		let ejectButton = document.querySelectorAll('.eject')
