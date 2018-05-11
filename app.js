@@ -100,9 +100,9 @@ function joinLobby(socket, roomId)
 			// affichages admin lors de la creation du lobby.
 			if (rooms[i] === socket.id)
 			{
-				socket.emit('refreshLobby', lobbies[rooms[i]].socketName)
+				socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
 				let usersList = returnSocketsId(rooms[i]);
-				socket.emit('refreshLobbyAdmin', {usersId: usersList, lobby: rooms[i]});
+				socket.emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[rooms[i]], lobbyId: rooms[i]});
 				return;
 			}
 			// ajoute un membre à la room et affiche les membres. 
@@ -115,10 +115,10 @@ function joinLobby(socket, roomId)
 						lobbies[rooms[i]].socketName[j] = socket.name;
 						socket.join(roomId);
 						socket.room = roomId;
-						socket.broadcast.to(roomId).emit('refreshLobby', lobbies[rooms[i]].socketName);
-						socket.emit('refreshLobby', lobbies[rooms[i]].socketName);
+						socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
+						socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
 						let usersList = returnSocketsId(rooms[i]);
-						io.sockets.connected[roomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[rooms[i]]});
+						io.sockets.connected[roomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[rooms[i]], lobbyId: rooms[i]});
 						// lobby full.
 						if (j === lobbies[rooms[i]].options.pplByLobby - 1)
 						{
@@ -146,6 +146,7 @@ function leaveLobby(socket)
 	{
 		// Effacer le lobby actuel.
 		let room = socket.room;
+		let pplByLobbyBeforeChange = lobbies[room].options.pplByLobby;
 		lobbies[room].options.open = false;
 		socket.leave(room);
 		socket.room = undefined;
@@ -155,13 +156,13 @@ function leaveLobby(socket)
 			// Créer un nouveau lobby.
 			let roomSockets = returnSocketsId(room);
 			let newRoomId = roomSockets[0];
-			let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyMax};
+			let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyBeforeChange};
 			lobbies[newRoomId] =
 			{
 				options: options,
 				socketName: []
 			};
-			for (let i = 0; i < lobbies[newRoomId].options.pplByLobby; i++)
+			for (let i = 0; i < lobbies[newRoomId].options.pplByLobbyMax; i++)
 			{
 				if (roomSockets[i])
 				{
@@ -177,16 +178,16 @@ function leaveLobby(socket)
 			}
 			lobbies[newRoomId].options.open = true;
 			// Mettre à jour la liste des joueurs du lobby.
-			socket.broadcast.to(newRoomId).emit('refreshLobby', lobbies[newRoomId].socketName);
+			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby});
 			let usersList = returnSocketsId(newRoomId);
-			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId]});
+			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}
 }
 
-// Tester l'authenticité de l'admin lors d'une action sur un autre utilisateur du même lobby.
-function checkAdminAuth(admin, user)
+// Tester l'authenticité de l'admin.
+function checkAdminAuth(admin, user = false)
 {
 	// Récupération de tous les utilisateurs du lobby de l'admin.
 	let lobbyUsers = returnSocketsId(admin);
@@ -194,17 +195,24 @@ function checkAdminAuth(admin, user)
 	{
 		if (admin === lobbyUsers[0])
 		{
-			if (user === lobbyUsers[i])
+			if (user === false || user === lobbyUsers[i])
 			{
 				return true
 			}
 		}
 		else
 		{
-			return "Vous n'avez pas les droit pour effectuer cette action!";
+			return "Vous n'avez pas les droits pour effectuer cette action!";
 		}
 	}
-	return "Utilisateur introuvable!";
+	if (user === false)
+	{
+		return "Un problème est survenu!";
+	}
+	else
+	{
+		return "Utilisateur introuvable!";
+	}
 }
 
 // Envoyer un message d'alerte.
@@ -288,6 +296,56 @@ io.sockets.on('connection', function(socket)
 			let sms = "Vous avez été exclu!"
 			leaveLobby(io.sockets.connected[user]);
 			io.sockets.connected[user].emit('backToMainMenu', sms);
+		}
+		else
+		{
+			sendAlert(socket, auth);
+		}
+	});
+
+	// Diminuer le nombre de places pour les utilisateurs dans le lobby.
+	socket.on('decreasePplByLobby', function(id)
+	{
+		let lobbyId = ent.encode(id);
+		let auth = checkAdminAuth(socket.id);
+		if (auth === true && lobbies[id].options.pplByLobby > lobbies[id].options.pplByLobbyMin)
+		{
+			lobbies[id].options.pplByLobby--;
+			let users = returnSocketsId(id);
+			if (lobbies[id].options.pplByLobby <= users.length)
+			{
+				lobbies[id].options.open = false;
+			}
+			socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+			socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+			let usersList = returnSocketsId(id);
+			io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
+			socket.broadcast.emit('refreshLobbiesList', lobbies);
+		}
+		else
+		{
+			sendAlert(socket, auth);
+		}
+	});
+
+	// Augmenter le nombre de places pour les utilisateurs dans le lobby.
+	socket.on('increasePplByLobby', function(id)
+	{
+		let lobbyId = ent.encode(id);
+		let auth = checkAdminAuth(socket.id);
+		if (auth === true && lobbies[id].options.pplByLobby < lobbies[id].options.pplByLobbyMax)
+		{
+			lobbies[id].options.pplByLobby++;
+			let users = returnSocketsId(id);
+			if (lobbies[id].options.pplByLobby > users.length)
+			{
+				lobbies[id].options.open = true;
+			}
+			socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+			socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
+			let usersList = returnSocketsId(id);
+			io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
+			socket.broadcast.emit('refreshLobbiesList', lobbies);
 		}
 		else
 		{

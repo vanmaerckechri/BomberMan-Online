@@ -146,20 +146,20 @@ socket.on('refreshLobby', function(names)
 	refreshLobby(names);
 });
 
-function refreshLobby(names)
+function refreshLobby(lobbyInfos)
 {
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
 
-	for (let i = 0, lobbyLength = names.length; i < lobbyLength; i++)
+	for (let i = 0; i < lobbyInfos.pplByLobby; i++)
 	{
-		if (names[i] != '')
+		if (lobbyInfos.names[i] != '')
 		{
-			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+names[i]+'<span class="eject"></span></div>';
+			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+lobbyInfos.names[i]+'<span class="eject"></span></div>';
 		}
 		else
 		{
-			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+names[i]+'</div>';			
+			lobbyMembersContainer.innerHTML += '<div class="pseudo"></div>';			
 		}
 	}	
 }
@@ -167,6 +167,7 @@ function refreshLobby(names)
 // Update l'affichage des commandes admin dans le lobby.
 socket.on('refreshLobbyAdmin', function(lobbyInfos)
 {
+	console.log(lobbyInfos);
 	if (document.querySelectorAll('.eject'))
 	{
 		let ejectButton = document.querySelectorAll('.eject')
@@ -175,8 +176,28 @@ socket.on('refreshLobbyAdmin', function(lobbyInfos)
 			let userId = "'"+lobbyInfos.usersId[i]+"'";
 			ejectButton[i].innerHTML = '<button class="button" onclick="ejectUser('+userId+')">X</span>';
 		}
+		let lobbyMembers = document.querySelector('#lobbyMembers');
+		let lobbyId = "'"+lobbyInfos.lobbyId+"'"
+		if (lobbyInfos.lobby.options.pplByLobby > lobbyInfos.lobby.options.pplByLobbyMin)
+		{
+			lobbyMembers.innerHTML += '<button class="button" onclick="decreasePplByLobby('+lobbyId+')">-</span>';
+		}
+		if (lobbyInfos.lobby.options.pplByLobby < lobbyInfos.lobby.options.pplByLobbyMax)
+		{
+			lobbyMembers.innerHTML += '<button class="button" onclick="increasePplByLobby('+lobbyId+')">+</span>';
+		}
 	}
 });
+
+function decreasePplByLobby(lobbyId)
+{
+	socket.emit('decreasePplByLobby', lobbyId);
+}
+
+function increasePplByLobby(lobbyId)
+{
+	socket.emit('increasePplByLobby', lobbyId);
+}
 
 // CHAT
 // Afficher Message.
