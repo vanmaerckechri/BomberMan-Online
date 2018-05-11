@@ -165,14 +165,14 @@ function refreshLobby(names)
 }
 
 // Update l'affichage des commandes admin dans le lobby.
-socket.on('refreshLobbyAdmin', function(list)
+socket.on('refreshLobbyAdmin', function(lobbyInfos)
 {
 	if (document.querySelectorAll('.eject'))
 	{
 		let ejectButton = document.querySelectorAll('.eject')
 		for (let i = 1, ejectLength = ejectButton.length; i < ejectLength; i++)
 		{
-			let userId = "'"+list[i]+"'";
+			let userId = "'"+lobbyInfos.usersId[i]+"'";
 			ejectButton[i].innerHTML = '<button class="button" onclick="ejectUser('+userId+')">X</span>';
 		}
 	}
