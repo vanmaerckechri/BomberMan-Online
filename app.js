@@ -170,6 +170,10 @@ function leaveLobby(socket)
 
 					io.sockets.connected[roomSockets[i]].join(newRoomId);
 					io.sockets.connected[roomSockets[i]].room = newRoomId;
+					if (room === socket.id)
+					{
+						io.sockets.connected[roomSockets[i]].leave(room);
+					}
 				}
 				else
 				{
