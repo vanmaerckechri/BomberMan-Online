@@ -174,27 +174,30 @@ function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 	let chooseAvatarBox = document.querySelector('.chooseAvatar');
 	chooseAvatarBox.innerHTML = "";
 	let avatarTypeNumber = 6;
+	let avatarIndex;
 	for (let i = 0; i < avatarTypeNumber; i++)
 	{
 		let j = i + 1;
 		if (avatarsSelectedIndex[i] === false)
 		{
-			chooseAvatarBox.innerHTML += '<img class="avatar" src="assets/img/avatar'+j+'.png" alt="" onclick="loadAvatarIntroduce('+i+')">';
+			chooseAvatarBox.innerHTML += '<img class="avatar" src="assets/img/avatar'+j+'.png" alt="" onclick="selectAvatar('+i+')">';
 		}
 		else
 		{
-			chooseAvatarBox.innerHTML += '<img class="avatar taked" src="assets/img/avatar'+j+'.png" alt="" onclick="loadAvatarIntroduce('+i+')">';			
+			chooseAvatarBox.innerHTML += '<img class="avatar taked" src="assets/img/avatar'+j+'.png" alt="" onclick="selectAvatar('+i+')">';			
+		}
+		if (avatarsSelectedIndex[i] === socketIndex)
+		{
+			avatarIndex = i;
 		}
 	}
-	let avatarsImg = document.querySelectorAll('.chooseAvatar .avatar');
-	avatarsImg[socketIndex].classList.add('selected');
+
 	socketIndex++;
-	loadAvatarIntroduce(indexOfThisPlayer);
+	selectAvatar(avatarIndex);
 }
 
-function loadAvatarIntroduce(avatarSelected)
+function selectAvatar(avatarSelected)
 {
-	let introduceAvatarBox = document.querySelector('.introduceAvatar');
 	let avatarBox = document.querySelectorAll('.chooseAvatar .avatar');
 	let avatarIndex = avatarSelected + 1;
 	for (let i = 0, avatarsLength = avatarBox.length; i < avatarsLength; i++)
@@ -205,10 +208,12 @@ function loadAvatarIntroduce(avatarSelected)
 		}
 	}
 	avatarBox[avatarSelected].classList.add('selected');
+
+	let introduceAvatarBox = document.querySelector('.introduceAvatar');
 	introduceAvatarBox.innerHTML = '<img src="assets/img/skin'+avatarIndex+'.png" alt="">';
 
 	let avatarValidateButton = document.querySelector('.avatarValidateButton');
-	avatarValidateButton.setAttribute('onclick', 'changeAvatar("'+avatarSelected+'")');
+	avatarValidateButton.setAttribute('onclick', 'changeAvatar('+avatarSelected+')');
 }
 
 function changeAvatar(newAvatarIndex)

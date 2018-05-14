@@ -79,17 +79,18 @@ let pplByLobbyMax = 4;
 function createLobby(socket)
 {
 	let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyMax};
-	let avatars = resetAvatarsList();
-	avatars[0] = 0;
 	let socketName = [socket.name]
 	for (let i = 0; i < pplByLobbyMax - 1; i++)
 	{
 		socketName.push('');
 	}
+	let avatars = [];
 	let lobby = {options, socketName, avatars};
 	lobbies[socket.id] = lobby;
 	socket.room = socket.id;
 	socket.avatar = 0;
+	lobbies[socket.id].avatars = resetAvatarsList(socket.id);
+	lobbies[socket.id].avatars[0] = 0;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
 }
 
@@ -250,16 +251,16 @@ function checkPositionSocket(socket)
 
 // AVATARS
 
-function resetAvatarsList()
+function resetAvatarsList(roomId)
 {
 	let avatarsTypeNumber = 6;
-	let avatarsList = []
+	lobbies[roomId].avatars = [];
 	// avatars: '0' => le joueur à l'index '0' de la room, false => pas utilisé.
 	for (let i = 0; i < avatarsTypeNumber; i++)
 	{
-		avatarsList.push(false);
+		lobbies[roomId].avatars.push(false);
 	}
-	return avatarsList;
+	return lobbies[roomId].avatars;
 }
 
 // Donner un Avatar par Défaut lors d'une Mise à Jour Lobby.
@@ -297,16 +298,25 @@ function updateAvatarsList(roomId)
 function changeAvatar(socket, newAvatarIndex)
 {
 	let sockets = returnSocketsId(socket.id);
-	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
+	let roomId = socket.room;
+	let roomAvatars = lobbies[roomId].avatars;
+	let socketIndexInAvatars;
+	for (let i = 0, roomAvatarsLength = roomAvatars.length; i < roomAvatarsLength; i++)
 	{
-		let socketId = sockets[i]
-		console.log(io.sockets.connected[socketId].avatar)
-		console.log(newAvatarIndex)
-		if (io.sockets.connected[socketId].avatar === newAvatarIndex)
+		let socketId = sockets[i];
+		// Vérifier que l'avatar n'est pas déjà occupé...
+		if (roomAvatars[i] == newAvatarIndex)
 		{
-			console.log('ok');
+			return;
 		}
 	}
+	// Si l'avatar n'est pas occupé...
+	socket.avatar = newAvatarIndex;
+	resetAvatarsList(roomId);
+	let avatars = updateAvatarsList(roomId);
+	socket.emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
+	socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
+	checkPositionSocket(socket);
 }
 
 // SOCKET.IO!
