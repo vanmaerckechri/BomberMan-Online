@@ -37,3 +37,54 @@
 		box-shadow: 0px 0px 10px $color-middle;
 	}
 }
+
+.modalContainer
+{
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	.chooseAvatarContainer
+	{
+		padding: 5px;
+		border: 3px solid black;
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 400px;
+		background-color: white;
+		.chooseAvatar
+		{
+			flex: 1;
+			height: 100%;
+			.avatar
+			{
+				margin: 5px;
+				border: 2px solid black;
+				width: 64px;
+				height: 64px;
+			}
+			.selected
+			{
+				border: 2px solid red;
+			}
+			.taked
+			{
+				opacity: .2;
+			}
+		}
+		.introduceAvatar
+		{
+			flex: 1;
+			height: 100%;
+			img
+			{
+				max-width: 100%;
+				height: auto;
+				max-height: 100%;
+			}
+		}
+	}
+}

@@ -171,4 +171,39 @@ form {
     background-color: #ffffff;
     box-shadow: 0px 0px 10px #ede19e; }
 
+.modalContainer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .modalContainer .chooseAvatarContainer {
+    padding: 5px;
+    border: 3px solid black;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 400px;
+    background-color: white; }
+    .modalContainer .chooseAvatarContainer .chooseAvatar {
+      flex: 1;
+      height: 100%; }
+      .modalContainer .chooseAvatarContainer .chooseAvatar .avatar {
+        margin: 5px;
+        border: 2px solid black;
+        width: 64px;
+        height: 64px; }
+      .modalContainer .chooseAvatarContainer .chooseAvatar .selected {
+        border: 2px solid red; }
+      .modalContainer .chooseAvatarContainer .chooseAvatar .taked {
+        opacity: .2; }
+    .modalContainer .chooseAvatarContainer .introduceAvatar {
+      flex: 1;
+      height: 100%; }
+      .modalContainer .chooseAvatarContainer .introduceAvatar img {
+        max-width: 100%;
+        height: auto;
+        max-height: 100%; }
+
 /*# sourceMappingURL=style.css.map */

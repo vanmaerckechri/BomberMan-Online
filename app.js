@@ -227,6 +227,29 @@ function checkAdminAuth(admin, user = false)
 	}
 }
 
+// Envoyer un message d'alerte.
+function sendAlert(socket, sms)
+{
+	socket.emit('sendAlert', sms);
+}
+
+// Récupérer Position du Socket dans la Liste.
+function checkPositionSocket(socket)
+{
+	let room = socket.room;
+	let sockets = returnSocketsId(room);
+	let avatarsList = lobbies[room].avatars;
+	for (let i = 0, socketLength = sockets.length; i < socketLength; i++)
+	{
+		if (sockets[i] === socket.id)
+		{
+			socket.emit('checkPositionSocket', i, avatarsList);
+		}
+	}
+}
+
+// AVATARS
+
 function resetAvatarsList()
 {
 	let avatarsTypeNumber = 6;
@@ -270,24 +293,9 @@ function updateAvatarsList(roomId)
 	return avatars;
 }
 
-// Envoyer un message d'alerte.
-function sendAlert(socket, sms)
+// Mettre à Jour l'Affichage du Panneau Avatars.
+function loadAvatarsPannel()
 {
-	socket.emit('sendAlert', sms);
-}
-
-// Récupérer Position du Socket dans la Liste.
-function checkPositionSocket(socket)
-{
-	let room = socket.room;
-	let sockets = returnSocketsId(room);
-	for (let i = 0, socketLength = sockets.length; i < socketLength; i++)
-	{
-		if (sockets[i] === socket.id)
-		{
-			socket.emit('checkPositionSocket', i);
-		}
-	}
 }
 
 // SOCKET.IO!
@@ -432,6 +440,13 @@ io.sockets.on('connection', function(socket)
 			sendAlert(socket, auth);
 		}
 	});
+
+	// AVATARS!
+	socket.on('loadAvatarsPannel', function()
+	{
+		loadAvatarsPannel(socket);
+	});
+
 	// Récupérer Position du Socket dans la Liste.
 	socket.on('checkPositionSocket', function()
 	{

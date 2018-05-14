@@ -104,6 +104,11 @@ function loadLobby()
 	lobbyContent += '<button class="button chatSend">Envoyer</button>';
 	lobbyContent += '</div></div></div>';
 	lobbyContent += '<div class="error"></div>';
+	lobbyContent += '<div class="modalContainer">';
+	lobbyContent += '<div class="chooseAvatarContainer">';
+	lobbyContent += '<div class="chooseAvatar"></div>';
+	lobbyContent += '<div class="introduceAvatar"></div>';
+	lobbyContent += '</div></div>';
 	main.innerHTML = lobbyContent;
 	let chatSend = document.querySelector('.chatSend');
 	let smsContainer = document.querySelector('.inputMessage');
@@ -152,12 +157,56 @@ function refreshLobby(lobbyInfos)
 	socket.emit('checkPositionSocket');
 }
 
-socket.on('checkPositionSocket', function(index)
+socket.on('checkPositionSocket', function(indexOfThisPlayer, avatarsSelectedIndex)
 {
-	let socketIndex = index;
+	loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
+});
+
+// Gestion des Avatars
+function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
+{
+	// Encadrer le Cadre Pseudo du Joueur.
+	let socketIndex = indexOfThisPlayer;
 	let pseudoBox = document.querySelectorAll('.pseudo');
 	pseudoBox[socketIndex].classList.add('selected');
-});
+	// Mettre à Jour le Panneau des Avatars.
+	let chooseAvatarBox = document.querySelector('.chooseAvatar');
+	chooseAvatarBox.innerHTML = "";
+	let avatarTypeNumber = 6;
+	for (let i = 0; i < avatarTypeNumber; i++)
+	{
+		let j = i + 1;
+		if (avatarsSelectedIndex[i] === false)
+		{
+			chooseAvatarBox.innerHTML += '<img class="avatar" src="assets/img/avatar'+j+'.png" alt="" onclick="loadAvatarIntroduce('+i+')">';
+		}
+		else
+		{
+			chooseAvatarBox.innerHTML += '<img class="avatar taked" src="assets/img/avatar'+j+'.png" alt="" onclick="loadAvatarIntroduce('+i+')">';			
+		}
+	}
+	let avatarsImg = document.querySelectorAll('.chooseAvatar .avatar');
+	avatarsImg[socketIndex].classList.add('selected');
+	let introduceAvatarBox = document.querySelector('.introduceAvatar');
+	socketIndex++;
+	introduceAvatarBox.innerHTML = '<img src="assets/img/skin'+socketIndex+'.png" alt="">';
+}
+
+function loadAvatarIntroduce(avatarSelected)
+{
+	let introduceAvatarBox = document.querySelector('.introduceAvatar');
+	let avatarBox = document.querySelectorAll('.chooseAvatar .avatar');
+	let avatarIndex = avatarSelected + 1;
+	for (let i = 0, avatarsLength = avatarBox.length; i < avatarsLength; i++)
+	{
+		if (avatarBox[i].classList.contains('selected'))
+		{
+			avatarBox[i].classList.remove('selected');
+		}
+	}
+	avatarBox[avatarSelected].classList.add('selected');
+	introduceAvatarBox.innerHTML = '<img src="assets/img/skin'+avatarIndex+'.png" alt="">';
+}
 
 // Update l'affichage des commandes admin dans le lobby.
 socket.on('refreshLobbyAdmin', function(lobbyInfos)
