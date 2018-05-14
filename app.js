@@ -276,6 +276,20 @@ function sendAlert(socket, sms)
 	socket.emit('sendAlert', sms);
 }
 
+// Récupérer Position du Socket dans la Liste.
+function checkPositionSocket(socket)
+{
+	let room = socket.room;
+	let sockets = returnSocketsId(room);
+	for (let i = 0, socketLength = sockets.length; i < socketLength; i++)
+	{
+		if (sockets[i] === socket.id)
+		{
+			socket.emit('checkPositionSocket', i);
+		}
+	}
+}
+
 // SOCKET.IO!
 
 io.sockets.on('connection', function(socket)
@@ -417,5 +431,10 @@ io.sockets.on('connection', function(socket)
 		{
 			sendAlert(socket, auth);
 		}
+	});
+	// Récupérer Position du Socket dans la Liste.
+	socket.on('checkPositionSocket', function()
+	{
+		checkPositionSocket(socket);
 	});
 });

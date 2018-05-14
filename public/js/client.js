@@ -138,7 +138,6 @@ function refreshLobby(lobbyInfos)
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
 	let avatars = lobbyInfos.avatars;
-	console.log(lobbyInfos)
 	for (let i = 0; i < lobbyInfos.pplByLobby; i++)
 	{
 		if (lobbyInfos.names[i] != '')
@@ -147,10 +146,18 @@ function refreshLobby(lobbyInfos)
 		}
 		else
 		{
-			lobbyMembersContainer.innerHTML += '<div class="pseudo"></div>';			
+			lobbyMembersContainer.innerHTML += '<div class="pseudo"></div>';
 		}
-	}	
+	}
+	socket.emit('checkPositionSocket');
 }
+
+socket.on('checkPositionSocket', function(index)
+{
+	let socketIndex = index;
+	let pseudoBox = document.querySelectorAll('.pseudo');
+	pseudoBox[socketIndex].classList.add('selected');
+});
 
 // Update l'affichage des commandes admin dans le lobby.
 socket.on('refreshLobbyAdmin', function(lobbyInfos)

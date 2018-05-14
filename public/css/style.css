@@ -96,11 +96,13 @@ form {
         color: #40434e;
         background-color: #ffffff; }
         #main .lobby .lobbyMembers .pseudo .avatar {
-          width: 52px;
-          height: 52px; }
+          width: 48px;
+          height: 48px; }
         #main .lobby .lobbyMembers .pseudo .eject .button {
           margin-left: 10px;
           margin-right: 0; }
+      #main .lobby .lobbyMembers .selected {
+        border: 3px solid red; }
     #main .lobby .talkBoard {
       border: 1px solid #40434e;
       padding: 15px;

@@ -56,8 +56,8 @@
 				background-color: $color-light;
 				.avatar
 				{
-					width: 52px;
-					height: 52px;
+					width: 48px;
+					height: 48px;
 				}
 				.eject
 				{
@@ -67,6 +67,10 @@
 						margin-right: 0;
 					}
 				}
+			}
+			.selected
+			{
+				border: 3px solid red;
 			}
 		}
 		.talkBoard
