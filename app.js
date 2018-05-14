@@ -303,10 +303,13 @@ function changeAvatar(socket, newAvatarIndex)
 	let socketIndexInAvatars;
 	for (let i = 0, roomAvatarsLength = roomAvatars.length; i < roomAvatarsLength; i++)
 	{
-		let socketId = sockets[i];
 		// Vérifier que l'avatar n'est pas déjà occupé...
-		if (roomAvatars[i] == newAvatarIndex)
+		console.log(roomAvatars)
+				console.log(newAvatarIndex)
+
+		if (roomAvatars[newAvatarIndex] !== false)
 		{
+			console.log(1)
 			return;
 		}
 	}
