@@ -250,7 +250,6 @@ function checkPositionSocket(socket)
 }
 
 // AVATARS
-
 function resetAvatarsList(roomId)
 {
 	let avatarsTypeNumber = 6;
@@ -320,6 +319,7 @@ function changeAvatar(socket, newAvatarIndex)
 	socket.emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
 	socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
 	checkPositionSocket(socket);
+	socket.emit('toggleDisplayAvatarsPannel');
 }
 
 // SOCKET.IO!

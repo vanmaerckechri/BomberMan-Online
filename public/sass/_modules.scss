@@ -46,6 +46,10 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	opacity: 0;
+	pointer-events: none;
+	background-color: rgba(255, 255, 255, .9);
+	transition: all .5s;
 	.chooseAvatarContainer
 	{
 		padding: 5px;
@@ -90,4 +94,10 @@
 		{
 		}
 	}
+}
+
+.displayAvatarsPannel
+{
+	opacity: 1;
+	pointer-events: auto;
 }

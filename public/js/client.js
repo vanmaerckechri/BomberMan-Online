@@ -163,6 +163,18 @@ socket.on('checkPositionSocket', function(indexOfThisPlayer, avatarsSelectedInde
 	loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 });
 
+// Afficher le Panneau des Avatars
+socket.on('toggleDisplayAvatarsPannel', function()
+{
+	toggleDisplayAvatarsPannel();
+});
+function toggleDisplayAvatarsPannel()
+{
+	let modalContainer = document.querySelector('.modalContainer');
+	modalContainer.classList.toggle('displayAvatarsPannel');
+
+}
+
 // Gestion des Avatars
 function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 {
@@ -170,6 +182,8 @@ function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 	let socketIndex = indexOfThisPlayer;
 	let pseudoBox = document.querySelectorAll('.pseudo');
 	pseudoBox[socketIndex].classList.add('selected');
+	pseudoBox[socketIndex].setAttribute('onclick', 'toggleDisplayAvatarsPannel()');
+
 	// Mettre à Jour le Panneau des Avatars.
 	let chooseAvatarBox = document.querySelector('.chooseAvatar');
 	chooseAvatarBox.innerHTML = "";

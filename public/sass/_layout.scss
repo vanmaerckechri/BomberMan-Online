@@ -71,6 +71,10 @@
 			.selected
 			{
 				border: 3px solid red;
+				&:hover
+				{
+					background-color: $color-middle;
+				}
 			}
 		}
 		.talkBoard

@@ -103,6 +103,8 @@ form {
           margin-right: 0; }
       #main .lobby .lobbyMembers .selected {
         border: 3px solid red; }
+        #main .lobby .lobbyMembers .selected:hover {
+          background-color: #ede19e; }
     #main .lobby .talkBoard {
       border: 1px solid #40434e;
       padding: 15px;
@@ -177,7 +179,11 @@ form {
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center; }
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: all .5s; }
   .modalContainer .chooseAvatarContainer {
     padding: 5px;
     border: 3px solid black;
@@ -205,5 +211,9 @@ form {
         max-width: 100%;
         height: auto;
         max-height: 100%; }
+
+.displayAvatarsPannel {
+  opacity: 1;
+  pointer-events: auto; }
 
 /*# sourceMappingURL=style.css.map */
