@@ -188,7 +188,7 @@ function leaveLobby(socket)
 				}
 			}
 			lobbies[newRoomId].options.open = true;
-			lobbies[newRoomId].avatars = resetAvatarsList();
+			lobbies[newRoomId].avatars = resetAvatarsList(newRoomId);
 			let avatars = updateAvatarsList(newRoomId);
 			// Mettre à jour la liste des joueurs du lobby.
 			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
