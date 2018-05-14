@@ -95,6 +95,9 @@ form {
         align-items: center;
         color: #40434e;
         background-color: #ffffff; }
+        #main .lobby .lobbyMembers .pseudo .avatar {
+          width: 52px;
+          height: 52px; }
         #main .lobby .lobbyMembers .pseudo .eject .button {
           margin-left: 10px;
           margin-right: 0; }

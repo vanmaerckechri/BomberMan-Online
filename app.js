@@ -79,8 +79,10 @@ let pplByLobbyMax = 4;
 function createLobby(socket)
 {
 	let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyMax};
+	// avatars: '0' => le joueur à l'index '0' de la room, false => pas utilisé.
+	let avatars = [0];
 	let socketName = [socket.name]
-	let lobby = {options, socketName};
+	let lobby = {options, socketName, avatars};
 	for (let i = 0; i < pplByLobbyMax - 1; i++)
 	{
 		lobby.socketName.push('');
@@ -100,7 +102,8 @@ function joinLobby(socket, roomId)
 			// affichages admin lors de la creation du lobby.
 			if (rooms[i] === socket.id)
 			{
-				socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
+				let avatars = sendAvatarsList(rooms[i]);
+				socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby, avatars: avatars});
 				let usersList = returnSocketsId(rooms[i]);
 				socket.emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[rooms[i]], lobbyId: rooms[i]});
 				return;
@@ -115,8 +118,9 @@ function joinLobby(socket, roomId)
 						lobbies[rooms[i]].socketName[j] = socket.name;
 						socket.join(roomId);
 						socket.room = roomId;
-						socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
-						socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby});
+						let avatars = sendAvatarsList(roomId);
+						socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby, avatars: avatars});
+						socket.emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby, avatars: avatars});
 						let usersList = returnSocketsId(rooms[i]);
 						io.sockets.connected[roomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[rooms[i]], lobbyId: rooms[i]});
 						// lobby full.
@@ -182,7 +186,8 @@ function leaveLobby(socket)
 			}
 			lobbies[newRoomId].options.open = true;
 			// Mettre à jour la liste des joueurs du lobby.
-			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby});
+			let avatars = sendAvatarsList(newRoomId);
+			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
 			let usersList = returnSocketsId(newRoomId);
 			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
 		}
@@ -217,6 +222,22 @@ function checkAdminAuth(admin, user = false)
 	{
 		return "Utilisateur introuvable!";
 	}
+}
+
+// Trier les Avatars.
+function sendAvatarsList(roomId)
+{
+	let avatarList = lobbies[roomId].avatars;
+	let avatars = [];
+	for (let i = 0, listLength = avatarList.length; i < listLength; i++)
+	{
+		if (avatarList[i] != false || avatarList[i] != undefined)
+		{
+			let j = i + 1;
+			avatars[avatarList[i]] = 'assets/img/avatar'+j+'.png';
+		}
+	}
+	return avatars;
 }
 
 // Envoyer un message d'alerte.
@@ -312,27 +333,28 @@ io.sockets.on('connection', function(socket)
 	{
 		let lobbyId = ent.encode(id);
 		let auth = checkAdminAuth(socket.id);
-		if (auth === true && lobbies[id].options.pplByLobby > lobbies[id].options.pplByLobbyMin)
+		if (auth === true && lobbies[lobbyId].options.pplByLobby > lobbies[lobbyId].options.pplByLobbyMin)
 		{
-			lobbies[id].options.pplByLobby--;
-			let users = returnSocketsId(id);
-			if (users[lobbies[id].options.pplByLobby])
+			lobbies[lobbyId].options.pplByLobby--;
+			let users = returnSocketsId(lobbyId);
+			if (users[lobbies[lobbyId].options.pplByLobby])
 			{
 				let sms = "Vous avez été exclu!"
-				leaveLobby(io.sockets.connected[users[lobbies[id].options.pplByLobby]]);
-				io.sockets.connected[users[lobbies[id].options.pplByLobby]].emit('backToMainMenu', sms);
+				leaveLobby(io.sockets.connected[users[lobbies[lobbyId].options.pplByLobby]]);
+				io.sockets.connected[users[lobbies[lobbyId].options.pplByLobby]].emit('backToMainMenu', sms);
 			}
 			else
 			{
-				socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-				socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-				let usersList = returnSocketsId(id);
-				io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
+				let avatars = sendAvatarsList(lobbyId);
+				socket.emit('refreshLobby', {names: lobbies[lobbyId].socketName, pplByLobby: lobbies[lobbyId].options.pplByLobby, avatars: avatars});
+				socket.broadcast.to(lobbyId).emit('refreshLobby', {names: lobbies[lobbyId].socketName, pplByLobby: lobbies[lobbyId].options.pplByLobby, avatars: avatars});
+				let usersList = returnSocketsId(lobbyId);
+				io.sockets.connected[lobbyId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[lobbyId], lobbyId: lobbyId});
 				socket.broadcast.emit('refreshLobbiesList', lobbies);
 			}
-			if (lobbies[id].options.pplByLobby <= users.length)
+			if (lobbies[lobbyId].options.pplByLobby <= users.length)
 			{
-				lobbies[id].options.open = false;
+				lobbies[lobbyId].options.open = false;
 			}
 		}
 		else
@@ -346,18 +368,19 @@ io.sockets.on('connection', function(socket)
 	{
 		let lobbyId = ent.encode(id);
 		let auth = checkAdminAuth(socket.id);
-		if (auth === true && lobbies[id].options.pplByLobby < lobbies[id].options.pplByLobbyMax)
+		if (auth === true && lobbies[lobbyId].options.pplByLobby < lobbies[lobbyId].options.pplByLobbyMax)
 		{
-			lobbies[id].options.pplByLobby++;
-			let users = returnSocketsId(id);
-			if (lobbies[id].options.pplByLobby > users.length)
+			lobbies[lobbyId].options.pplByLobby++;
+			let users = returnSocketsId(lobbyId);
+			if (lobbies[lobbyId].options.pplByLobby > users.length)
 			{
-				lobbies[id].options.open = true;
+				lobbies[lobbyId].options.open = true;
 			}
-			socket.emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-			socket.broadcast.to(id).emit('refreshLobby', {names: lobbies[id].socketName, pplByLobby: lobbies[id].options.pplByLobby});
-			let usersList = returnSocketsId(id);
-			io.sockets.connected[id].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[id], lobbyId: id});
+			let avatars = sendAvatarsList(lobbyId);
+			socket.emit('refreshLobby', {names: lobbies[lobbyId].socketName, pplByLobby: lobbies[lobbyId].options.pplByLobby, avatars: avatars});
+			socket.broadcast.to(lobbyId).emit('refreshLobby', {names: lobbies[lobbyId].socketName, pplByLobby: lobbies[lobbyId].options.pplByLobby, avatars: avatars});
+			let usersList = returnSocketsId(lobbyId);
+			io.sockets.connected[lobbyId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[lobbyId], lobbyId: lobbyId});
 			socket.broadcast.emit('refreshLobbiesList', lobbies);
 		}
 		else

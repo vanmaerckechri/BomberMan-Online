@@ -120,18 +120,6 @@ function loadLobby()
 	})
 }
 
-// Messages d'Alerte.
-socket.on('sendAlert', function(sms)
-{
-	displayAlert(sms);
-});
-
-function displayAlert(sms)
-{
-	let errorSms = document.querySelector('.error');
-	errorSms.innerHTML = sms;
-}
-
 // Joindre un Lobby.
 function joinLobby(room)
 {
@@ -149,12 +137,13 @@ function refreshLobby(lobbyInfos)
 {
 	let lobbyMembersContainer = document.querySelector('#lobbyMembers');
 	lobbyMembersContainer.innerHTML = '';
-
+	let avatars = lobbyInfos.avatars;
+	console.log(lobbyInfos)
 	for (let i = 0; i < lobbyInfos.pplByLobby; i++)
 	{
 		if (lobbyInfos.names[i] != '')
 		{
-			lobbyMembersContainer.innerHTML += '<div class="pseudo">'+lobbyInfos.names[i]+'<span class="eject"></span></div>';
+			lobbyMembersContainer.innerHTML += '<div class="pseudo"><img class="avatar" src="'+avatars[i]+'" alt="avatar du joueur">'+lobbyInfos.names[i]+'<span class="eject"></span></div>';
 		}
 		else
 		{
@@ -195,6 +184,18 @@ function decreasePplByLobby(lobbyId)
 function increasePplByLobby(lobbyId)
 {
 	socket.emit('increasePplByLobby', lobbyId);
+}
+
+// Messages d'Alerte.
+socket.on('sendAlert', function(sms)
+{
+	displayAlert(sms);
+});
+
+function displayAlert(sms)
+{
+	let errorSms = document.querySelector('.error');
+	errorSms.innerHTML = sms;
 }
 
 // CHAT

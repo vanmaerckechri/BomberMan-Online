@@ -54,6 +54,11 @@
 				align-items: center;
 				color: $color-dark;
 				background-color: $color-light;
+				.avatar
+				{
+					width: 52px;
+					height: 52px;
+				}
 				.eject
 				{
 					.button
