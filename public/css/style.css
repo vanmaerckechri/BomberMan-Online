@@ -187,7 +187,7 @@ form {
     width: 400px;
     background-color: white; }
     .modalContainer .chooseAvatarContainer .chooseAvatar {
-      flex: 1;
+      width: 50%;
       height: 100%; }
       .modalContainer .chooseAvatarContainer .chooseAvatar .avatar {
         margin: 5px;
@@ -199,7 +199,7 @@ form {
       .modalContainer .chooseAvatarContainer .chooseAvatar .taked {
         opacity: .2; }
     .modalContainer .chooseAvatarContainer .introduceAvatar {
-      flex: 1;
+      width: 50%;
       height: 100%; }
       .modalContainer .chooseAvatarContainer .introduceAvatar img {
         max-width: 100%;

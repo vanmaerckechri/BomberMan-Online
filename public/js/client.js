@@ -108,6 +108,7 @@ function loadLobby()
 	lobbyContent += '<div class="chooseAvatarContainer">';
 	lobbyContent += '<div class="chooseAvatar"></div>';
 	lobbyContent += '<div class="introduceAvatar"></div>';
+	lobbyContent += '<button class="button avatarValidateButton" onclick="changeAvatar()">OK</button>';
 	lobbyContent += '</div></div>';
 	main.innerHTML = lobbyContent;
 	let chatSend = document.querySelector('.chatSend');
@@ -187,9 +188,8 @@ function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 	}
 	let avatarsImg = document.querySelectorAll('.chooseAvatar .avatar');
 	avatarsImg[socketIndex].classList.add('selected');
-	let introduceAvatarBox = document.querySelector('.introduceAvatar');
 	socketIndex++;
-	introduceAvatarBox.innerHTML = '<img src="assets/img/skin'+socketIndex+'.png" alt="">';
+	loadAvatarIntroduce(indexOfThisPlayer);
 }
 
 function loadAvatarIntroduce(avatarSelected)
@@ -206,6 +206,14 @@ function loadAvatarIntroduce(avatarSelected)
 	}
 	avatarBox[avatarSelected].classList.add('selected');
 	introduceAvatarBox.innerHTML = '<img src="assets/img/skin'+avatarIndex+'.png" alt="">';
+
+	let avatarValidateButton = document.querySelector('.avatarValidateButton');
+	avatarValidateButton.setAttribute('onclick', 'changeAvatar("'+avatarSelected+'")');
+}
+
+function changeAvatar(newAvatarIndex)
+{
+	socket.emit('changeAvatar', newAvatarIndex);
 }
 
 // Update l'affichage des commandes admin dans le lobby.

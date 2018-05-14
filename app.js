@@ -294,8 +294,19 @@ function updateAvatarsList(roomId)
 }
 
 // Mettre à Jour l'Affichage du Panneau Avatars.
-function loadAvatarsPannel()
+function changeAvatar(socket, newAvatarIndex)
 {
+	let sockets = returnSocketsId(socket.id);
+	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
+	{
+		let socketId = sockets[i]
+		console.log(io.sockets.connected[socketId].avatar)
+		console.log(newAvatarIndex)
+		if (io.sockets.connected[socketId].avatar === newAvatarIndex)
+		{
+			console.log('ok');
+		}
+	}
 }
 
 // SOCKET.IO!
@@ -445,6 +456,11 @@ io.sockets.on('connection', function(socket)
 	socket.on('loadAvatarsPannel', function()
 	{
 		loadAvatarsPannel(socket);
+	});
+
+	socket.on('changeAvatar', function(newAvatarIndex)
+	{
+		changeAvatar(socket, newAvatarIndex);
 	});
 
 	// Récupérer Position du Socket dans la Liste.
