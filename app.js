@@ -75,17 +75,12 @@ function validatePseudo(pseudo)
 let lobbies = {};
 let pplByLobbyMin = 2;
 let pplByLobbyMax = 4;
-let avatarsTypeNumber = 6;
 
 function createLobby(socket)
 {
 	let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyMax};
-	// avatars: '0' => le joueur à l'index '0' de la room, false => pas utilisé.
-	let avatars = [0];
-	for (let i = 0; i < avatarsTypeNumber - 1; i++)
-	{
-		avatars.push(false);
-	}
+	let avatars = resetAvatarsList();
+	avatars[0] = 0;
 	let socketName = [socket.name]
 	for (let i = 0; i < pplByLobbyMax - 1; i++)
 	{
@@ -192,8 +187,9 @@ function leaveLobby(socket)
 				}
 			}
 			lobbies[newRoomId].options.open = true;
-			// Mettre à jour la liste des joueurs du lobby.
+			lobbies[newRoomId].avatars = resetAvatarsList();
 			let avatars = updateAvatarsList(newRoomId);
+			// Mettre à jour la liste des joueurs du lobby.
 			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
 			let usersList = returnSocketsId(newRoomId);
 			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
@@ -231,6 +227,18 @@ function checkAdminAuth(admin, user = false)
 	}
 }
 
+function resetAvatarsList()
+{
+	let avatarsTypeNumber = 6;
+	let avatarsList = []
+	// avatars: '0' => le joueur à l'index '0' de la room, false => pas utilisé.
+	for (let i = 0; i < avatarsTypeNumber; i++)
+	{
+		avatarsList.push(false);
+	}
+	return avatarsList;
+}
+
 // Donner un Avatar par Défaut lors d'une Mise à Jour Lobby.
 function giveAvatarDefault(roomId, pplIndex)
 {
@@ -250,15 +258,14 @@ function giveAvatarDefault(roomId, pplIndex)
 // Trier les Avatars.
 function updateAvatarsList(roomId)
 {
-	let avatarList = lobbies[roomId].avatars;
+	let sockets = returnSocketsId(roomId);
 	let avatars = [];
-	for (let i = 0, listLength = avatarList.length; i < listLength; i++)
+	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
 	{
-		if (avatarList[i] !== false)
-		{
-			let j = i + 1;
-			avatars[avatarList[i]] = 'assets/img/avatar'+j+'.png';
-		}
+		let avatar = io.sockets.connected[sockets[i]].avatar;
+		let imgIndex = avatar + 1;
+		avatars[i] = 'assets/img/avatar'+imgIndex+'.png';
+		lobbies[roomId].avatars[avatar] = i;
 	}
 	return avatars;
 }
