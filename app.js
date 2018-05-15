@@ -296,19 +296,25 @@ function updateAvatarsList(roomId)
 // Mettre à Jour l'Affichage du Panneau Avatars.
 function changeAvatar(socket, newAvatarIndex)
 {
-	let sockets = returnSocketsId(socket.id);
+	let sockets = returnSocketsId(socket.room);
 	let roomId = socket.room;
 	let roomAvatars = lobbies[roomId].avatars;
 	let socketIndexInAvatars;
+	let socketIndex;
+	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
+	{
+		if (socket.id === sockets[i])
+		{
+			socketIndex = i;
+			break;
+		}
+	}
 	for (let i = 0, roomAvatarsLength = roomAvatars.length; i < roomAvatarsLength; i++)
 	{
 		// Vérifier que l'avatar n'est pas déjà occupé...
-		console.log(roomAvatars)
-				console.log(newAvatarIndex)
 
-		if (roomAvatars[newAvatarIndex] !== false)
+		if (roomAvatars[newAvatarIndex] !== false && roomAvatars[newAvatarIndex] !== socketIndex)
 		{
-			console.log(1)
 			return;
 		}
 	}
