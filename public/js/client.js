@@ -170,11 +170,21 @@ socket.on('toggleDisplayAvatarsPannel', function()
 {
 	toggleDisplayAvatarsPannel();
 });
-function toggleDisplayAvatarsPannel()
+
+function canWeToggleDisplayAvatarsPannel(indexOfThisPlayer)
 {
+
+}
+
+function toggleDisplayAvatarsPannel(socketIndex = undefined)
+{
+	let pseudoBox = document.querySelectorAll('.pseudo');
+	if (socketIndex != undefined && pseudoBox[socketIndex].classList.contains('pseudoReady'))
+	{
+		return;
+	}
 	let modalContainer = document.querySelector('.modalContainer');
 	modalContainer.classList.toggle('displayAvatarsPannel');
-
 }
 
 // Gestion des Avatars
@@ -184,7 +194,7 @@ function loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 	let socketIndex = indexOfThisPlayer;
 	let pseudoBox = document.querySelectorAll('.pseudo');
 	pseudoBox[socketIndex].classList.add('selected');
-	pseudoBox[socketIndex].setAttribute('onclick', 'toggleDisplayAvatarsPannel()');
+	pseudoBox[socketIndex].setAttribute('onclick', 'toggleDisplayAvatarsPannel('+socketIndex+')');
 
 	// Mettre à Jour le Panneau des Avatars.
 	let chooseAvatarBox = document.querySelector('.chooseAvatar');

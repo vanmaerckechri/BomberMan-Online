@@ -338,6 +338,7 @@ function changeAvatar(socket, newAvatarIndex)
 	socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
 	checkAvatarsList(socket);
 	socket.emit('toggleDisplayAvatarsPannel');
+	displayReadyList(socket)
 }
 
 // LAUNCH GAME!
@@ -373,7 +374,7 @@ function updateReadyList(socket)
 	{
 		lobbies[socket.room].ready.push(io.sockets.connected[sockets[i]].ready);
 	}
-	displayReadyList(socket)
+	displayReadyList(socket);
 }
 
 function displayReadyList(socket)
