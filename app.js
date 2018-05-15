@@ -197,6 +197,8 @@ function leaveLobby(socket)
 			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
 			let usersList = returnSocketsId(newRoomId);
 			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
+			resetReadyList(io.sockets.connected[newRoomId]);
+			updateReadyList(io.sockets.connected[newRoomId]);
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
 	}
@@ -345,8 +347,9 @@ function resetReadyList(socket)
 	lobbies[socket.room].ready = [];
 	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
 	{
-		sockets[i].ready = 0;
-	}	
+		io.sockets.connected[sockets[i]].ready = 0;
+	}
+	console.log(lobbies[socket.room].ready)
 }
 
 function toggleReady(socket)
@@ -359,7 +362,6 @@ function toggleReady(socket)
 	{
 		socket.ready = 1;
 	}
-	console.log(lobbies[socket.room].ready)
 	updateReadyList(socket);
 }
 
