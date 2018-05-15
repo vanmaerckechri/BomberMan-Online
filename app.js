@@ -85,10 +85,12 @@ function createLobby(socket)
 		socketName.push('');
 	}
 	let avatars = [];
-	let lobby = {options, socketName, avatars};
+	let ready = [0]
+	let lobby = {options, socketName, avatars, ready};
 	lobbies[socket.id] = lobby;
 	socket.room = socket.id;
 	socket.avatar = 0;
+	socket.ready = 0;
 	lobbies[socket.id].avatars = resetAvatarsList(socket.id);
 	lobbies[socket.id].avatars[0] = 0;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
@@ -120,6 +122,7 @@ function joinLobby(socket, roomId)
 						lobbies[rooms[i]].socketName[j] = socket.name;
 						socket.join(roomId);
 						socket.room = roomId;
+						socket.ready = 0;
 						giveAvatarDefault(rooms[i], j);
 						let avatars = updateAvatarsList(roomId);
 						socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[rooms[i]].socketName, pplByLobby: lobbies[rooms[i]].options.pplByLobby, avatars: avatars});
@@ -235,18 +238,25 @@ function sendAlert(socket, sms)
 }
 
 // Récupérer Position du Socket dans la Liste.
-function checkPositionSocket(socket)
+function checkPositionSockets(socket)
 {
 	let room = socket.room;
 	let sockets = returnSocketsId(room);
-	let avatarsList = lobbies[room].avatars;
 	for (let i = 0, socketLength = sockets.length; i < socketLength; i++)
 	{
 		if (sockets[i] === socket.id)
 		{
-			socket.emit('checkPositionSocket', i, avatarsList);
+			return i;
 		}
 	}
+}
+
+function checkAvatarsList(socket)
+{
+	let room = socket.room;
+	let avatarsList = lobbies[room].avatars;
+	let socketIndex = checkPositionSockets(socket);
+	socket.emit('checkAvatarsList', socketIndex, avatarsList);
 }
 
 // AVATARS
@@ -324,8 +334,51 @@ function changeAvatar(socket, newAvatarIndex)
 	let avatars = updateAvatarsList(roomId);
 	socket.emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
 	socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
-	checkPositionSocket(socket);
+	checkAvatarsList(socket);
 	socket.emit('toggleDisplayAvatarsPannel');
+}
+
+// LAUNCH GAME!
+function resetReadyList(socket)
+{
+	let sockets = returnSocketsId(socket.room);
+	lobbies[socket.room].ready = [];
+	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
+	{
+		sockets[i].ready = 0;
+	}	
+}
+
+function toggleReady(socket)
+{
+	if (socket.ready === 1)
+	{
+		socket.ready = 0;
+	}
+	else
+	{
+		socket.ready = 1;
+	}
+	console.log(lobbies[socket.room].ready)
+	updateReadyList(socket);
+}
+
+function updateReadyList(socket)
+{
+	let sockets = returnSocketsId(socket.room);
+	lobbies[socket.room].ready = [];
+	for (let i = 0, socketsLength = sockets.length; i < socketsLength; i++)
+	{
+		lobbies[socket.room].ready.push(io.sockets.connected[sockets[i]].ready);
+	}
+	displayReadyList(socket)
+}
+
+function displayReadyList(socket)
+{
+	let socketIndex = checkPositionSockets(socket);
+	socket.emit('toggleReady', {readyList: lobbies[socket.room].ready, socketIndex: socketIndex});
+	socket.broadcast.emit('toggleReady', {readyList: lobbies[socket.room].ready});
 }
 
 // SOCKET.IO!
@@ -379,6 +432,8 @@ io.sockets.on('connection', function(socket)
 		let room = ent.encode(roomId);
 		joinLobby(socket, room);
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
+		updateReadyList(socket);
+		displayReadyList(socket);
 		// le nombre de clients dans une room...
 		//console.log((io.sockets.adapter.rooms[roomId]).length);
 	});
@@ -483,8 +538,14 @@ io.sockets.on('connection', function(socket)
 	});
 
 	// Récupérer Position du Socket dans la Liste.
-	socket.on('checkPositionSocket', function()
+	socket.on('checkAvatarsList', function()
 	{
-		checkPositionSocket(socket);
+		checkAvatarsList(socket);
+	});
+
+	// LAUNCH GAME!
+	socket.on('toggleReady', function()
+	{
+		toggleReady(socket);
 	});
 });

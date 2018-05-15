@@ -70,11 +70,25 @@
 			}
 			.selected
 			{
-				border: 3px solid red;
+				&:before
+				{
+					border-radius: 50%;
+					content: '';
+					position: relative;
+					left: 0;
+					top: 0;
+					width: 25px;
+					height: 25px;
+					background-color: $color-hot;
+				}
 				&:hover
 				{
 					background-color: $color-middle;
 				}
+			}
+			.pseudoReady
+			{
+				border: 3px solid green;
 			}
 		}
 		.talkBoard
@@ -90,11 +104,26 @@
 			background-color: $color-dark;
 			.taskbar
 			{
+				display: flex;
+				justify-content: space-between;
 				width: 100%;
-				text-align: right;
 				.button
 				{
 					margin: 0;
+				}
+				.ready
+				{
+					&::before
+					{
+						content: "Ready";
+					}
+				}
+				.notReady
+				{
+					&::before
+					{
+						content: "not Ready";
+					}
 				}
 			}
 			.messages

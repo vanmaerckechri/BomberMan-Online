@@ -97,7 +97,9 @@ function loadLobby()
 	lobbyContent +=	'<div class="lobby">';
 	lobbyContent +=	'<div id="lobbyMembers" class="lobbyMembers"></div>';
 	lobbyContent += '<div class="talkBoard">';
-	lobbyContent += '<div class="taskbar"><button class="button backToMainMenu">X</button></div>';
+	lobbyContent += '<div class="taskbar">';
+	lobbyContent += '<button class="button ready" onclick="toggleReady()"></button>';
+	lobbyContent += '<button class="button backToMainMenu">X</button></div>';
 	lobbyContent += '<div class="messages"></div>';
 	lobbyContent += '<div class="inputMessageContainer">';
 	lobbyContent += '<textarea name="inputMessage" class="inputMessage"></textarea>';
@@ -155,10 +157,10 @@ function refreshLobby(lobbyInfos)
 			lobbyMembersContainer.innerHTML += '<div class="pseudo"></div>';
 		}
 	}
-	socket.emit('checkPositionSocket');
+	socket.emit('checkAvatarsList');
 }
 
-socket.on('checkPositionSocket', function(indexOfThisPlayer, avatarsSelectedIndex)
+socket.on('checkAvatarsList', function(indexOfThisPlayer, avatarsSelectedIndex)
 {
 	loadAvatarsPannel(indexOfThisPlayer, avatarsSelectedIndex)
 });
@@ -268,6 +270,36 @@ function increasePplByLobby(lobbyId)
 {
 	socket.emit('increasePplByLobby', lobbyId);
 }
+
+// Lancer la Partie.
+function toggleReady()
+{
+	socket.emit('toggleReady');	
+}
+socket.on('toggleReady', function(readyInfos)
+{
+	let ready = document.querySelector('.ready');
+	let pseudoBox = document.querySelectorAll('.pseudo')
+	for (let i = 0, readyListLength = readyInfos.readyList.length; i < readyListLength; i++)
+	{
+		if (readyInfos.readyList[i] === 1)
+		{
+			if (readyInfos.socketIndex != undefined)
+			{
+				ready.classList.add('notReady');
+			}
+			pseudoBox[i].classList.add('pseudoReady')
+		}
+		else
+		{
+			if (readyInfos.socketIndex != undefined)
+			{
+				ready.classList.remove('notReady');
+			}
+			pseudoBox[i].classList.remove('pseudoReady')		
+		}
+	}
+});
 
 // Messages d'Alerte.
 socket.on('sendAlert', function(sms)
