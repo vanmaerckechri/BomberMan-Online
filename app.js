@@ -501,6 +501,7 @@ io.sockets.on('connection', function(socket)
 		{
 			sendAlert(socket, auth);
 		}
+		displayReadyList(socket)
 	});
 
 	// Augmenter le nombre de places pour les utilisateurs dans le lobby.
@@ -527,6 +528,7 @@ io.sockets.on('connection', function(socket)
 		{
 			sendAlert(socket, auth);
 		}
+		displayReadyList(socket)
 	});
 
 	// AVATARS!

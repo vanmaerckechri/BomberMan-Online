@@ -89,13 +89,13 @@ form {
         border: 1px solid #40434e;
         padding: 0 10px;
         height: 52px;
-        width: 232px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         color: #40434e;
         background-color: #ffffff; }
         #main .lobby .lobbyMembers .pseudo .avatar {
+          margin: 0 10px;
           width: 48px;
           height: 48px; }
         #main .lobby .lobbyMembers .pseudo .eject .button {
