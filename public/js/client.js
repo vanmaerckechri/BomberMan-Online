@@ -287,7 +287,7 @@ socket.on('toggleReady', function(readyInfos)
 	let pseudoBox = document.querySelectorAll('.pseudo')
 	for (let i = 0, readyListLength = readyInfos.readyList.length; i < readyListLength; i++)
 	{
-		if (readyInfos.readyList[i] === 1)
+		if (readyInfos.readyList[i] === 1 && pseudoBox[i])
 		{
 			pseudoBox[i].classList.add('pseudoReady')
 		}
@@ -296,8 +296,6 @@ socket.on('toggleReady', function(readyInfos)
 			pseudoBox[i].classList.remove('pseudoReady')		
 		}
 	}
-	console.log('index:'+readyInfos.socketIndex)
-	console.log('open:'+readyInfos.readyList[readyInfos.socketIndex])
 	if (readyInfos.socketIndex != 3)
 	{
 		if (readyInfos.readyList[readyInfos.socketIndex] === 0)
