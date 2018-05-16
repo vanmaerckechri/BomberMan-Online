@@ -336,6 +336,7 @@ function changeAvatar(socket, newAvatarIndex)
 	let avatars = updateAvatarsList(roomId);
 	socket.emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
 	socket.broadcast.to(roomId).emit('refreshLobby', {names: lobbies[roomId].socketName, pplByLobby: lobbies[roomId].options.pplByLobby, avatars: avatars});
+	io.sockets.connected[roomId].emit('refreshLobbyAdmin', {usersId: sockets, lobby: lobbies[roomId], lobbyId: roomId});
 	checkAvatarsList(socket);
 	socket.emit('toggleDisplayAvatarsPannel');
 	displayReadyList(socket)
@@ -350,7 +351,6 @@ function resetReadyList(socket)
 	{
 		io.sockets.connected[sockets[i]].ready = 0;
 	}
-	console.log(lobbies[socket.room].ready)
 }
 
 function toggleReady(socket)
@@ -381,7 +381,7 @@ function displayReadyList(socket)
 {
 	let socketIndex = checkPositionSockets(socket);
 	socket.emit('toggleReady', {readyList: lobbies[socket.room].ready, socketIndex: socketIndex});
-	socket.broadcast.emit('toggleReady', {readyList: lobbies[socket.room].ready});
+	socket.broadcast.emit('toggleReady', {readyList: lobbies[socket.room].ready, socketIndex: 3});
 }
 
 // SOCKET.IO!

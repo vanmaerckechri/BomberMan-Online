@@ -171,11 +171,6 @@ socket.on('toggleDisplayAvatarsPannel', function()
 	toggleDisplayAvatarsPannel();
 });
 
-function canWeToggleDisplayAvatarsPannel(indexOfThisPlayer)
-{
-
-}
-
 function toggleDisplayAvatarsPannel(socketIndex = undefined)
 {
 	let pseudoBox = document.querySelectorAll('.pseudo');
@@ -294,19 +289,25 @@ socket.on('toggleReady', function(readyInfos)
 	{
 		if (readyInfos.readyList[i] === 1)
 		{
-			if (readyInfos.socketIndex != undefined)
-			{
-				ready.classList.add('notReady');
-			}
 			pseudoBox[i].classList.add('pseudoReady')
 		}
 		else
 		{
-			if (readyInfos.socketIndex != undefined)
-			{
-				ready.classList.remove('notReady');
-			}
 			pseudoBox[i].classList.remove('pseudoReady')		
+		}
+	}
+	console.log('index:'+readyInfos.socketIndex)
+	console.log('open:'+readyInfos.readyList[readyInfos.socketIndex])
+	if (readyInfos.socketIndex != 3)
+	{
+		if (readyInfos.readyList[readyInfos.socketIndex] === 0)
+		{
+			ready.classList.remove('notReady');
+		}
+		else
+		{
+			ready.classList.add('notReady');
+		
 		}
 	}
 });
