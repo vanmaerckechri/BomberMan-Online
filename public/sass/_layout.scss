@@ -45,8 +45,9 @@
 			.pseudo
 			{
 				margin-bottom: 10px;
-				border: 1px solid $color-dark;
+				border: 3px solid $color-dark;
 				padding: 0 10px;
+				position: relative;
 				height: 52px;
 				display: flex;
 				justify-content: space-between;
@@ -74,12 +75,13 @@
 				{
 					border-radius: 50%;
 					content: '';
-					position: relative;
-					left: 0;
-					top: 0;
+					position: absolute;
+					left: -12px;
+					top: calc(50% - 12px);
 					width: 25px;
 					height: 25px;
 					background-color: $color-hot;
+					z-index: -1;
 				}
 				&:hover
 				{
@@ -104,6 +106,7 @@
 			background-color: $color-dark;
 			.taskbar
 			{
+				margin-bottom: 10px;
 				display: flex;
 				justify-content: space-between;
 				width: 100%;
@@ -131,7 +134,7 @@
 				flex: 1;
 				.user
 				{
-					margin-bottom: 15px;
+					margin: 5px 0;
 					width: 100%;
 					font-weight: 700;
 					color: $color-light;

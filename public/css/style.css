@@ -86,8 +86,9 @@ form {
       margin-right: 10px; }
       #main .lobby .lobbyMembers .pseudo {
         margin-bottom: 10px;
-        border: 1px solid #40434e;
+        border: 3px solid #40434e;
         padding: 0 10px;
+        position: relative;
         height: 52px;
         display: flex;
         justify-content: space-between;
@@ -104,12 +105,13 @@ form {
       #main .lobby .lobbyMembers .selected:before {
         border-radius: 50%;
         content: '';
-        position: relative;
-        left: 0;
-        top: 0;
+        position: absolute;
+        left: -12px;
+        top: calc(50% - 12px);
         width: 25px;
         height: 25px;
-        background-color: #6d454c; }
+        background-color: #6d454c;
+        z-index: -1; }
       #main .lobby .lobbyMembers .selected:hover {
         background-color: #ede19e; }
       #main .lobby .lobbyMembers .pseudoReady {
@@ -125,6 +127,7 @@ form {
       min-width: 300px;
       background-color: #40434e; }
       #main .lobby .talkBoard .taskbar {
+        margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         width: 100%; }
@@ -137,7 +140,7 @@ form {
       #main .lobby .talkBoard .messages {
         flex: 1; }
         #main .lobby .talkBoard .messages .user {
-          margin-bottom: 15px;
+          margin: 5px 0;
           width: 100%;
           font-weight: 700;
           color: #ffffff; }
