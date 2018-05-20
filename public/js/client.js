@@ -98,7 +98,7 @@ function loadLobby()
 	lobbyContent +=	'<div id="lobbyMembers" class="lobbyMembers"></div>';
 	lobbyContent += '<div class="talkBoard">';
 	lobbyContent += '<div class="taskbar">';
-	lobbyContent += '<button class="button ready" onclick="toggleReady()"></button>';
+	lobbyContent += '<button class="button notReady" onclick="toggleReady()"></button>';
 	lobbyContent += '<button class="button backToMainMenu">X</button></div>';
 	lobbyContent += '<div class="messages"></div>';
 	lobbyContent += '<div class="inputMessageContainer">';
@@ -278,16 +278,18 @@ function increasePplByLobby(lobbyId)
 
 // Lancer la Partie.
 function toggleReady()
-{
-	socket.emit('toggleReady');	
+{	
+	let notReady = document.querySelector('.notReady');
+	notReady.classList.toggle('ready');
+	socket.emit('updateDisplayUsersReady');
 }
-socket.on('toggleReady', function(readyInfos)
+socket.on('updateDisplayUsersReady', function(readyList)
 {
-	let ready = document.querySelector('.ready');
 	let pseudoBox = document.querySelectorAll('.pseudo')
-	for (let i = 0, readyListLength = readyInfos.readyList.length; i < readyListLength; i++)
+	// Afficher un marqueur visuel sur les utilisateurs prêt (border vert).
+	for (let i = 0, readyListLength = readyList.length; i < readyListLength; i++)
 	{
-		if (readyInfos.readyList[i] === 1 && pseudoBox[i])
+		if (readyList[i] === 1 && pseudoBox[i])
 		{
 			pseudoBox[i].classList.add('pseudoReady')
 		}
@@ -296,18 +298,13 @@ socket.on('toggleReady', function(readyInfos)
 			pseudoBox[i].classList.remove('pseudoReady')		
 		}
 	}
-	if (readyInfos.socketIndex != 3)
-	{
-		if (readyInfos.readyList[readyInfos.socketIndex] === 0)
-		{
-			ready.classList.remove('notReady');
-		}
-		else
-		{
-			ready.classList.add('notReady');
-		
-		}
-	}
+	// Changer l'affichage du bouton en fonction de sa position (ready - not ready).
+});
+
+socket.on('unReadyButton', function()
+{
+	let notReady = document.querySelector('.notReady');
+	notReady.classList.remove('ready');
 });
 
 // Messages d'Alerte.

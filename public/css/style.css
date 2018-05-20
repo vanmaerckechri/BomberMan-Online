@@ -133,9 +133,9 @@ form {
         width: 100%; }
         #main .lobby .talkBoard .taskbar .button {
           margin: 0; }
-        #main .lobby .talkBoard .taskbar .ready::before {
-          content: "Ready"; }
         #main .lobby .talkBoard .taskbar .notReady::before {
+          content: "Ready"; }
+        #main .lobby .talkBoard .taskbar .ready::before {
           content: "not Ready"; }
       #main .lobby .talkBoard .messages {
         flex: 1; }

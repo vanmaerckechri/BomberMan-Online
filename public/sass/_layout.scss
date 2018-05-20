@@ -114,14 +114,14 @@
 				{
 					margin: 0;
 				}
-				.ready
+				.notReady
 				{
 					&::before
 					{
 						content: "Ready";
 					}
 				}
-				.notReady
+				.ready
 				{
 					&::before
 					{

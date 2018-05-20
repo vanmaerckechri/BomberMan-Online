@@ -351,6 +351,8 @@ function resetReadyList(socket)
 	{
 		io.sockets.connected[sockets[i]].ready = 0;
 	}
+	socket.emit('unReadyButton');
+	socket.broadcast.to(socket.room).emit('unReadyButton');
 }
 
 function toggleReady(socket)
@@ -379,9 +381,8 @@ function updateReadyList(socket)
 
 function displayReadyList(socket)
 {
-	let socketIndex = checkPositionSockets(socket);
-	socket.emit('toggleReady', {readyList: lobbies[socket.room].ready, socketIndex: socketIndex});
-	socket.broadcast.emit('toggleReady', {readyList: lobbies[socket.room].ready, socketIndex: 3});
+	socket.emit('updateDisplayUsersReady', lobbies[socket.room].ready);
+	socket.broadcast.to(socket.room).emit('updateDisplayUsersReady', lobbies[socket.room].ready);
 }
 
 // SOCKET.IO!
@@ -501,6 +502,7 @@ io.sockets.on('connection', function(socket)
 		{
 			sendAlert(socket, auth);
 		}
+		resetReadyList(socket)
 		displayReadyList(socket)
 	});
 
@@ -528,6 +530,7 @@ io.sockets.on('connection', function(socket)
 		{
 			sendAlert(socket, auth);
 		}
+		resetReadyList(socket)
 		displayReadyList(socket)
 	});
 
@@ -549,7 +552,7 @@ io.sockets.on('connection', function(socket)
 	});
 
 	// LAUNCH GAME!
-	socket.on('toggleReady', function()
+	socket.on('updateDisplayUsersReady', function()
 	{
 		toggleReady(socket);
 	});
