@@ -197,7 +197,6 @@ function leaveLobby(socket)
 			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
 			let usersList = returnSocketsId(newRoomId);
 			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
-			resetReadyList(io.sockets.connected[newRoomId]);
 			updateReadyList(io.sockets.connected[newRoomId]);
 		}
 		socket.broadcast.emit('refreshLobbiesList', lobbies);
