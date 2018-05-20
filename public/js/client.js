@@ -304,7 +304,10 @@ socket.on('updateDisplayUsersReady', function(readyList)
 socket.on('unReadyButton', function()
 {
 	let notReady = document.querySelector('.notReady');
-	notReady.classList.remove('ready');
+	if (notReady.classList.contains('ready'))
+	{
+		notReady.classList.remove('ready');
+	}
 });
 
 // Messages d'Alerte.
