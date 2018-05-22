@@ -102,6 +102,7 @@ function createLobby(socket)
 	socket.ready = 0;
 	lobbies[socket.id].avatars = resetAvatarsList(socket.id);
 	lobbies[socket.id].avatars[0] = 0;
+	lobbies[socket.id].launchGame = 0;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
 }
 
@@ -160,55 +161,63 @@ function returnSocketsId(room)
 
 function leaveLobby(socket)
 {
-	let rooms = Object.keys(lobbies);
-	if (rooms.length > 0 && socket.room)
+	if (lobbies[socket.room] && lobbies[socket.room].launchGame === 0)
 	{
-		// Effacer le lobby actuel.
-		let room = socket.room;
-		let pplByLobbyBeforeChange = lobbies[room].options.pplByLobby;
-		lobbies[room].options.open = false;
-		socket.leave(room);
-		socket.room = undefined;
-		delete lobbies[room];
-		if (io.sockets.adapter.rooms[room] != undefined)
+		let rooms = Object.keys(lobbies);
+		if (rooms.length > 0 && socket.room)
 		{
-			// Créer un nouveau lobby.
-			let roomSockets = returnSocketsId(room);
-			let newRoomId = roomSockets[0];
-			let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyBeforeChange};
-			lobbies[newRoomId] =
+			// Effacer le lobby actuel.
+			let room = socket.room;
+			let pplByLobbyBeforeChange = lobbies[room].options.pplByLobby;
+			let gameIsLaunched = lobbies[socket.room].launchGame;
+			lobbies[room].options.open = false;
+			socket.leave(room);
+			socket.room = undefined;
+			delete lobbies[room];
+			if (io.sockets.adapter.rooms[room] != undefined)
 			{
-				options: options,
-				socketName: []
-			};
-			for (let i = 0; i < lobbies[newRoomId].options.pplByLobbyMax; i++)
-			{
-				if (roomSockets[i])
+				// Créer un nouveau lobby.
+				let roomSockets = returnSocketsId(room);
+				let newRoomId = roomSockets[0];
+				let options = {open: true, pplByLobbyMin: pplByLobbyMin, pplByLobbyMax: pplByLobbyMax, pplByLobby: pplByLobbyBeforeChange};
+				lobbies[newRoomId] =
 				{
-					lobbies[newRoomId].socketName[i] = io.sockets.connected[roomSockets[i]].name;
-
-					io.sockets.connected[roomSockets[i]].join(newRoomId);
-					io.sockets.connected[roomSockets[i]].room = newRoomId;
-					if (room === socket.id)
+					options: options,
+					socketName: []
+				};
+				for (let i = 0; i < lobbies[newRoomId].options.pplByLobbyMax; i++)
+				{
+					if (roomSockets[i])
 					{
-						io.sockets.connected[roomSockets[i]].leave(room);
+						lobbies[newRoomId].socketName[i] = io.sockets.connected[roomSockets[i]].name;
+
+						io.sockets.connected[roomSockets[i]].join(newRoomId);
+						io.sockets.connected[roomSockets[i]].room = newRoomId;
+						if (room === socket.id)
+						{
+							io.sockets.connected[roomSockets[i]].leave(room);
+						}
+					}
+					else
+					{
+						lobbies[newRoomId].socketName[i] = '';
 					}
 				}
-				else
-				{
-					lobbies[newRoomId].socketName[i] = '';
-				}
+				lobbies[newRoomId].options.open = true;
+				lobbies[newRoomId].avatars = resetAvatarsList(newRoomId);
+				let avatars = updateAvatarsList(newRoomId);
+				// Mettre à jour la liste des joueurs du lobby.
+				socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
+				let usersList = returnSocketsId(newRoomId);
+				io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
+				updateReadyList(io.sockets.connected[newRoomId]);
 			}
-			lobbies[newRoomId].options.open = true;
-			lobbies[newRoomId].avatars = resetAvatarsList(newRoomId);
-			let avatars = updateAvatarsList(newRoomId);
-			// Mettre à jour la liste des joueurs du lobby.
-			socket.broadcast.to(newRoomId).emit('refreshLobby', {names: lobbies[newRoomId].socketName, pplByLobby: lobbies[newRoomId].options.pplByLobby, avatars: avatars});
-			let usersList = returnSocketsId(newRoomId);
-			io.sockets.connected[newRoomId].emit('refreshLobbyAdmin', {usersId: usersList, lobby: lobbies[newRoomId], lobbyId: newRoomId});
-			updateReadyList(io.sockets.connected[newRoomId]);
+			socket.broadcast.emit('refreshLobbiesList', lobbies);
 		}
-		socket.broadcast.emit('refreshLobbiesList', lobbies);
+	}
+	else
+	{
+		delete lobbies[socket.room];
 	}
 }
 
@@ -422,7 +431,8 @@ function checkToLaunchGame(socket)
 		for (let i = 0; i < pplByLobby; i++)
 		{
 			let avatar = io.sockets.connected[sockets[i]].avatar;
-			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, avatar: avatar, order: i});
+			lobbies[socket.room].launchGame = 1;
+			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, avatar: avatar, order: i, pplByLobby: pplByLobby});
 		}
 	}
 }
