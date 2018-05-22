@@ -41,9 +41,18 @@ app.use(session(
 app.get('/', (req, res) =>
 {
 	req.session.playerInfo = {};
-		res.render('pages/index',
+	res.render('pages/index',
 	{
 		main: 'connexion'
+	});
+});
+
+app.post('/game', (req, res) =>
+{
+	req.session.playerInfo = {};
+	res.render('pages/index',
+	{
+		main: 'game'
 	});
 });
 
@@ -375,6 +384,7 @@ function updateReadyList(socket)
 	{
 		lobbies[socket.room].ready.push(io.sockets.connected[sockets[i]].ready);
 	}
+	checkToLaunchGame(socket);
 	displayReadyList(socket);
 }
 
@@ -382,6 +392,39 @@ function displayReadyList(socket)
 {
 	socket.emit('updateDisplayUsersReady', lobbies[socket.room].ready);
 	socket.broadcast.to(socket.room).emit('updateDisplayUsersReady', lobbies[socket.room].ready);
+}
+
+let games = [];
+let game = 
+{
+	id: 0
+};
+
+function checkToLaunchGame(socket)
+{
+	let sockets = returnSocketsId(socket.room);
+	let pplByLobby = lobbies[socket.room].options.pplByLobby;
+	let pplInThisRoom = sockets.length;
+	if (pplInThisRoom === pplByLobby)
+	{
+		let gameId = '';
+		for (let i = 0; i < pplByLobby; i++)
+		{
+			if (io.sockets.connected[sockets[i]].ready === 0)
+			{
+				return;
+			}
+			gameId += io.sockets.connected[socket.room].id;
+		}
+		let newGame = game;
+		newGame.id = gameId;
+		games.push(newGame);
+		for (let i = 0; i < pplByLobby; i++)
+		{
+			let avatar = io.sockets.connected[sockets[i]].avatar;
+			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, avatar: avatar, order: i});
+		}
+	}
 }
 
 // SOCKET.IO!
