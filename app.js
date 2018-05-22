@@ -431,8 +431,9 @@ function checkToLaunchGame(socket)
 		for (let i = 0; i < pplByLobby; i++)
 		{
 			let avatar = io.sockets.connected[sockets[i]].avatar;
+			let name = io.sockets.connected[sockets[i]].name;
 			lobbies[socket.room].launchGame = 1;
-			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, avatar: avatar, order: i, pplByLobby: pplByLobby});
+			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, name: name, avatar: avatar, order: i, pplByLobby: pplByLobby});
 		}
 	}
 }

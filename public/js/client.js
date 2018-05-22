@@ -309,6 +309,7 @@ socket.on('checkToLaunchGame', function(gameInfos)
 	let input = document.createElement("input");
 	for(let propt in gameInfos)
 	{
+		alert(gameInfos[propt])
 		input.setAttribute("type", "hidden");
 		input.setAttribute("name", propt);
 		input.setAttribute("value", gameInfos[propt]);
