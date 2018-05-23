@@ -413,9 +413,9 @@ let game =
 	idTemp: 0,
 	id: 0,
 	userIds: [],
+	avatars: [],
 	pplByLobby: 0,
 	pplInThisRoom: 0
-
 };
 
 function checkToLaunchGame(socket)
@@ -453,6 +453,7 @@ function initGame(socket, gameInfos)
 {
 	games[gameInfos[0]].pplInThisRoom++;
 	games[gameInfos[0]].userIds[gameInfos[3]] = socket.id;
+	games[gameInfos[0]].avatars[gameInfos[3]] = gameInfos[2];
 	socket.room = gameInfos[0];
 	socket.join(gameInfos[0]);
 }
@@ -640,10 +641,10 @@ io.sockets.on('connection', function(socket)
 			gameInfosEncode.push(info);
 		}
 		initGame(socket, gameInfosEncode);
+		// Verifier que tous les joueurs ont chargé la partie.
+		if (games[socket.room].pplInThisRoom === games[socket.room].pplByLobby)
+		{
+		}
 	});
 
-	socket.on('test', function()
-	{
-		socket.emit('test', games[socket.room].userIds)
-	});
 });

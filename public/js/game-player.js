@@ -1,4 +1,5 @@
-let player1 = {
+let avatars = ['black', 'red', 'blue', 'yellow', 'green', 'purple'];
+let player = {
     playerMovingTempo: '',
     moving: false,
     posX: tileSize,
@@ -11,11 +12,11 @@ let player1 = {
     leftPressed: false,
     spacePressed: false,
     spaceStopPressed: true,
-    color: 'rgb(0, 125, 0)'
+    color: ''
     };
 let players = [];
-players.push(player1);
-players.push(player1);
+players.push(player);
+players.push(player);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -25,24 +26,24 @@ function keyDownHandler(e)
     //joueur 1
 	if(e.keyCode == 68)
 	{
-	    player1.rightPressed = true;
+	    player.rightPressed = true;
 	}
 	else if(e.keyCode == 81)
 	{
-	    player1.leftPressed = true;
+	    player.leftPressed = true;
 	}
 	else if(e.keyCode == 83)
 	{
-	    player1.bottomPressed = true;
+	    player.bottomPressed = true;
 	}
 	else if(e.keyCode == 90)
 	{
-	    player1.topPressed = true;
+	    player.topPressed = true;
 	}
-	else if(e.keyCode == 32 && player1.spaceStopPressed == true)
+	else if(e.keyCode == 32 && player.spaceStopPressed == true)
 	{
-	    player1.spacePressed = true;
-	    player1.spaceStopPressed = false;
+	    player.spacePressed = true;
+	    player.spaceStopPressed = false;
 	}
 }
 function keyUpHandler(e)
@@ -50,24 +51,24 @@ function keyUpHandler(e)
     //joueur 1
     if(e.keyCode == 68)
     {
-        player1.rightPressed = false;
+        player.rightPressed = false;
     }
     else if(e.keyCode == 81)
     {
-        player1.leftPressed = false;
+        player.leftPressed = false;
     }
     else if(e.keyCode == 83)
     {
-        player1.bottomPressed = false;
+        player.bottomPressed = false;
     }
     else if(e.keyCode == 90)
     {
-        player1.topPressed = false;
+        player.topPressed = false;
     }
     else if(e.keyCode == 32)
     {
-        player1.spacePressed = false;
-      	player1.spaceStopPressed = true;
+        player.spacePressed = false;
+      	player.spaceStopPressed = true;
     }
 }
 
