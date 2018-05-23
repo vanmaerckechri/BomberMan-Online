@@ -102,7 +102,7 @@ function createLobby(socket)
 	socket.ready = 0;
 	lobbies[socket.id].avatars = resetAvatarsList(socket.id);
 	lobbies[socket.id].avatars[0] = 0;
-	lobbies[socket.id].launchGame = 0;
+	lobbies[socket.id].inGame = 0;
 	socket.broadcast.emit('refreshLobbiesList', lobbies);
 }
 
@@ -161,7 +161,7 @@ function returnSocketsId(room)
 
 function leaveLobby(socket)
 {
-	if (lobbies[socket.room] && lobbies[socket.room].launchGame === 0)
+	if (lobbies[socket.room] && lobbies[socket.room].inGame === 0)
 	{
 		let rooms = Object.keys(lobbies);
 		if (rooms.length > 0 && socket.room)
@@ -169,7 +169,6 @@ function leaveLobby(socket)
 			// Effacer le lobby actuel.
 			let room = socket.room;
 			let pplByLobbyBeforeChange = lobbies[room].options.pplByLobby;
-			let gameIsLaunched = lobbies[socket.room].launchGame;
 			lobbies[room].options.open = false;
 			socket.leave(room);
 			socket.room = undefined;
@@ -432,7 +431,7 @@ function checkToLaunchGame(socket)
 		{
 			let avatar = io.sockets.connected[sockets[i]].avatar;
 			let name = io.sockets.connected[sockets[i]].name;
-			lobbies[socket.room].launchGame = 1;
+			lobbies[socket.room].inGame = 1;
 			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, name: name, avatar: avatar, order: i, pplByLobby: pplByLobby});
 		}
 	}
