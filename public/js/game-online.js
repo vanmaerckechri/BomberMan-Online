@@ -12,13 +12,22 @@ let updatePlayerPosition = function()
 
 	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	{
-		console.log(otherPlayerInfos);
-		players[otherPlayerInfos.order] = otherPlayerInfos.playerInfos;
+		players[otherPlayerInfos.order].posX = otherPlayerInfos.playerInfos.posX;
+		players[otherPlayerInfos.order].posY = otherPlayerInfos.playerInfos.posY;
+		players[otherPlayerInfos.order].topPressed = otherPlayerInfos.playerInfos.topPressed;
+		players[otherPlayerInfos.order].rightPressed = otherPlayerInfos.playerInfos.rightPressed;
+		players[otherPlayerInfos.order].bottomPressed = otherPlayerInfos.playerInfos.bottomPressed;
+		players[otherPlayerInfos.order].leftPressed = otherPlayerInfos.playerInfos.leftPressed;
+		players[otherPlayerInfos.order].spacePressed = otherPlayerInfos.playerInfos.spacePressed;
+		players[otherPlayerInfos.order].spaceStopPressed = otherPlayerInfos.playerInfos.spaceStopPressed;
+		players[otherPlayerInfos.order].moving = otherPlayerInfos.playerInfos.moving;
+		players[otherPlayerInfos.order].bombsNumberMax = otherPlayerInfos.playerInfos.bombsNumberMax;
+		players[otherPlayerInfos.order].bombsNumber = otherPlayerInfos.playerInfos.bombsNumber;
 	});
 
 
 	document.addEventListener("keydown", sendPlayerPos, false);
-
+	document.addEventListener("keyup", sendPlayerPos, false);
 }
 
 let initGamePlayers = function(avatarsList)
