@@ -1,4 +1,5 @@
 let avatars = ['black', 'red', 'blue', 'yellow', 'green', 'purple'];
+let playerIndex;
 let player = {
     playerMovingTempo: '',
     moving: false,
@@ -24,165 +25,175 @@ function keyDownHandler(e)
     //joueur 1
 	if(e.keyCode == 68)
 	{
-	    players[0].rightPressed = true;
+	    players[playerIndex].rightPressed = true;
 	}
 	else if(e.keyCode == 81)
 	{
-	    players[0].leftPressed = true;
+	    players[playerIndex].leftPressed = true;
 	}
 	else if(e.keyCode == 83)
 	{
-	    players[0].bottomPressed = true;
+	    players[playerIndex].bottomPressed = true;
 	}
 	else if(e.keyCode == 90)
 	{
-	    players[0].topPressed = true;
+	    players[playerIndex].topPressed = true;
 	}
-	else if(e.keyCode == 32 && players[0].spaceStopPressed == true)
+	else if(e.keyCode == 32 && players[playerIndex].spaceStopPressed == true)
 	{
-	    players[0].spacePressed = true;
-	    players[0].spaceStopPressed = false;
+	    players[playerIndex].spacePressed = true;
+	    players[playerIndex].spaceStopPressed = false;
 	}
 }
 function keyUpHandler(e)
-{
+{    console.log(players)
+
     //joueur 1
     if(e.keyCode == 68)
     {
-        players[0].rightPressed = false;
+        players[playerIndex].rightPressed = false;
     }
     else if(e.keyCode == 81)
     {
-        players[0].leftPressed = false;
+        players[playerIndex].leftPressed = false;
     }
     else if(e.keyCode == 83)
     {
-        players[0].bottomPressed = false;
+        players[playerIndex].bottomPressed = false;
     }
     else if(e.keyCode == 90)
     {
-        players[0].topPressed = false;
+        players[playerIndex].topPressed = false;
     }
     else if(e.keyCode == 32)
     {
-        players[0].spacePressed = false;
-      	players[0].spaceStopPressed = true;
+        players[playerIndex].spacePressed = false;
+      	players[playerIndex].spaceStopPressed = true;
     }
 }
 
 function drawPlayer()
 {
+    if (players[0])
+    {
     let player = players[0];
-    let index = i;
+    let index = 0;
     let playerPosArrayCol;
     let playerPosArrayRow;
     let playerMovingSpeed = tileSize / 16;
     // MOVE TOP
-    if (player.moving == false && player.topPressed == true)
+    if (players[playerIndex].moving == false && players[playerIndex].topPressed == true)
     {
-        playerPosArrayCol = player.posX / tileSize;
-        playerPosArrayRow = player.posY / tileSize;
+        playerPosArrayCol = players[playerIndex].posX / tileSize;
+        playerPosArrayRow = players[playerIndex].posY / tileSize;
 
         if (mapBoards[playerPosArrayRow - 1][playerPosArrayCol].wall < 1)
         {
-            player.moving = true;
-            player.playerMovingTempo = setInterval(function()
+            players[playerIndex].moving = true;
+            players[playerIndex].playerMovingTempo = setInterval(function()
             {
-                player.posY -= playerMovingSpeed;
-                if (player.posY % tileSize === 0)
+                players[playerIndex].posY -= playerMovingSpeed;
+                if (players[playerIndex].posY % tileSize === 0)
                 {
-                    player.moving = false;
-                    clearInterval(player.playerMovingTempo);
+                    players[playerIndex].moving = false;
+                    clearInterval(players[playerIndex].playerMovingTempo);
                 }
             },10);
         }
     }
     // MOVE BOTTOM
-    if (player.moving == false && player.bottomPressed == true)
+    if (players[playerIndex].moving == false && players[playerIndex].bottomPressed == true)
     {
-        playerPosArrayCol = player.posX / tileSize;
-        playerPosArrayRow = player.posY / tileSize;
+        playerPosArrayCol = players[playerIndex].posX / tileSize;
+        playerPosArrayRow = players[playerIndex].posY / tileSize;
 
         if (mapBoards[playerPosArrayRow + 1][playerPosArrayCol].wall < 1)
         {
-            player.moving = true;
-            player.playerMovingTempo = setInterval(function()
+            players[playerIndex].moving = true;
+            players[playerIndex].playerMovingTempo = setInterval(function()
             {
-                player.posY += playerMovingSpeed;
-                if (player.posY % tileSize === 0)
+                players[playerIndex].posY += playerMovingSpeed;
+                if (players[playerIndex].posY % tileSize === 0)
                 {
-                    player.moving = false;
-                    clearInterval(player.playerMovingTempo);
+                    players[playerIndex].moving = false;
+                    clearInterval(players[playerIndex].playerMovingTempo);
                 }
             },10);
         }
     }
     // MOVE RIGHT
-    if (player.moving == false && player.rightPressed == true)
+    if (players[playerIndex].moving == false && players[playerIndex].rightPressed == true)
     {
-        playerPosArrayCol = player.posX / tileSize;
-        playerPosArrayRow = player.posY / tileSize;
+        playerPosArrayCol = players[playerIndex].posX / tileSize;
+        playerPosArrayRow = players[playerIndex].posY / tileSize;
         if (mapBoards[playerPosArrayRow][playerPosArrayCol + 1].wall < 1)
         {
-            player.moving = true;
-            player.playerMovingTempo = setInterval(function()
+            players[playerIndex].moving = true;
+            players[playerIndex].playerMovingTempo = setInterval(function()
             {
-                player.posX += playerMovingSpeed;
-                if (player.posX % tileSize === 0)
+                players[playerIndex].posX += playerMovingSpeed;
+                if (players[playerIndex].posX % tileSize === 0)
                 {
-                    player.moving = false;
-                    clearInterval(player.playerMovingTempo);
+                    players[playerIndex].moving = false;
+                    clearInterval(players[playerIndex].playerMovingTempo);
                 }
             },10);
         }
     }
     // MOVE LEFT
-    if (player.moving == false && player.leftPressed == true)
+    if (players[playerIndex].moving == false && players[playerIndex].leftPressed == true)
     {
-        playerPosArrayCol = player.posX / tileSize;
-        playerPosArrayRow = player.posY / tileSize;
+        playerPosArrayCol = players[playerIndex].posX / tileSize;
+        playerPosArrayRow = players[playerIndex].posY / tileSize;
 
         if (mapBoards[playerPosArrayRow][playerPosArrayCol -1].wall < 1)
         {
-            player.moving = true;
-            player.playerMovingTempo = setInterval(function()
+            players[playerIndex].moving = true;
+            players[playerIndex].playerMovingTempo = setInterval(function()
             {
-                player.posX -= playerMovingSpeed;
-                if (player.posX % tileSize === 0)
+                players[playerIndex].posX -= playerMovingSpeed;
+                if (players[playerIndex].posX % tileSize === 0)
                 {
-                    player.moving = false;
-                    clearInterval(player.playerMovingTempo);
+                    players[playerIndex].moving = false;
+                    clearInterval(players[playerIndex].playerMovingTempo);
                 }
             },10);
         }
     }
     // DROP BOMB
-    let playerPosRow = player.posY / tileSize;
+    let playerPosRow = players[playerIndex].posY / tileSize;
     playerPosRow = parseInt(playerPosRow);
-    let playerPosCol = player.posX / tileSize;
+    let playerPosCol = players[playerIndex].posX / tileSize;
     playerPosCol = parseInt(playerPosCol);
-    if (player.bombsNumber > 0 && player.spacePressed == true && mapBoards[playerPosRow][playerPosCol].wall == 0)
+    if (players[playerIndex].bombsNumber > 0 && players[playerIndex].spacePressed == true && mapBoards[playerPosRow][playerPosCol].wall == 0)
     {
-        player.bombsNumber--;
-        player.spacePressed = false;
+        players[playerIndex].bombsNumber--;
+        players[playerIndex].spacePressed = false;
         dropBombs(index, playerPosRow, playerPosCol);
     }
     ctx.beginPath();
-    ctx.rect(player.posX, player.posY, tileSize, tileSize);
-    ctx.fillStyle = player.color;
+    ctx.rect(players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);
+    ctx.fillStyle = players[playerIndex].color;
     ctx.strokeStyle = 'rgb(0, 0, 0)';
     ctx.fill();
     ctx.stroke();
     ctx.closePath();
+}
+}
 
-    for (let i = 1 playersLength = players.length; i < playersLength; i++)
-    {
-        ctx.beginPath();
-        ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
-        ctx.fillStyle = players[i].color;
-        ctx.strokeStyle = 'rgb(0, 0, 0)';
-        ctx.fill();
-        ctx.stroke();
-        ctx.closePath();
-    }
+function drawOtherPlayer()
+{
+        for (let i = 0, playersLength = players.length; i < playersLength; i++)
+        {
+            if (i != playerIndex)
+            {
+                ctx.beginPath();
+                ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
+                ctx.fillStyle = players[i].color;
+                ctx.strokeStyle = 'rgb(0, 0, 0)';
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
 }

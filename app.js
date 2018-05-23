@@ -644,6 +644,9 @@ io.sockets.on('connection', function(socket)
 		// Verifier que tous les joueurs ont chargé la partie.
 		if (games[socket.room].pplInThisRoom === games[socket.room].pplByLobby)
 		{
+			avatars = games[socket.room].avatars;
+			socket.emit('launchInitGame', avatars);
+			socket.broadcast.to(socket.room).emit('launchInitGame', avatars);
 		}
 	});
 

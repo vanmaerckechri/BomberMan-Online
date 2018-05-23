@@ -1,21 +1,38 @@
-window.addEventListener('load', function(){
+let socket = io.connect(window.location.host);
 
-	let socket = io.connect(window.location.host);
-
-	let initGame = function()
+let updatePlayerPosition = function()
+{
+	let sendPlayerPos = function()
 	{
 		let gameInfos = sessionStorage.getItem('gameInfos');
-		socket.emit('authGameInfo', gameInfos);
-		gameInfos = JSON.parse(gameInfos)
-		// Players.
-		for (let i = 0; i < gameInfos[4]; i++)
-		{
-			players.push(player);
-		}
-		// Avatar.
-		players[0].color = avatars[gameInfos[2]];
-		// Positions.
-		switch(gameInfos[3])
+		gameInfos = JSON.parse(gameInfos);
+		let order = gameInfos[3];
+		socket.emit('sendPlayerPos', { posX: players[playerIndex].posX, posY: players[playerIndex].posY, avatar: players[playerIndex].color, order: playerIndex });
+	}
+
+	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
+	{
+		console.log(otherPlayerInfos);
+		players[otherPlayerInfos.order].color = otherPlayerInfos.avatar;
+		players[otherPlayerInfos.order].posX = otherPlayerInfos.posX;
+		players[otherPlayerInfos.order].posY = otherPlayerInfos.posY;
+	});
+
+
+	document.addEventListener("keydown", sendPlayerPos, false);
+
+}
+
+let initGamePlayers = function(avatarsList)
+{
+	let gameInfos = sessionStorage.getItem('gameInfos');
+	gameInfos = JSON.parse(gameInfos)
+	playerIndex = gameInfos[3];
+	for (let i = 0; i < gameInfos[4]; i++)
+	{
+		players.push(Object.create(player));
+		players[i].color = avatars[avatarsList[i]];
+		switch(i)
 		{
 		    case 0:
 		        players[0].posX = tileSize;
@@ -33,27 +50,16 @@ window.addEventListener('load', function(){
 		        players[3].posX = tileSize;
 		        players[3].posY = (tileNumberByRow * tileSize) - (2 * tileSize);
 		        break;
-		} 
+		}
 	}
+	console.log(players);
+	updatePlayerPosition();
+}
 
-	let sendPlayerPos = function()
-	{
-		let gameInfos = sessionStorage.getItem('gameInfos');
-		gameInfos = JSON.parse(gameInfos);
-		let order = gameInfos[3];
-		socket.emit('sendPlayerPos', { posX: players[0].posX, posY: players[0].posY, avatar: players[0].color, order: order });
-	}
-
-	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
-	{
-		console.log(otherPlayerInfos);
-		players[otherPlayerInfos.order].color = otherPlayerInfos.avatar;
-		players[otherPlayerInfos.order].posX = otherPlayerInfos.posX;
-		players[otherPlayerInfos.order].posY = otherPlayerInfos.posY;
-	});
-
-	initGame();
-
-	document.addEventListener("keydown", sendPlayerPos, false);
-
+socket.on('launchInitGame', function(avatarsList)
+{
+	initGamePlayers(avatarsList);
 });
+
+	let gameInfos = sessionStorage.getItem('gameInfos');
+	socket.emit('authGameInfo', gameInfos);
