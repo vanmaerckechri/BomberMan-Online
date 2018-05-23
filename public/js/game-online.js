@@ -7,15 +7,13 @@ let updatePlayerPosition = function()
 		let gameInfos = sessionStorage.getItem('gameInfos');
 		gameInfos = JSON.parse(gameInfos);
 		let order = gameInfos[3];
-		socket.emit('sendPlayerPos', { posX: players[playerIndex].posX, posY: players[playerIndex].posY, avatar: players[playerIndex].color, order: playerIndex });
+		socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
 	}
 
 	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	{
 		console.log(otherPlayerInfos);
-		players[otherPlayerInfos.order].color = otherPlayerInfos.avatar;
-		players[otherPlayerInfos.order].posX = otherPlayerInfos.posX;
-		players[otherPlayerInfos.order].posY = otherPlayerInfos.posY;
+		players[otherPlayerInfos.order] = otherPlayerInfos.playerInfos;
 	});
 
 
@@ -30,7 +28,11 @@ let initGamePlayers = function(avatarsList)
 	playerIndex = gameInfos[3];
 	for (let i = 0; i < gameInfos[4]; i++)
 	{
-		players.push(Object.create(player));
+		// Cloner l'objet player.
+		playerTemp = JSON.parse(JSON.stringify(player));
+		// Ajouter ce dernier dans l'array players.
+		players.push(playerTemp);
+		// Mettre à jour ce nouvel objet.
 		players[i].color = avatars[avatarsList[i]];
 		switch(i)
 		{
