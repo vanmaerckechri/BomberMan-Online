@@ -647,4 +647,9 @@ io.sockets.on('connection', function(socket)
 		}
 	});
 
+	socket.on('sendPlayerPos', function(playerPos)
+	{
+		socket.broadcast.to(socket.room).emit('updateOtherPlayerPos', playerPos);
+	});	
+
 });

@@ -2,7 +2,6 @@ window.addEventListener('load', function(){
 
 	let socket = io.connect(window.location.host);
 
-
 	let initGame = function()
 	{
 		let gameInfos = sessionStorage.getItem('gameInfos');
@@ -37,6 +36,24 @@ window.addEventListener('load', function(){
 		} 
 	}
 
+	let sendPlayerPos = function()
+	{
+		let gameInfos = sessionStorage.getItem('gameInfos');
+		gameInfos = JSON.parse(gameInfos);
+		let order = gameInfos[3];
+		socket.emit('sendPlayerPos', { posX: players[0].posX, posY: players[0].posY, avatar: players[0].color, order: order });
+	}
+
+	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
+	{
+		console.log(otherPlayerInfos);
+		players[otherPlayerInfos.order].color = otherPlayerInfos.avatar;
+		players[otherPlayerInfos.order].posX = otherPlayerInfos.posX;
+		players[otherPlayerInfos.order].posY = otherPlayerInfos.posY;
+	});
+
 	initGame();
+
+	document.addEventListener("keydown", sendPlayerPos, false);
 
 });
