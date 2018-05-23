@@ -7,9 +7,14 @@ window.addEventListener('load', function(){
 	{
 		let gameInfos = sessionStorage.getItem('gameInfos');
 		socket.emit('authGameInfo', gameInfos);
-		// Avatar.
 		gameInfos = JSON.parse(gameInfos)
-		players[0].color = avatars[gameInfos[3]];
+		// Players.
+		for (let i = 0; i < gameInfos[4]; i++)
+		{
+			players.push(player);
+		}
+		// Avatar.
+		players[0].color = avatars[gameInfos[2]];
 		// Positions.
 		switch(gameInfos[3])
 		{

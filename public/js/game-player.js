@@ -15,8 +15,6 @@ let player = {
     color: ''
     };
 let players = [];
-players.push(player);
-players.push(player);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
