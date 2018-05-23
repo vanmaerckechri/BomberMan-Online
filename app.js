@@ -169,7 +169,6 @@ function leaveLobby(socket)
 			// Effacer le lobby actuel.
 			let room = socket.room;
 			let pplByLobbyBeforeChange = lobbies[room].options.pplByLobby;
-			let gameIsLaunched = lobbies[socket.room].launchGame;
 			lobbies[room].options.open = false;
 			socket.leave(room);
 			socket.room = undefined;
