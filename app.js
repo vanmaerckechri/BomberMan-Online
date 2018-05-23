@@ -49,12 +49,23 @@ app.get('/', (req, res) =>
 
 app.post('/game', (req, res) =>
 {
-	req.session.playerInfo = {};
-	res.render('pages/index',
-	{
-		main: 'game'
-	});
+	res.render('pages/game')	
+	/*req.session.gameId = parseInt(req.body.gameId) ? ent.encode(req.body.gameId) : req.body.gameId;
+	req.session.name = parseInt(req.body.name) ? ent.encode(req.body.name) : req.body.name;
+	req.session.avatar = parseInt(req.body.avatar) ? ent.encode(req.body.avatar) : req.body.avatar;
+	req.session.order = parseInt(req.body.order) ? ent.encode(req.body.order) : req.body.order;
+	req.session.pplByLobby = parseInt(req.body.pplByLobby) ? ent.encode(req.body.pplByLobby) : req.body.pplByLobby;
+	res.json({ gameId: gameId, name: name, avatar: avatar, order: order, pplByLobby: pplByLobby,});*/
 });
+
+// GAME!
+
+function filterGameInfos(infos)
+{
+
+}
+
+//----------------------------------------------------
 
 function validatePseudo(pseudo)
 {
@@ -607,5 +618,15 @@ io.sockets.on('connection', function(socket)
 	socket.on('updateDisplayUsersReady', function()
 	{
 		toggleReady(socket);
+	});
+
+	// GAME!
+	socket.on('authGameInfo', function(gameInfos)
+	{
+		let infos = JSON.parse(gameInfos)
+		for (let i = 0, infosLength = infos.length; i < infosLength; i++)
+		{
+			console.log(infos[i]);
+		}
 	});
 });

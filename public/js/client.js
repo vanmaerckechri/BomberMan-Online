@@ -303,18 +303,16 @@ socket.on('updateDisplayUsersReady', function(readyList)
 
 socket.on('checkToLaunchGame', function(gameInfos)
 {
+	let infos = [];
+	for(let propt in gameInfos)
+	{
+		infos.push(gameInfos[propt])
+	}
+	sessionStorage.clear();
+	sessionStorage.setItem("gameInfos", JSON.stringify(infos));
 	let form = document.createElement("form");
 	form.setAttribute("method", "POST");
 	form.setAttribute("action", "game");
-	let input = document.createElement("input");
-	for(let propt in gameInfos)
-	{
-		alert(gameInfos[propt])
-		input.setAttribute("type", "hidden");
-		input.setAttribute("name", propt);
-		input.setAttribute("value", gameInfos[propt]);
-		form.appendChild(input);
-	}
 	document.body.appendChild(form);
 	form.submit();
 });
