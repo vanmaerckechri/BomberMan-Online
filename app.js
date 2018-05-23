@@ -50,12 +50,6 @@ app.get('/', (req, res) =>
 app.post('/game', (req, res) =>
 {
 	res.render('pages/game')	
-	/*req.session.gameId = parseInt(req.body.gameId) ? ent.encode(req.body.gameId) : req.body.gameId;
-	req.session.name = parseInt(req.body.name) ? ent.encode(req.body.name) : req.body.name;
-	req.session.avatar = parseInt(req.body.avatar) ? ent.encode(req.body.avatar) : req.body.avatar;
-	req.session.order = parseInt(req.body.order) ? ent.encode(req.body.order) : req.body.order;
-	req.session.pplByLobby = parseInt(req.body.pplByLobby) ? ent.encode(req.body.pplByLobby) : req.body.pplByLobby;
-	res.json({ gameId: gameId, name: name, avatar: avatar, order: order, pplByLobby: pplByLobby,});*/
 });
 
 // GAME!
@@ -413,10 +407,15 @@ function displayReadyList(socket)
 	socket.broadcast.to(socket.room).emit('updateDisplayUsersReady', lobbies[socket.room].ready);
 }
 
-let games = [];
+let games = {};
 let game = 
 {
-	id: 0
+	idTemp: 0,
+	id: 0,
+	userIds: [],
+	pplByLobby: 0,
+	pplInThisRoom: 0
+
 };
 
 function checkToLaunchGame(socket)
@@ -436,8 +435,9 @@ function checkToLaunchGame(socket)
 			gameId += io.sockets.connected[socket.room].id;
 		}
 		let newGame = game;
-		newGame.id = gameId;
-		games.push(newGame);
+		newGame.idTemp = gameId;
+		newGame.pplByLobby = pplByLobby;
+		games[newGame.idTemp] = newGame;
 		for (let i = 0; i < pplByLobby; i++)
 		{
 			let avatar = io.sockets.connected[sockets[i]].avatar;
@@ -446,6 +446,15 @@ function checkToLaunchGame(socket)
 			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, name: name, avatar: avatar, order: i, pplByLobby: pplByLobby});
 		}
 	}
+}
+// GAME!
+
+function initGame(socket, gameInfos)
+{
+	games[gameInfos[0]].pplInThisRoom++;
+	games[gameInfos[0]].userIds[gameInfos[3]] = socket.id;
+	socket.room = gameInfos[0];
+	socket.join(gameInfos[0]);
 }
 
 // SOCKET.IO!
@@ -624,9 +633,17 @@ io.sockets.on('connection', function(socket)
 	socket.on('authGameInfo', function(gameInfos)
 	{
 		let infos = JSON.parse(gameInfos)
+		let gameInfosEncode = [];
 		for (let i = 0, infosLength = infos.length; i < infosLength; i++)
 		{
-			console.log(infos[i]);
+			let info = typeof infos[i] === "number" ? infos[i] : ent.encode(infos[i]);
+			gameInfosEncode.push(info);
 		}
+		initGame(socket, gameInfosEncode);
+	});
+
+	socket.on('test', function()
+	{
+		socket.emit('test', games[socket.room].userIds)
 	});
 });

@@ -10,7 +10,17 @@ window.addEventListener('load', function(){
 		sessionStorage.clear();
 	}
 
+	let test = function()
+	{
+		socket.emit('test');
+	}
+
+	socket.on('test', function(users)
+	{
+		console.log(users)
+	});
 	authGameInfo();
+	test();
 
 	/*socket.on('sendPlayerIndex', function(playerIndex)
 	{
