@@ -61,7 +61,7 @@ function loadMainMenu()
 				let roomsId = Object.keys(list);
 				if (roomsId.length > 0)
 				{
-					for (let i = 0, roomsLength = roomsId.length; i < roomsLength; i++)
+					for (let i = roomsId.length - 1; i >= 0; i--)
 					{
 						if (list[roomsId[i]].options.open === true && roomsId[i] != '')
 						{
