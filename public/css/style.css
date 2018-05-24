@@ -72,6 +72,10 @@ form {
       margin-left: .2rem; }
     #main .menuMain .button {
       margin: 0 .2rem; }
+    #main .menuMain .lobbiesListTitle, #main .menuMain .backToMainMenu {
+      display: inline-block; }
+    #main .menuMain .backToMainMenu {
+      margin-left: 2rem; }
     #main .menuMain .lobbiesList .button {
       margin-bottom: .5rem;
       display: block;

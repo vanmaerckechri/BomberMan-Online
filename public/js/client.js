@@ -82,11 +82,17 @@ function loadLobbiesList()
 	let main = document.querySelector('#main');
 	let lobbyListContent = '<h1>Lobby</h1>';
 	lobbyListContent += '<div class="menuMain">';
-	lobbyListContent += '<h2>Liste des Lobbies</h2>';
+	lobbyListContent += '<h2 class="lobbiesListTitle">Liste des Lobbies</h2>';
+	lobbyListContent += '<button class="button backToMainMenu">X</button>';
 	lobbyListContent += '<div id="lobbiesList" class="lobbiesList"></div>';
 	lobbyListContent += '</div>';
 	lobbyListContent += '<div class="error"></div>';
 	main.innerHTML = lobbyListContent;
+	let backToMainMenuButton = document.querySelector('.backToMainMenu');
+	backToMainMenuButton.addEventListener('click', function()
+	{
+		loadMainMenu();
+	})
 }
 
 // Charger le Lobby.
