@@ -23,19 +23,19 @@ document.addEventListener("keyup", keyUpHandler, false);
 function keyDownHandler(e)
 {
     //joueur 1
-	if(e.keyCode == 68)
+	if(e.keyCode == 39)
 	{
 	    players[playerIndex].rightPressed = true;
 	}
-	else if(e.keyCode == 81)
+	else if(e.keyCode == 37)
 	{
 	    players[playerIndex].leftPressed = true;
 	}
-	else if(e.keyCode == 83)
+	else if(e.keyCode == 40)
 	{
 	    players[playerIndex].bottomPressed = true;
 	}
-	else if(e.keyCode == 90)
+	else if(e.keyCode == 38)
 	{
 	    players[playerIndex].topPressed = true;
 	}
@@ -48,19 +48,19 @@ function keyDownHandler(e)
 function keyUpHandler(e)
 {
     //joueur 1
-    if(e.keyCode == 68)
+    if(e.keyCode == 39)
     {
         players[playerIndex].rightPressed = false;
     }
-    else if(e.keyCode == 81)
+    else if(e.keyCode == 37)
     {
         players[playerIndex].leftPressed = false;
     }
-    else if(e.keyCode == 83)
+    else if(e.keyCode == 40)
     {
         players[playerIndex].bottomPressed = false;
     }
-    else if(e.keyCode == 90)
+    else if(e.keyCode == 38)
     {
         players[playerIndex].topPressed = false;
     }
