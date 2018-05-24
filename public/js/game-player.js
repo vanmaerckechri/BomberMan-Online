@@ -168,6 +168,7 @@ function drawPlayer()
             players[playerIndex].bombsNumber--;
             players[playerIndex].spacePressed = false;
             dropBombs(playerIndex, playerPosRow, playerPosCol);
+            socket.emit('sendBombInfos', { playerIndex: playerIndex, playerPosRow: playerPosRow, playerPosCol: playerPosCol });
         }
         ctx.beginPath();
         ctx.rect(players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);

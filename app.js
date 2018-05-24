@@ -655,4 +655,9 @@ io.sockets.on('connection', function(socket)
 		socket.broadcast.to(socket.room).emit('updateOtherPlayerPos', playerPos);
 	});	
 
+	socket.on('sendBombInfos', function(bombInfos)
+	{
+		socket.broadcast.to(socket.room).emit('updateBombFromOtherPl', bombInfos);
+	});
+
 });

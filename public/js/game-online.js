@@ -14,6 +14,10 @@ socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	players[otherPlayerInfos.order].posY = otherPlayerInfos.playerInfos.posY;
 });
 
+socket.on('updateBombFromOtherPl', function(bombInfos)
+{
+	dropBombs(bombInfos.playerIndex, bombInfos.playerPosRow, bombInfos.playerPosCol);
+});
 
 let initGamePlayers = function(avatarsList)
 {
