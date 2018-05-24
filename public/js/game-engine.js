@@ -10,8 +10,8 @@ function engine()
     drawMap();
     drawPlayer();
     drawBombs();
+    drawOtherPlayer();
     requestAnimationFrame(engine);
 }
 
 genMapBoard();
-engine()

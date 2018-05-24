@@ -1,34 +1,19 @@
 let socket = io.connect(window.location.host);
 
-let updatePlayerPosition = function()
+let drawOtherPlayer = function()
 {
-	let sendPlayerPos = function()
-	{
-		let gameInfos = sessionStorage.getItem('gameInfos');
-		gameInfos = JSON.parse(gameInfos);
-		let order = gameInfos[3];
-		socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
-	}
-
-	socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
-	{
-		players[otherPlayerInfos.order].posX = otherPlayerInfos.playerInfos.posX;
-		players[otherPlayerInfos.order].posY = otherPlayerInfos.playerInfos.posY;
-		players[otherPlayerInfos.order].topPressed = otherPlayerInfos.playerInfos.topPressed;
-		players[otherPlayerInfos.order].rightPressed = otherPlayerInfos.playerInfos.rightPressed;
-		players[otherPlayerInfos.order].bottomPressed = otherPlayerInfos.playerInfos.bottomPressed;
-		players[otherPlayerInfos.order].leftPressed = otherPlayerInfos.playerInfos.leftPressed;
-		players[otherPlayerInfos.order].spacePressed = otherPlayerInfos.playerInfos.spacePressed;
-		players[otherPlayerInfos.order].spaceStopPressed = otherPlayerInfos.playerInfos.spaceStopPressed;
-		players[otherPlayerInfos.order].moving = otherPlayerInfos.playerInfos.moving;
-		players[otherPlayerInfos.order].bombsNumberMax = otherPlayerInfos.playerInfos.bombsNumberMax;
-		players[otherPlayerInfos.order].bombsNumber = otherPlayerInfos.playerInfos.bombsNumber;
-	});
-
-
-	document.addEventListener("keydown", sendPlayerPos, false);
-	document.addEventListener("keyup", sendPlayerPos, false);
+	let gameInfos = sessionStorage.getItem('gameInfos');
+	gameInfos = JSON.parse(gameInfos);
+	let order = gameInfos[3];
+	socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
 }
+
+socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
+{
+	players[otherPlayerInfos.order].posX = otherPlayerInfos.playerInfos.posX;
+	players[otherPlayerInfos.order].posY = otherPlayerInfos.playerInfos.posY;
+});
+
 
 let initGamePlayers = function(avatarsList)
 {
@@ -63,8 +48,7 @@ let initGamePlayers = function(avatarsList)
 		        break;
 		}
 	}
-	console.log(players);
-	updatePlayerPosition();
+	engine();
 }
 
 socket.on('launchInitGame', function(avatarsList)
@@ -72,5 +56,5 @@ socket.on('launchInitGame', function(avatarsList)
 	initGamePlayers(avatarsList);
 });
 
-	let gameInfos = sessionStorage.getItem('gameInfos');
-	socket.emit('authGameInfo', gameInfos);
+let gameInfos = sessionStorage.getItem('gameInfos');
+socket.emit('authGameInfo', gameInfos);
