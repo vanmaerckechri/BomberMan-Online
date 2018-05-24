@@ -1,6 +1,6 @@
 # Bomberman Online (en dév.)
 
-## La Démarche
+## Démarche
 
 Apprendre Node.js et quelques modules (express.js, socket.io, etc.) en réalisant un jeu en ligne et un lobby pour celui-ci.
 
