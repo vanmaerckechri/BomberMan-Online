@@ -1,5 +1,3 @@
-let socket = io.connect(window.location.host);
-
 let drawOtherPlayer = function()
 {
 	let gameInfos = sessionStorage.getItem('gameInfos');
@@ -53,6 +51,8 @@ let initGamePlayers = function(avatarsList)
 		}
 	}
 	engine();
+	// 25 images/sec pour le déplacement des autres joueurs.
+	setInterval(drawOtherPlayer, 40);
 }
 
 socket.on('launchInitGame', function(avatarsList)

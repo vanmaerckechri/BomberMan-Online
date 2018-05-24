@@ -10,7 +10,7 @@ function engine()
     drawMap();
     drawPlayer();
     drawBombs();
-    drawOtherPlayer();
+    //drawOtherPlayer();
     requestAnimationFrame(engine);
 }
 
