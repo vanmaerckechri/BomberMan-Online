@@ -408,15 +408,6 @@ function displayReadyList(socket)
 }
 
 let games = {};
-let game = 
-{
-	idTemp: 0,
-	id: 0,
-	userIds: [],
-	avatars: [],
-	pplByLobby: 0,
-	pplInThisRoom: 0
-};
 
 function checkToLaunchGame(socket)
 {
@@ -434,7 +425,15 @@ function checkToLaunchGame(socket)
 			}
 			gameId += io.sockets.connected[socket.room].id;
 		}
-		let newGame = game;
+		let newGame = 
+		{
+			idTemp: 0,
+			id: 0,
+			userIds: [],
+			avatars: [],
+			pplByLobby: 0,
+			pplInThisRoom: 0
+		};
 		newGame.idTemp = gameId;
 		newGame.pplByLobby = pplByLobby;
 		games[newGame.idTemp] = newGame;
