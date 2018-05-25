@@ -432,6 +432,7 @@ function checkToLaunchGame(socket)
 			userIds: [],
 			userNames: [],
 			avatars: [],
+			scores: [],
 			pplByLobby: 0,
 			pplInThisRoom: 0
 		};
@@ -444,7 +445,7 @@ function checkToLaunchGame(socket)
 			let avatar = io.sockets.connected[sockets[i]].avatar;
 			let name = io.sockets.connected[sockets[i]].name;
 			lobbies[socket.room].launchGame = 1;
-			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, name: name, avatar: avatar, order: i, pplByLobby: pplByLobby});
+			io.sockets.connected[sockets[i]].emit('checkToLaunchGame', {gameId: gameId, name: name, avatar: avatar, order: i, pplByLobby: pplByLobby, score: 0});
 		}
 	}
 }
@@ -458,6 +459,7 @@ function initGame(socket, gameInfos)
 	games[gameId].userIds[playerIndex] = socket.id;
 	games[gameId].userNames[playerIndex] = gameInfos.name;
 	games[gameId].avatars[playerIndex] = gameInfos.avatar;
+	games[gameId].scores[playerIndex] = gameInfos.score;
 	socket.room = gameId;
 	socket.join(gameId);
 }
@@ -651,10 +653,12 @@ io.sockets.on('connection', function(socket)
 		// Verifier que tous les joueurs ont chargé la partie.
 		if (games[socket.room].pplInThisRoom === games[socket.room].pplByLobby)
 		{
-			avatars = games[socket.room].avatars;
-			names = games[socket.room].userNames;
-			socket.emit('launchInitGame', { avatars: avatars, names: names });
-			socket.broadcast.to(socket.room).emit('launchInitGame', { avatars: avatars, names: names });
+			let avatars = games[socket.room].avatars;
+			let names = games[socket.room].userNames;
+			let scores = games[socket.room].scores;
+
+			socket.emit('launchInitGame', { avatars: avatars, names: names, scores: scores });
+			socket.broadcast.to(socket.room).emit('launchInitGame', { avatars: avatars, names: names, scores: scores });
 		}
 	});
 

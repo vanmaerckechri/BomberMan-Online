@@ -315,9 +315,7 @@ socket.on('checkToLaunchGame', function(gameInfos)
 		infos.push(gameInfos[propt])
 	}*/
 	sessionStorage.clear();
-	console.log(gameInfos)
 	sessionStorage.setItem("gameInfos", JSON.stringify(gameInfos));
-	console.log(JSON.stringify(gameInfos))
 
 	let form = document.createElement("form");
 	form.setAttribute("method", "POST");

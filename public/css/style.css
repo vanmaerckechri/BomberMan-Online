@@ -241,14 +241,19 @@ form {
   margin: 0 auto;
   padding: 0 10px;
   width: 480px; }
-  .ui .player {
+  .ui .uiPlayer {
     width: 50%;
     display: inline-block; }
-    .ui .player img {
+    .ui .uiPlayer img {
+      margin-right: 10px;
       display: inline-block;
       width: 32px;
       height: 32px; }
-  .ui .player2, .ui .player4 {
+    .ui .uiPlayer .uiPlayerInfos {
+      display: inline-block; }
+      .ui .uiPlayer .uiPlayerInfos p {
+        text-align: left; }
+  .ui .uiPlayer2, .ui .uiPlayer4 {
     text-align: right; }
 
 /*# sourceMappingURL=style.css.map */

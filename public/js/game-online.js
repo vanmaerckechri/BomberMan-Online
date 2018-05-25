@@ -25,7 +25,8 @@ let loadUI = function()
 		let playerNumber = i + 1;
 		let avatarImg = (gameInfos.avatarsList[i]) + 1;
 		let avatar = '<img src="assets/img/avatar'+avatarImg+'.png" alt="">';
-		uiDiv.innerHTML += '<div class="player player'+playerNumber+'">'+avatar+'Player'+playerNumber+': '+gameInfos.namesList[i]+'</div>';
+		uiDiv.innerHTML += '<div class="uiPlayer uiPlayer'+playerNumber+'">'+avatar+'<div class="uiPlayerInfos"><p><b>Player'+playerNumber+':</b> '+gameInfos.namesList[i]+'</p><p><b>Score: </b>'+gameInfos.scores[i]+'</p></div></div>';
+
 	}
 }
 
@@ -33,9 +34,11 @@ let initGamePlayers = function(avatarsAndNames)
 {
 	let avatarsList = avatarsAndNames.avatars;
 	let namesList = avatarsAndNames.names;
+	let scores = avatarsAndNames.scores;
 	gameInfos = JSON.parse(gameInfos);
 	gameInfos.namesList = namesList;
 	gameInfos.avatarsList = avatarsList;
+	gameInfos.scores = scores;
 	playerIndex = gameInfos.order;
 	for (let i = 0, pplInGame = gameInfos.pplByLobby; i < pplInGame; i++)
 	{
