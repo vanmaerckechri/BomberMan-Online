@@ -150,12 +150,9 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 		let playRow = Math.round(players[i].posY/ tileSize);
 		if (playCol == (exploDisX / tileSize) && playRow == (exploDisY / tileSize))
 		{
-			console.log('touché')
 			players[i].alive = 0;
-			players[i].posX = - tileSize;
-			players[i].posY = - tileSize;
-			console.log(i)
-			console.log(playerIndex)
+			players[i].posX = -1 * tileSize;
+			players[i].posY = -1 * tileSize;
 			if (i == playerIndex)
 			{
 				socket.emit('checkVictory');

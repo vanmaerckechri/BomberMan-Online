@@ -450,7 +450,7 @@ function checkToLaunchGame(socket)
 			let avatar = io.sockets.connected[sockets[i]].avatar;
 			let name = io.sockets.connected[sockets[i]].name;
 			lobbies[socket.room].launchGame = 1;
-			io.sockets.connected[sockets[i]].emit('loadGame', { gameId: gameId, playerIndex: i });
+			io.sockets.connected[sockets[i]].emit('loadGame', { gameId: gameId, playerIndex: i, scores: scores, avatars: avatars, userNames: userNames });
 		}
 	}
 }
@@ -492,11 +492,10 @@ function checkVictory(socket)
 		// s'il en reste UN en vie, celui-ci gagne un point.
 		if (playersAlive == 1)
 		{
+
 			console.log(games[socket.room].userNames[indexAlive]+' gagne un point');
 		}
-		console.log(playersAlive)
 	}
-	console.log(games[socket.room].alive)
 }
 
 // SOCKET.IO!
@@ -672,27 +671,36 @@ io.sockets.on('connection', function(socket)
 	});
 
 	// GAME!
-	socket.on('authGameInfo', function(gameInfos)// gameInfos = { gameId, playerIndex }
+	socket.on('authGameInfo', function(gameInfos)
 	{
 		let infos = JSON.parse(gameInfos)
 		let gameInfosEncode = {};
-
+		console.log(infos)
 		for (let property in infos)
 		{
-			let info = typeof infos[property] === "number" ? infos[property] : ent.encode(infos[property]);
-			gameInfosEncode[property] = info;
+			if (typeof infos[property] === "object")
+			{			
+				gameInfosEncode[property] = [];
+				for (let i = 0, arrayLength = infos[property].length; i < arrayLength; i++)
+				{
+					let cell = typeof infos[property][i] === "number" ? infos[property][i] : ent.encode(infos[property][i]);
+					gameInfosEncode[property].push(cell);
+				}
+			}
+			else
+			{
+				let info = typeof infos[property] === "number" ? infos[property] : ent.encode(infos[property]);
+				gameInfosEncode[property] = info;
+			}
 		}
 		initGame(socket, gameInfosEncode);
 		// Verifier que tous les joueurs ont chargé la partie.
 		if (games[socket.room].pplInThisRoom === games[socket.room].pplByLobby)
 		{
-			let avatars = games[socket.room].avatars;
-			let names = games[socket.room].userNames;
-			let scores = games[socket.room].scores;
-
-			socket.emit('initGame', { avatars: avatars, names: names, scores: scores });
-			socket.broadcast.to(socket.room).emit('initGame', { avatars: avatars, names: names, scores: scores });
+			socket.emit('initGame');
+			socket.broadcast.to(socket.room).emit('initGame');
 		}
+		console.log(gameInfosEncode)
 	});
 
 	socket.on('sendPlayerPos', function(playerPos)

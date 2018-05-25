@@ -22,37 +22,29 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 let loadUI = function()
 {
 	let uiDiv = document.querySelector('.ui');
-	for (let i = 0, pplInGame = gameInfos.namesList.length; i < pplInGame; i++)
+	for (let i = 0, pplInGame = gameInfos.userNames.length; i < pplInGame; i++)
 	{
 		let playerNumber = i + 1;
-		let avatarImg = (gameInfos.avatarsList[i]) + 1;
+		let avatarImg = (gameInfos.avatars[i]) + 1;
 		let avatar = '<img src="assets/img/avatar'+avatarImg+'.png" alt="">';
-		uiDiv.innerHTML += '<div class="uiPlayer uiPlayer'+playerNumber+'">'+avatar+'<div class="uiPlayerInfos"><p><b>Player'+playerNumber+':</b> '+gameInfos.namesList[i]+'</p><p><b>Score: </b>'+gameInfos.scores[i]+'</p></div></div>';
+		uiDiv.innerHTML += '<div class="uiPlayer uiPlayer'+playerNumber+'">'+avatar+'<div class="uiPlayerInfos"><p><b>Player'+playerNumber+':</b> '+gameInfos.userNames[i]+'</p><p><b>Score: </b>'+gameInfos.scores[i]+'</p></div></div>';
 
 	}
 }
 
-let initGame = function(uiInfos)
+let initGame = function()
 {
 	gameInfos = JSON.parse(gameInfos);
-	// Mise à jour des informations de la partie avec les données d'ui.
-	let avatarsList = uiInfos.avatars;
-	let namesList = uiInfos.names;
-	let scores = uiInfos.scores;
-	gameInfos.namesList = namesList;
-	gameInfos.avatarsList = avatarsList;
-	gameInfos.scores = scores;
-
 	playerIndex = gameInfos.playerIndex;
 	// Afficher les joueurs à leurs positions initiales avec le bon avatar.
-	for (let i = 0, pplInGame = gameInfos.namesList.length; i < pplInGame; i++)
+	for (let i = 0, pplInGame = gameInfos.userNames.length; i < pplInGame; i++)
 	{
 		// Cloner l'objet player.
 		playerTemp = JSON.parse(JSON.stringify(player));
 		// Ajouter ce dernier dans l'array players.
 		players.push(playerTemp);
 		// Lier les avatars aux joueurs.
-		players[i].color = avatars[avatarsList[i]];
+		players[i].color = avatars[gameInfos.avatars[i]];
 		// Mettre à jour ce nouvel objet avec les coordonnées initiales de position des joueurs.
 		switch(i)
 		{
@@ -80,9 +72,9 @@ let initGame = function(uiInfos)
 	setInterval(sharePlayerInfos, 40);
 }
 
-socket.on('initGame', function(uiInfos)
+socket.on('initGame', function()
 {
-	initGame(uiInfos);
+	initGame();
 });
 
 socket.emit('authGameInfo', gameInfos);
