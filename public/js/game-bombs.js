@@ -143,6 +143,19 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 		mapBoards[exploDisY / tileSize][exploDisX / tileSize].wall = 0;
 		return stopThisExplosionLenght;
 	}
+	// collisions avec un joueur.
+	for (let i = 0, playersLength = players.length; i < playersLength; i++)
+	{
+		let playCol = Math.round(players[i].posX / tileSize);
+		let playRow = Math.round(players[i].posY/ tileSize);
+		if (playCol == (exploDisX / tileSize) && playRow == (exploDisY / tileSize))
+		{
+			console.log('touché')
+			players[i].alive = 0;
+			players[i].posX = - tileSize;
+			players[i].posY = - tileSize;
+		}
+	}
 	return dontChangeExplosionLenght;
 }
 function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght)

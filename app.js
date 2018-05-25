@@ -644,7 +644,7 @@ io.sockets.on('connection', function(socket)
 	});
 
 	// GAME!
-	socket.on('authGameInfo', function(gameInfos)
+	socket.on('authGameInfo', function(gameInfos)// gameInfos = { gameId, playerIndex }
 	{
 		let infos = JSON.parse(gameInfos)
 		let gameInfosEncode = {};

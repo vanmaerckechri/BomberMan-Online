@@ -13,7 +13,8 @@ let player = {
     leftPressed: false,
     spacePressed: false,
     spaceStopPressed: true,
-    color: ''
+    color: '',
+    alive: 1
     };
 let players = [];
 
@@ -22,59 +23,64 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e)
 {
-    //joueur 1
-	if(e.keyCode == 39)
-	{
-	    players[playerIndex].rightPressed = true;
-	}
-	else if(e.keyCode == 37)
-	{
-	    players[playerIndex].leftPressed = true;
-	}
-	else if(e.keyCode == 40)
-	{
-	    players[playerIndex].bottomPressed = true;
-	}
-	else if(e.keyCode == 38)
-	{
-	    players[playerIndex].topPressed = true;
-	}
-	else if(e.keyCode == 32 && players[playerIndex].spaceStopPressed == true)
-	{
-	    players[playerIndex].spacePressed = true;
-	    players[playerIndex].spaceStopPressed = false;
-	}
+    if (players[playerIndex].alive == 1)
+    {
+        //joueur 1
+    	if(e.keyCode == 39)
+    	{
+    	    players[playerIndex].rightPressed = true;
+    	}
+    	else if(e.keyCode == 37)
+    	{
+    	    players[playerIndex].leftPressed = true;
+    	}
+    	else if(e.keyCode == 40)
+    	{
+    	    players[playerIndex].bottomPressed = true;
+    	}
+    	else if(e.keyCode == 38)
+    	{
+    	    players[playerIndex].topPressed = true;
+    	}
+    	else if(e.keyCode == 32 && players[playerIndex].spaceStopPressed == true)
+    	{
+    	    players[playerIndex].spacePressed = true;
+    	    players[playerIndex].spaceStopPressed = false;
+    	}
+    }
 }
 function keyUpHandler(e)
 {
-    //joueur 1
-    if(e.keyCode == 39)
+    if (players[playerIndex].alive == 1)
     {
-        players[playerIndex].rightPressed = false;
-    }
-    else if(e.keyCode == 37)
-    {
-        players[playerIndex].leftPressed = false;
-    }
-    else if(e.keyCode == 40)
-    {
-        players[playerIndex].bottomPressed = false;
-    }
-    else if(e.keyCode == 38)
-    {
-        players[playerIndex].topPressed = false;
-    }
-    else if(e.keyCode == 32)
-    {
-        players[playerIndex].spacePressed = false;
-      	players[playerIndex].spaceStopPressed = true;
+        //joueur 1
+        if(e.keyCode == 39)
+        {
+            players[playerIndex].rightPressed = false;
+        }
+        else if(e.keyCode == 37)
+        {
+            players[playerIndex].leftPressed = false;
+        }
+        else if(e.keyCode == 40)
+        {
+            players[playerIndex].bottomPressed = false;
+        }
+        else if(e.keyCode == 38)
+        {
+            players[playerIndex].topPressed = false;
+        }
+        else if(e.keyCode == 32)
+        {
+            players[playerIndex].spacePressed = false;
+          	players[playerIndex].spaceStopPressed = true;
+        }
     }
 }
 
 function drawPlayer()
 {
-
-    if (playerIndex != undefined)
+    if (playerIndex != undefined && players[playerIndex].alive == 1)
     {
         let playerPosArrayCol;
         let playerPosArrayRow;
@@ -177,18 +183,21 @@ function drawPlayer()
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
-        for (let i = 0, playersLength = players.length; i < playersLength; i++)
+    }
+}
+function drawOtherPlayers()
+{
+    for (let i = 0, playersLength = players.length; i < playersLength; i++)
+    {
+        if (i != playerIndex && players[i].alive == 1)
         {
-            if (i != playerIndex)
-            {
-                ctx.beginPath();
-                ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
-                ctx.fillStyle = players[i].color;
-                ctx.strokeStyle = 'rgb(0, 0, 0)';
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath();
-            }
+            ctx.beginPath();
+            ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
+            ctx.fillStyle = players[i].color;
+            ctx.strokeStyle = 'rgb(0, 0, 0)';
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
         }
     }
 }

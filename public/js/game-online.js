@@ -1,6 +1,6 @@
 let gameInfos = sessionStorage.getItem('gameInfos');
 
-let drawOtherPlayer = function()
+let sharePlayerInfos = function()
 {
 	let order = gameInfos.order;
 	socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
@@ -77,7 +77,7 @@ let initGame = function(uiInfos)
 	loadUI();
 	engine();
 	// 25 images/sec pour le déplacement des autres joueurs.
-	setInterval(drawOtherPlayer, 40);
+	setInterval(sharePlayerInfos, 40);
 }
 
 socket.on('initGame', function(uiInfos)
