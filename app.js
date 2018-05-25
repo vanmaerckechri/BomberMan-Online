@@ -452,12 +452,12 @@ function checkToLaunchGame(socket)
 
 function initGame(socket, gameInfos)
 {
-	let gameId = gameInfos[0];
-	let playerIndex = gameInfos[3];
+	let gameId = gameInfos.gameId;
+	let playerIndex = gameInfos.order;
 	games[gameId].pplInThisRoom++;
 	games[gameId].userIds[playerIndex] = socket.id;
-	games[gameId].userNames[playerIndex] = gameInfos[1];
-	games[gameId].avatars[playerIndex] = gameInfos[2];
+	games[gameId].userNames[playerIndex] = gameInfos.name;
+	games[gameId].avatars[playerIndex] = gameInfos.avatar;
 	socket.room = gameId;
 	socket.join(gameId);
 }
@@ -640,11 +640,12 @@ io.sockets.on('connection', function(socket)
 	socket.on('authGameInfo', function(gameInfos)
 	{
 		let infos = JSON.parse(gameInfos)
-		let gameInfosEncode = [];
-		for (let i = 0, infosLength = infos.length; i < infosLength; i++)
+		let gameInfosEncode = {};
+
+		for (let property in infos)
 		{
-			let info = typeof infos[i] === "number" ? infos[i] : ent.encode(infos[i]);
-			gameInfosEncode.push(info);
+			let info = typeof infos[property] === "number" ? infos[property] : ent.encode(infos[property]);
+			gameInfosEncode[property] = info;
 		}
 		initGame(socket, gameInfosEncode);
 		// Verifier que tous les joueurs ont chargé la partie.
@@ -659,11 +660,13 @@ io.sockets.on('connection', function(socket)
 
 	socket.on('sendPlayerPos', function(playerPos)
 	{
+		// ne pas oublier d'ajouter les encodes (playerPos).
 		socket.broadcast.to(socket.room).emit('updateOtherPlayerPos', playerPos);
 	});	
 
 	socket.on('sendBombInfos', function(bombInfos)
 	{
+		// ne pas oublier d'ajouter les encodes (bombInfos).
 		socket.broadcast.to(socket.room).emit('updateBombFromOtherPl', bombInfos);
 	});
 

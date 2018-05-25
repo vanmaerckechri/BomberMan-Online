@@ -309,13 +309,16 @@ socket.on('updateDisplayUsersReady', function(readyList)
 
 socket.on('checkToLaunchGame', function(gameInfos)
 {
-	let infos = [];
+	/*let infos = [];
 	for(let propt in gameInfos)
 	{
 		infos.push(gameInfos[propt])
-	}
+	}*/
 	sessionStorage.clear();
-	sessionStorage.setItem("gameInfos", JSON.stringify(infos));
+	console.log(gameInfos)
+	sessionStorage.setItem("gameInfos", JSON.stringify(gameInfos));
+	console.log(JSON.stringify(gameInfos))
+
 	let form = document.createElement("form");
 	form.setAttribute("method", "POST");
 	form.setAttribute("action", "game");

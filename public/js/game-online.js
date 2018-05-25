@@ -2,7 +2,7 @@ let gameInfos = sessionStorage.getItem('gameInfos');
 
 let drawOtherPlayer = function()
 {
-	let order = gameInfos[3];
+	let order = gameInfos.order;
 	socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
 }
 
@@ -20,12 +20,12 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 let loadUI = function()
 {
 	let uiDiv = document.querySelector('.ui');
-	for (let i = 0, pplInGame = gameInfos[4]; i < pplInGame; i++)
+	for (let i = 0, pplInGame = gameInfos.pplByLobby; i < pplInGame; i++)
 	{
 		let playerNumber = i + 1;
-		let avatarImg = (gameInfos[6][i]) + 1;
+		let avatarImg = (gameInfos.avatarsList[i]) + 1;
 		let avatar = '<img src="assets/img/avatar'+avatarImg+'.png" alt="">';
-		uiDiv.innerHTML += '<div class="player player'+playerNumber+'">'+avatar+'Player'+playerNumber+': '+gameInfos[5][i]+'</div>';
+		uiDiv.innerHTML += '<div class="player player'+playerNumber+'">'+avatar+'Player'+playerNumber+': '+gameInfos.namesList[i]+'</div>';
 	}
 }
 
@@ -34,10 +34,10 @@ let initGamePlayers = function(avatarsAndNames)
 	let avatarsList = avatarsAndNames.avatars;
 	let namesList = avatarsAndNames.names;
 	gameInfos = JSON.parse(gameInfos);
-	gameInfos.push(namesList);
-	gameInfos.push(avatarsList);
-	playerIndex = gameInfos[3];
-	for (let i = 0, pplInGame = gameInfos[4]; i < pplInGame; i++)
+	gameInfos.namesList = namesList;
+	gameInfos.avatarsList = avatarsList;
+	playerIndex = gameInfos.order;
+	for (let i = 0, pplInGame = gameInfos.pplByLobby; i < pplInGame; i++)
 	{
 		// Cloner l'objet player.
 		playerTemp = JSON.parse(JSON.stringify(player));
