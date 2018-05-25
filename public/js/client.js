@@ -307,13 +307,8 @@ socket.on('updateDisplayUsersReady', function(readyList)
 	}
 });
 
-socket.on('checkToLaunchGame', function(gameInfos)
+socket.on('loadGame', function(gameInfos)
 {
-	/*let infos = [];
-	for(let propt in gameInfos)
-	{
-		infos.push(gameInfos[propt])
-	}*/
 	sessionStorage.clear();
 	sessionStorage.setItem("gameInfos", JSON.stringify(gameInfos));
 

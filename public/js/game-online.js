@@ -17,10 +17,12 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 	dropBombs(bombInfos.playerIndex, bombInfos.playerPosRow, bombInfos.playerPosCol);
 });
 
+// LANCEMENT DE LA PARTIE!
+
 let loadUI = function()
 {
 	let uiDiv = document.querySelector('.ui');
-	for (let i = 0, pplInGame = gameInfos.pplByLobby; i < pplInGame; i++)
+	for (let i = 0, pplInGame = gameInfos.namesList.length; i < pplInGame; i++)
 	{
 		let playerNumber = i + 1;
 		let avatarImg = (gameInfos.avatarsList[i]) + 1;
@@ -30,24 +32,28 @@ let loadUI = function()
 	}
 }
 
-let initGamePlayers = function(avatarsAndNames)
+let initGame = function(uiInfos)
 {
-	let avatarsList = avatarsAndNames.avatars;
-	let namesList = avatarsAndNames.names;
-	let scores = avatarsAndNames.scores;
 	gameInfos = JSON.parse(gameInfos);
+	// Mise à jour des informations de la partie avec les données d'ui.
+	let avatarsList = uiInfos.avatars;
+	let namesList = uiInfos.names;
+	let scores = uiInfos.scores;
 	gameInfos.namesList = namesList;
 	gameInfos.avatarsList = avatarsList;
 	gameInfos.scores = scores;
-	playerIndex = gameInfos.order;
-	for (let i = 0, pplInGame = gameInfos.pplByLobby; i < pplInGame; i++)
+
+	playerIndex = gameInfos.playerIndex;
+	// Afficher les joueurs à leurs positions initiales avec le bon avatar.
+	for (let i = 0, pplInGame = gameInfos.namesList.length; i < pplInGame; i++)
 	{
 		// Cloner l'objet player.
 		playerTemp = JSON.parse(JSON.stringify(player));
 		// Ajouter ce dernier dans l'array players.
 		players.push(playerTemp);
-		// Mettre à jour ce nouvel objet.
+		// Lier les avatars aux joueurs.
 		players[i].color = avatars[avatarsList[i]];
+		// Mettre à jour ce nouvel objet avec les coordonnées initiales de position des joueurs.
 		switch(i)
 		{
 		    case 0:
@@ -74,9 +80,9 @@ let initGamePlayers = function(avatarsAndNames)
 	setInterval(drawOtherPlayer, 40);
 }
 
-socket.on('launchInitGame', function(avatarsAndNames)
+socket.on('initGame', function(uiInfos)
 {
-	initGamePlayers(avatarsAndNames);
+	initGame(uiInfos);
 });
 
 socket.emit('authGameInfo', gameInfos);
