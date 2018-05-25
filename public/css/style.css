@@ -237,4 +237,18 @@ form {
   opacity: 1;
   pointer-events: auto; }
 
+.ui {
+  margin: 0 auto;
+  padding: 0 10px;
+  width: 480px; }
+  .ui .player {
+    width: 50%;
+    display: inline-block; }
+    .ui .player img {
+      display: inline-block;
+      width: 32px;
+      height: 32px; }
+  .ui .player2, .ui .player4 {
+    text-align: right; }
+
 /*# sourceMappingURL=style.css.map */

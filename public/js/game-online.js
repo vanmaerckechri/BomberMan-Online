@@ -1,4 +1,5 @@
 let gameInfos = sessionStorage.getItem('gameInfos');
+
 let drawOtherPlayer = function()
 {
 	let order = gameInfos[3];
@@ -16,13 +17,27 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 	dropBombs(bombInfos.playerIndex, bombInfos.playerPosRow, bombInfos.playerPosCol);
 });
 
+let loadUI = function()
+{
+	let uiDiv = document.querySelector('.ui');
+	for (let i = 0, pplInGame = gameInfos[4]; i < pplInGame; i++)
+	{
+		let playerNumber = i + 1;
+		let avatarImg = (gameInfos[6][i]) + 1;
+		let avatar = '<img src="assets/img/avatar'+avatarImg+'.png" alt="">';
+		uiDiv.innerHTML += '<div class="player player'+playerNumber+'">'+avatar+'Player'+playerNumber+': '+gameInfos[5][i]+'</div>';
+	}
+}
+
 let initGamePlayers = function(avatarsAndNames)
 {
 	let avatarsList = avatarsAndNames.avatars;
 	let namesList = avatarsAndNames.names;
 	gameInfos = JSON.parse(gameInfos);
+	gameInfos.push(namesList);
+	gameInfos.push(avatarsList);
 	playerIndex = gameInfos[3];
-	for (let i = 0; i < gameInfos[4]; i++)
+	for (let i = 0, pplInGame = gameInfos[4]; i < pplInGame; i++)
 	{
 		// Cloner l'objet player.
 		playerTemp = JSON.parse(JSON.stringify(player));
@@ -50,6 +65,7 @@ let initGamePlayers = function(avatarsAndNames)
 		        break;
 		}
 	}
+	loadUI();
 	engine();
 	// 25 images/sec pour le déplacement des autres joueurs.
 	setInterval(drawOtherPlayer, 40);

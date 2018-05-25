@@ -101,3 +101,27 @@
 	opacity: 1;
 	pointer-events: auto;
 }
+
+// UI!
+
+.ui
+{
+	margin: 0 auto;
+	padding: 0 10px;
+	width: 480px;
+	.player
+	{
+		width: 50%;
+		display: inline-block;
+		img
+		{
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+		}
+	}
+	.player2, .player4
+	{
+		text-align: right;
+	}
+}
