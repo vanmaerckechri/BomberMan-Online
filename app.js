@@ -47,6 +47,15 @@ app.get('/', (req, res) =>
 	});
 });
 
+app.get('/game', (req, res) =>
+{
+	req.session.playerInfo = {};
+	res.render('pages/index',
+	{
+		main: 'connexion'
+	});
+});
+
 app.post('/game', (req, res) =>
 {
 	res.render('pages/game')	
@@ -474,6 +483,16 @@ function initGame(socket, gameInfos)
 	games[gameId].pplInThisRoom++;
 }
 
+function callNextRound(socket, indexAlive)
+{
+	if (games[socket.room].scores[indexAlive] < 2)
+	{		
+		games[socket.room].pplInThisRoom = 0;	
+		socket.emit('callNextRound', games[socket.room].scores);
+		socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
+	}
+}
+
 function checkVictory(socket)
 {
 	let playersAlive = games[socket.room].pplByLobby;
@@ -492,8 +511,8 @@ function checkVictory(socket)
 		// s'il en reste UN en vie, celui-ci gagne un point.
 		if (playersAlive == 1)
 		{
-
-			console.log(games[socket.room].userNames[indexAlive]+' gagne un point');
+			games[socket.room].scores[indexAlive]++;
+			callNextRound(socket, indexAlive);
 		}
 	}
 }
@@ -675,7 +694,6 @@ io.sockets.on('connection', function(socket)
 	{
 		let infos = JSON.parse(gameInfos)
 		let gameInfosEncode = {};
-		console.log(infos)
 		for (let property in infos)
 		{
 			if (typeof infos[property] === "object")
@@ -700,7 +718,6 @@ io.sockets.on('connection', function(socket)
 			socket.emit('initGame');
 			socket.broadcast.to(socket.room).emit('initGame');
 		}
-		console.log(gameInfosEncode)
 	});
 
 	socket.on('sendPlayerPos', function(playerPos)

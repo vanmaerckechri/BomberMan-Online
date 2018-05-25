@@ -17,6 +17,18 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 	dropBombs(bombInfos.playerIndex, bombInfos.playerPosRow, bombInfos.playerPosCol);
 });
 
+socket.on('callNextRound', function(scores)
+{
+	gameInfos.scores = scores;
+	sessionStorage.setItem("gameInfos", JSON.stringify(gameInfos));
+
+	let form = document.createElement("form");
+	form.setAttribute("method", "POST");
+	form.setAttribute("action", "game");
+	document.body.appendChild(form);
+	form.submit();
+});
+
 // LANCEMENT DE LA PARTIE!
 
 let loadUI = function()
@@ -34,6 +46,7 @@ let loadUI = function()
 
 let initGame = function()
 {
+	console.log('initGame2');
 	gameInfos = JSON.parse(gameInfos);
 	playerIndex = gameInfos.playerIndex;
 	// Afficher les joueurs à leurs positions initiales avec le bon avatar.
@@ -74,6 +87,7 @@ let initGame = function()
 
 socket.on('initGame', function()
 {
+	console.log('initGame1');
 	initGame();
 });
 
