@@ -154,6 +154,12 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 			players[i].alive = 0;
 			players[i].posX = - tileSize;
 			players[i].posY = - tileSize;
+			console.log(i)
+			console.log(playerIndex)
+			if (i == playerIndex)
+			{
+				socket.emit('checkVictory');
+			}
 		}
 	}
 	return dontChangeExplosionLenght;

@@ -417,6 +417,7 @@ function checkToLaunchGame(socket)
 	let userNames = [];
 	let avatars = [];
 	let scores = [];
+	let alive = [];
 	if (pplInThisRoom === pplByLobby)
 	{
 		let gameId = '';
@@ -430,12 +431,14 @@ function checkToLaunchGame(socket)
 			userNames.push(io.sockets.connected[sockets[i]].name);
 			avatars.push(io.sockets.connected[sockets[i]].avatar);
 			scores.push(0);
+			alive.push(1);
 		}
 		// Gabarit de l'objet d'une partie.
 		let newGame = 
 		{
 			userIds: [],
 			userNames: userNames,
+			alive: alive,
 			avatars: avatars,
 			scores: scores,
 			pplByLobby: pplByLobby,
@@ -469,6 +472,31 @@ function initGame(socket, gameInfos)
 	socket.score = games[gameId].scores[playerIndex];
 
 	games[gameId].pplInThisRoom++;
+}
+
+function checkVictory(socket)
+{
+	let playersAlive = games[socket.room].pplByLobby;
+	let indexAlive;
+	games[socket.room].alive[socket.playerIndex] = 0;
+	for (let i = 0, playersLength = playersAlive; i < playersLength; i++)
+	{
+		if (games[socket.room].alive[i] == 0)
+		{
+			playersAlive--;
+		}
+		else
+		{
+			indexAlive = i;
+		}
+		// s'il en reste UN en vie, celui-ci gagne un point.
+		if (playersAlive == 1)
+		{
+			console.log(games[socket.room].userNames[indexAlive]+' gagne un point');
+		}
+		console.log(playersAlive)
+	}
+	console.log(games[socket.room].alive)
 }
 
 // SOCKET.IO!
@@ -677,6 +705,11 @@ io.sockets.on('connection', function(socket)
 	{
 		// ne pas oublier d'ajouter les encodes (bombInfos).
 		socket.broadcast.to(socket.room).emit('updateBombFromOtherPl', bombInfos);
+	});
+
+	socket.on('checkVictory', function()
+	{
+		checkVictory(socket);
 	});
 
 });
