@@ -425,21 +425,17 @@ function checkToLaunchGame(socket)
 			}
 			gameId += io.sockets.connected[socket.room].id;
 		}
+		// Gabarit de l'objet d'une partie.
 		let newGame = 
 		{
-			idTemp: 0,
-			id: 0,
 			userIds: [],
 			userNames: [],
 			avatars: [],
 			scores: [],
-			pplByLobby: 0,
+			pplByLobby: pplByLobby,
 			pplInThisRoom: 0
 		};
-		newGame.idTemp = gameId;
-		newGame.pplByLobby = pplByLobby;
-		newGame.pplByLobby = pplByLobby;
-		games[newGame.idTemp] = newGame;
+		games[gameId] = newGame;
 		for (let i = 0; i < pplByLobby; i++)
 		{
 			let avatar = io.sockets.connected[sockets[i]].avatar;
@@ -449,22 +445,26 @@ function checkToLaunchGame(socket)
 		}
 	}
 }
+
 // GAME!
 
 function initGame(socket, gameInfos)
 {
 	let gameId = gameInfos.gameId;
 	let playerIndex = gameInfos.order;
+	// Regrouper les infos des joueurs pour la partie active.
 	games[gameId].pplInThisRoom++;
 	games[gameId].userIds[playerIndex] = socket.id;
 	games[gameId].userNames[playerIndex] = gameInfos.name;
 	games[gameId].avatars[playerIndex] = gameInfos.avatar;
 	games[gameId].scores[playerIndex] = gameInfos.score;
+	// Lier les infos perso au socket.
 	socket.room = gameId;
 	socket.join(gameId);
+	socket.name = gameInfos.name;
+	socket.avatar = gameInfos.avatar;
+	socket.score = gameInfos.score;
 }
-
-
 
 // SOCKET.IO!
 
