@@ -1,7 +1,6 @@
+let gameInfos = sessionStorage.getItem('gameInfos');
 let drawOtherPlayer = function()
 {
-	let gameInfos = sessionStorage.getItem('gameInfos');
-	gameInfos = JSON.parse(gameInfos);
 	let order = gameInfos[3];
 	socket.emit('sendPlayerPos', { playerInfos: players[playerIndex], order: playerIndex });
 }
@@ -17,10 +16,11 @@ socket.on('updateBombFromOtherPl', function(bombInfos)
 	dropBombs(bombInfos.playerIndex, bombInfos.playerPosRow, bombInfos.playerPosCol);
 });
 
-let initGamePlayers = function(avatarsList)
+let initGamePlayers = function(avatarsAndNames)
 {
-	let gameInfos = sessionStorage.getItem('gameInfos');
-	gameInfos = JSON.parse(gameInfos)
+	let avatarsList = avatarsAndNames.avatars;
+	let namesList = avatarsAndNames.names;
+	gameInfos = JSON.parse(gameInfos);
 	playerIndex = gameInfos[3];
 	for (let i = 0; i < gameInfos[4]; i++)
 	{
@@ -55,10 +55,9 @@ let initGamePlayers = function(avatarsList)
 	setInterval(drawOtherPlayer, 40);
 }
 
-socket.on('launchInitGame', function(avatarsList)
+socket.on('launchInitGame', function(avatarsAndNames)
 {
-	initGamePlayers(avatarsList);
+	initGamePlayers(avatarsAndNames);
 });
 
-let gameInfos = sessionStorage.getItem('gameInfos');
 socket.emit('authGameInfo', gameInfos);

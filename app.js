@@ -430,11 +430,13 @@ function checkToLaunchGame(socket)
 			idTemp: 0,
 			id: 0,
 			userIds: [],
+			userNames: [],
 			avatars: [],
 			pplByLobby: 0,
 			pplInThisRoom: 0
 		};
 		newGame.idTemp = gameId;
+		newGame.pplByLobby = pplByLobby;
 		newGame.pplByLobby = pplByLobby;
 		games[newGame.idTemp] = newGame;
 		for (let i = 0; i < pplByLobby; i++)
@@ -450,12 +452,17 @@ function checkToLaunchGame(socket)
 
 function initGame(socket, gameInfos)
 {
-	games[gameInfos[0]].pplInThisRoom++;
-	games[gameInfos[0]].userIds[gameInfos[3]] = socket.id;
-	games[gameInfos[0]].avatars[gameInfos[3]] = gameInfos[2];
-	socket.room = gameInfos[0];
-	socket.join(gameInfos[0]);
+	let gameId = gameInfos[0];
+	let playerIndex = gameInfos[3];
+	games[gameId].pplInThisRoom++;
+	games[gameId].userIds[playerIndex] = socket.id;
+	games[gameId].userNames[playerIndex] = gameInfos[1];
+	games[gameId].avatars[playerIndex] = gameInfos[2];
+	socket.room = gameId;
+	socket.join(gameId);
 }
+
+
 
 // SOCKET.IO!
 
@@ -644,8 +651,9 @@ io.sockets.on('connection', function(socket)
 		if (games[socket.room].pplInThisRoom === games[socket.room].pplByLobby)
 		{
 			avatars = games[socket.room].avatars;
-			socket.emit('launchInitGame', avatars);
-			socket.broadcast.to(socket.room).emit('launchInitGame', avatars);
+			names = games[socket.room].userNames;
+			socket.emit('launchInitGame', { avatars: avatars, names: names });
+			socket.broadcast.to(socket.room).emit('launchInitGame', { avatars: avatars, names: names });
 		}
 	});
 
