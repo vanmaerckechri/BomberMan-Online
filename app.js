@@ -426,7 +426,6 @@ function checkToLaunchGame(socket)
 	let userNames = [];
 	let avatars = [];
 	let scores = [];
-	let alive = [];
 	if (pplInThisRoom === pplByLobby)
 	{
 		let gameId = '';
@@ -440,14 +439,13 @@ function checkToLaunchGame(socket)
 			userNames.push(io.sockets.connected[sockets[i]].name);
 			avatars.push(io.sockets.connected[sockets[i]].avatar);
 			scores.push(0);
-			alive.push(1);
 		}
 		// Gabarit de l'objet d'une partie.
 		let newGame = 
 		{
 			userIds: [],
 			userNames: userNames,
-			alive: alive,
+			alive: [],
 			avatars: avatars,
 			scores: scores,
 			pplByLobby: pplByLobby,
@@ -479,21 +477,27 @@ function initGame(socket, gameInfos)
 	socket.name = games[gameId].userNames[playerIndex];
 	socket.avatar = games[gameId].avatars[playerIndex];
 	socket.score = games[gameId].scores[playerIndex];
+	games[gameId].alive[playerIndex] = 1;
 
 	games[gameId].pplInThisRoom++;
 }
 
-function callNextRound(socket, indexAlive)
+function checkVictory(socket, indexAlive)
 {
 	if (games[socket.room].scores[indexAlive] < 2)
-	{		
+	{
 		games[socket.room].pplInThisRoom = 0;	
 		socket.emit('callNextRound', games[socket.room].scores);
 		socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
 	}
+	else
+	{
+		console.log('victoire')
+		//VICTOIRE!
+	}
 }
 
-function checkVictory(socket)
+function countPlayersAlive(socket)
 {
 	let playersAlive = games[socket.room].pplByLobby;
 	let indexAlive;
@@ -508,12 +512,12 @@ function checkVictory(socket)
 		{
 			indexAlive = i;
 		}
-		// s'il en reste UN en vie, celui-ci gagne un point.
-		if (playersAlive == 1)
-		{
-			games[socket.room].scores[indexAlive]++;
-			callNextRound(socket, indexAlive);
-		}
+	}
+	// s'il en reste UN en vie, celui-ci gagne un point.
+	if (playersAlive == 1)
+	{
+		games[socket.room].scores[indexAlive]++;
+		checkVictory(socket, indexAlive);
 	}
 }
 
@@ -732,9 +736,9 @@ io.sockets.on('connection', function(socket)
 		socket.broadcast.to(socket.room).emit('updateBombFromOtherPl', bombInfos);
 	});
 
-	socket.on('checkVictory', function()
+	socket.on('countPlayersAlive', function()
 	{
-		checkVictory(socket);
+		countPlayersAlive(socket);
 	});
 
 });

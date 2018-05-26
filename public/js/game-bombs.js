@@ -155,7 +155,7 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 			players[i].posY = -1 * tileSize;
 			if (i == playerIndex)
 			{
-				socket.emit('checkVictory');
+				socket.emit('countPlayersAlive');
 			}
 		}
 	}
