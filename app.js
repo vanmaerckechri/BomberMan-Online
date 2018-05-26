@@ -466,20 +466,23 @@ function checkToLaunchGame(socket)
 
 function initGame(socket, gameInfos)
 {
-	let gameId = gameInfos.gameId;
-	let playerIndex = gameInfos.playerIndex;
-	// Ajouter les nouveaux ids des joueurs dans la partie actuelle.
-	games[gameId].userIds[playerIndex] = socket.id;
-	// Lier les infos perso au socket.
-	socket.room = gameId;
-	socket.join(gameId);
-	socket.playerIndex = playerIndex;
-	socket.name = games[gameId].userNames[playerIndex];
-	socket.avatar = games[gameId].avatars[playerIndex];
-	socket.score = games[gameId].scores[playerIndex];
-	games[gameId].alive[playerIndex] = 1;
+	if (gameInfos.gameId && games[gameInfos.gameId])// Permet d'éviter que le serveur ne plante lors d'un retour en arrière avec le navigateur.
+	{
+		let gameId = gameInfos.gameId;
+		let playerIndex = gameInfos.playerIndex;
+		// Ajouter les nouveaux ids des joueurs dans la partie actuelle.
+		games[gameId].userIds[playerIndex] = socket.id;
+		// Lier les infos perso au socket.
+		socket.room = gameId;
+		socket.join(gameId);
+		socket.playerIndex = playerIndex;
+		socket.name = games[gameId].userNames[playerIndex];
+		socket.avatar = games[gameId].avatars[playerIndex];
+		socket.score = games[gameId].scores[playerIndex];
+		games[gameId].alive[playerIndex] = 1;
 
-	games[gameId].pplInThisRoom++;
+		games[gameId].pplInThisRoom++;
+	}
 }
 
 function checkVictory(socket, indexAlive)
