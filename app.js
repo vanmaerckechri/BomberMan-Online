@@ -744,4 +744,26 @@ io.sockets.on('connection', function(socket)
 		countPlayersAlive(socket);
 	});
 
+
+	// Bombes.
+	socket.on('exploseBomb', function(bombIndex)
+	{
+	    let timingExplosion = setTimeout(function()
+        {
+        	socket.emit('exploseBomb', bombIndex);
+			socket.broadcast.to(socket.room).emit('exploseBomb', bombIndex);
+            clearTimeout(timingExplosion);
+        }, 2000);
+	});
+	socket.on('finishExplosionBomb', function(bombIndex)
+	{
+		let timingEndOfExplosion = setTimeout(function()
+        {
+        	socket.emit('endExplosion', bombIndex);
+			socket.broadcast.to(socket.room).emit('endExplosion', bombIndex);
+            clearTimeout(timingEndOfExplosion);
+        }, 1000);
+	});
+
+
 });

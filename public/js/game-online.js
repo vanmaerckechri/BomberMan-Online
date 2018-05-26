@@ -29,6 +29,34 @@ socket.on('callNextRound', function(scores)
 	form.submit();
 });
 
+// Bombes.
+socket.on('exploseBomb', function(bombIndex)
+{
+	if (bombsInGame[bombIndex])
+	{
+		let bomb = 	bombsInGame[bombIndex];
+		let bombPosX = bomb.posCol * tileSize + (tileSize / 2);
+		let bombPosY = bomb.posRow * tileSize + (tileSize / 2);
+	   	bomb.status = 2;
+	   	bomb.cycle = 0;
+	    mapBoards[bomb.posRow][bomb.posCol].wall = 0;
+		if (playerIndex == bomb.fromPlayer)
+		{    				
+			players[bomb.fromPlayer].bombsNumber++;
+		}			
+		exploseBomb(bomb, bombPosX, bombPosY);
+	}
+});
+socket.on('endExplosion', function(bombIndex)
+{
+	if (bombsInGame[bombIndex])
+	{
+		let bomb = 	bombsInGame[bombIndex];
+		bomb.status = 5;
+		bomb.cycle = 5;
+	}
+});
+
 // LANCEMENT DE LA PARTIE!
 
 let loadUI = function()
@@ -65,11 +93,11 @@ let initGame = function()
 		        players[0].posY = tileSize;
 		        break;
 		    case 1:
-		        players[1].posX = (tileNumberByRow * tileSize) - (2 * tileSize);
+		        players[1].posX = (tileNumberByCol * tileSize) - (2 * tileSize);
 		        players[1].posY = (tileNumberByRow * tileSize) - (2 * tileSize);
 		        break;
 		    case 2:
-		        players[2].posX = (tileNumberByRow * tileSize) - (2 * tileSize);
+		        players[2].posX = (tileNumberByCol * tileSize) - (2 * tileSize);
 		        players[2].posY = tileSize;
 		        break;
 		    case 3:

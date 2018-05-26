@@ -39,12 +39,10 @@ function exploseBomb(bomb, bombPosX, bombPosY)
 	if (bomb.status == 2 && bomb.cycle == 0)
     {
     	bomb.cycle = 1;
-	    bomb.TimingExplosion = setTimeout(function()
-        {
-            bomb.status = 5;
-            bomb.cycle = 5;
-            clearTimeout(bomb.TimingExplosion);
-        },1000);
+       	if (bomb.fromPlayer == playerIndex)
+		{
+			socket.emit('finishExplosionBomb', bomb.id);
+		}
 	}
 }
 
@@ -61,7 +59,8 @@ function dropBombs(index, playerPosRow, playerPosCol)
 		south: 2,
 		west: 2,
 		TimingExplosion: '',
-		fromPlayer: index
+		fromPlayer: index,
+		id: 0
 	};
 	//bomb col
 	bomb.posCol = playerPosCol;
@@ -78,6 +77,7 @@ function drawBombs()
 	for (let i = 0; i < bombsInGame.length; i++)
 	{
 		let bomb = bombsInGame[i];
+		bomb.id = i;
 		//si la bombe est active (status 5 = bombe déjà explosée => inactive).
 		if (bomb.status !=5)
 		{
@@ -98,16 +98,13 @@ function drawBombs()
 			    if (bomb.cycle == 0)
 	            {
 	            	bomb.cycle = 1;
-				    bomb.TimingExplosion = setTimeout(function()
-		            {
-	                   	bomb.status = 2;
-	                   	bomb.cycle = 0;
-	                    players[bomb.fromPlayer].bombsNumber++;
-	                    mapBoards[bomb.posRow][bomb.posCol].wall = 0;
-	                    clearTimeout(bomb.TimingExplosion);
-		            },2000);
-				}
+					if (bomb.fromPlayer == playerIndex)
+					{
+						socket.emit('exploseBomb', i);
+					}
+	            }
 			}
+
 			if (bomb.status == 2)
 			{
 				exploseBomb(bomb, bombPosX, bombPosY);
@@ -117,7 +114,6 @@ function drawBombs()
 }
 function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght)
 {
-
 	//collisions avec les bombes => arrêt propagation explosion dans cette direction mais on dessine sur cette case et on active l'explosion de la bombe touchée.
 	for (let i = 0; i < bombsInGame.length; i++)
 	{
@@ -125,7 +121,6 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 		{
 	       	bombsInGame[i].status = 2;
 	       	bombsInGame[i].cycle = 0;
-	        players[bombsInGame[i].fromPlayer].bombsNumber++;
 	        mapBoards[bombsInGame[i].posRow][bombsInGame[i].posCol].wall = 0;
 	        clearTimeout(bombsInGame[i].TimingExplosion);
 	        return stopThisExplosionLenght;
@@ -161,6 +156,7 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 	}
 	return dontChangeExplosionLenght;
 }
+
 function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght)
 {
 	//test les collisions.
