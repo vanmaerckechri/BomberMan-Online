@@ -1,9 +1,9 @@
-var tileSize = 32;
-var tileNumberByRow = 15;
-var tileNumberByCol = 15;
-var mapBoards = [];
+let tileSize = 32;
+let tileNumberByRow = 15;
+let tileNumberByCol = 15;
+let mapBoards = [];
 // 20 cases / 20 cases
-var map01 = [
+let map01 = [
 	9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
 	9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9,
 	9, 0, 9, 2, 9, 2, 9, 0, 9, 0, 9, 0, 9, 0, 9,
@@ -45,51 +45,45 @@ function genMapBoard()
 		}
     }
 }
-
+    let floor1 = new Image(tileSize, tileSize);
+    floor1.src = 'assets/img/normal1.svg';
+    let floor2 = new Image(tileSize, tileSize);
+    floor2.src = 'assets/img/normal2.svg';
+    let unbreakBlock = new Image(tileSize, tileSize);
+    unbreakBlock.src = 'assets/img/unbreak.svg';
+    let box = new Image(tileSize, tileSize);
+    box.src = 'assets/img/box1.svg';
 function drawMap()
 {
 	let tile;
 	let tileX;
     let tileY;
-	for(var r = 0; r < tileNumberByRow; r++)
+    let switchTemp;
+    let switchImg = [floor1, floor2];
+	for(let r = 0; r < tileNumberByRow; r++)
     {
-        for(var c = 0; c < tileNumberByCol; c++)
+        for(let c = 0; c < tileNumberByCol; c++)
         {
             tileType = mapBoards[r][c].type;
            	tileX = c  * tileSize;
     		tileY = r  * tileSize;
+            switchTemp = switchImg[0];
+            switchImg[0] = switchImg[1];
+            switchImg[1] = switchTemp;
             //sol.
-            if(tileType < 3)
+            if(tileType == 0)
             {
-    	        ctx.beginPath();
-                ctx.rect(tileX, tileY, tileSize, tileSize);
-                ctx.fillStyle = 'rgb(125, 125, 125)';
-                ctx.strokeStyle = 'rgb(0, 0, 0)';
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath(); 
+                ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
             }
             //murs destructibles.
             if(tileType == 2)
             {
-                ctx.beginPath();
-                ctx.rect(tileX, tileY, tileSize, tileSize);
-                ctx.fillStyle = 'rgb(100, 75, 50)';
-                ctx.strokeStyle = 'rgb(0, 0, 0)';
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath(); 
+                ctx.drawImage(box, tileX, tileY, tileSize, tileSize);
             }
             //murs indestructibles.
             if(tileType == 9)
             {
-    	        ctx.beginPath();
-                ctx.rect(tileX, tileY, tileSize, tileSize);
-                ctx.fillStyle = 'rgb(50, 50, 60)';
-                ctx.strokeStyle = 'rgb(0, 0, 0)';
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath(); 
+                ctx.drawImage(unbreakBlock, tileX, tileY, tileSize, tileSize);
             }
         }
     }
