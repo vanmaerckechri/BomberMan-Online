@@ -140,6 +140,11 @@ function drawBombs()
 
 			if (bomb.status == 2)
 			{
+				ctx.beginPath();
+				ctx.rect(bombPosX, bombPosY, tileSize, tileSize);
+				ctx.fillStyle = 'rgb(255, 182, 57)';
+				ctx.fill();
+				ctx.closePath();
 				exploseBomb(bomb, bombPosX, bombPosY);
 			}
 		}
@@ -199,11 +204,6 @@ function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dont
 	// 5 -> 8: fireCenter (haut, droit, bas, gauche).
 	if (testDraw == dontChangeExplosionLenght)
 	{
-		ctx.beginPath();
-		ctx.rect(exploDisX, exploDisY, tileSize, tileSize);
-		ctx.fillStyle = 'orange';
-		ctx.fill();
-		ctx.closePath();
 		ctx.drawImage(fireImg, fireImgX, fireImgY, 32, 32, exploDisX, exploDisY, tileSize, tileSize);
 	}
 	return testDraw;
