@@ -1,4 +1,8 @@
-var bombsInGame = [];
+let bombsInGame = [];
+let bombImg = new Image();
+bombImg.src = 'assets/img/bomb.svg';
+let fireImg = new Image();
+fireImg.src = 'assets/img/fire.svg';
 
 function exploseBomb(bomb, bombPosX, bombPosY)
 {
@@ -14,23 +18,50 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	//north
     	if (bombPosRow > 1 && bomb.north >= explosionLenght)
     	{
-    		bomb.north = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north);
+    		if (explosionLenght < bomb.explosionLenghtMax)
+    		{
+    			bomb.north = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 32);
+    		}
+    		else
+     		{
+    			bomb.north = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 0);
+    		}   			
     	}
     	//east
     	if (bombPosCol < (tileNumberByCol - 2) && bomb.east >= explosionLenght)
     	{
-    		bomb.east = drawExplosion(bombPosX - tileSize / 2 + (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.east);
+    		if (explosionLenght < bomb.explosionLenghtMax)
+    		{
+    			bomb.east = drawExplosion(bombPosX - tileSize / 2 + (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.east, 32, 32);
+    		}
+    		else
+    		{
+    		    bomb.east = drawExplosion(bombPosX - tileSize / 2 + (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.east, 32, 0);	
+    		}
     	}
     	//south
     	if (bombPosRow < (tileNumberByRow - 2) && bomb.south >= explosionLenght)
-    	{
-    		bomb.south = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south);
-
+    	{    	
+    		if (explosionLenght < bomb.explosionLenghtMax)
+    		{
+    			bomb.south = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 32);
+    		}
+    		else
+    		{
+    			bomb.south = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 0);
+    		}			
     	}
     	//west
     	if (bombPosCol > 1 && bomb.west >= explosionLenght)
     	{
-    		bomb.west = drawExplosion(bombPosX - tileSize / 2 - (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.west);
+    		if (explosionLenght < bomb.explosionLenghtMax)
+    		{
+    			bomb.west = drawExplosion(bombPosX - tileSize / 2 - (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.west, 96, 32);
+    		}
+    		else
+    		{
+    			bomb.west = drawExplosion(bombPosX - tileSize / 2 - (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.west, 96, 0);
+    		}
     	}
     	explosionLenght++;
     }
@@ -81,19 +112,21 @@ function drawBombs()
 		//si la bombe est active (status 5 = bombe déjà explosée => inactive).
 		if (bomb.status !=5)
 		{
-			let bombPosX = bomb.posCol * tileSize + (tileSize / 2);
-			let bombPosY = bomb.posRow * tileSize + (tileSize / 2);
+			let bombPosX = bomb.posCol * tileSize;
+			let bombPosY = bomb.posRow * tileSize;
 			let bombTimingEndOfExplosion;
 
 			if (bomb.status == 1)
 			{
+				ctx.drawImage(bombImg, bombPosX, bombPosY, tileSize, tileSize);
+				/*
 			    ctx.beginPath();
 			    ctx.arc(bombPosX, bombPosY, tileSize / 2, 0, 2 * Math.PI, false);
 			    ctx.fillStyle = 'orange';
 			    ctx.fill();
 			    ctx.lineWidth = 2;
 			    ctx.strokeStyle = '#003300';
-			    ctx.stroke();
+			    ctx.stroke();*/
 			    //timing avant explosion
 			    if (bomb.cycle == 0)
 	            {
@@ -107,7 +140,7 @@ function drawBombs()
 
 			if (bomb.status == 2)
 			{
-				exploseBomb(bomb, bombPosX, bombPosY);
+				exploseBomb(bomb, bombPosX + (tileSize / 2), bombPosY + (tileSize / 2));
 			}
 		}
 	}
@@ -157,18 +190,22 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 	return dontChangeExplosionLenght;
 }
 
-function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght)
+function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght, fireImgX, fireImgY)
 {
 	//test les collisions.
 	let testDraw = checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght);
 	//si on ne se retrouve pas au dessus d'un élément indestructible => dessin de l'explosion.
+	// 1 -> 4: fireEnd (haut, droit, bas, gauche).
+	// 5 -> 8: fireCenter (haut, droit, bas, gauche).
 	if (testDraw == dontChangeExplosionLenght)
 	{
+		ctx.drawImage(fireImg, fireImgX, fireImgY, 32, 32, exploDisX, exploDisY, tileSize, tileSize);
+		/*
 		ctx.beginPath();
 		ctx.rect(exploDisX, exploDisY, tileSize, tileSize);
 		ctx.fillStyle = 'orange';
 		ctx.fill();
-		ctx.closePath();
+		ctx.closePath();*/
 	}
 	return testDraw;
 }

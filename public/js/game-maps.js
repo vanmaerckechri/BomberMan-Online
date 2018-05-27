@@ -1,4 +1,4 @@
-let tileSize = 32;
+let tileSize = 48;
 let tileNumberByRow = 15;
 let tileNumberByCol = 15;
 let mapBoards = [];
@@ -17,9 +17,17 @@ let map01 = [
 	9, 0, 9, 0, 9, 0, 9, 0, 9, 2, 9, 2, 9, 2, 9,
 	9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 9,
 	9, 0, 9, 0, 9, 0, 9, 0, 9, 2, 9, 2, 9, 0, 9,
-	9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 9,
+	9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9,
 	9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
 	];
+let floor1 = new Image();
+floor1.src = 'assets/img/normal1.svg';
+let floor2 = new Image();
+floor2.src = 'assets/img/normal2.svg';
+let unbreakBlock = new Image();
+unbreakBlock.src = 'assets/img/unbreak.svg';
+let box = new Image();
+box.src = 'assets/img/box1.svg';
 // transforme les tableaux map de dimension unique en tableau à deux dimensions (row / col)
 function genMapBoard()
 {
@@ -45,14 +53,7 @@ function genMapBoard()
 		}
     }
 }
-    let floor1 = new Image(tileSize, tileSize);
-    floor1.src = 'assets/img/normal1.svg';
-    let floor2 = new Image(tileSize, tileSize);
-    floor2.src = 'assets/img/normal2.svg';
-    let unbreakBlock = new Image(tileSize, tileSize);
-    unbreakBlock.src = 'assets/img/unbreak.svg';
-    let box = new Image(tileSize, tileSize);
-    box.src = 'assets/img/box1.svg';
+
 function drawMap()
 {
 	let tile;

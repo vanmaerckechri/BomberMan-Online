@@ -166,6 +166,32 @@ form {
           font-size: 1rem;
           height: 100%; }
 
+.gameMain {
+  background-color: #16171a; }
+  .gameMain .ui {
+    margin: 0 auto 4px;
+    padding: 0 10px;
+    width: 480px; }
+    .gameMain .ui .uiPlayer {
+      width: 50%;
+      display: inline-block; }
+      .gameMain .ui .uiPlayer img {
+        margin-right: 10px;
+        border-radius: 50%;
+        border: 1px solid white;
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-color: #40434e; }
+      .gameMain .ui .uiPlayer .uiPlayerInfos {
+        display: inline-block; }
+        .gameMain .ui .uiPlayer .uiPlayerInfos p {
+          text-align: left;
+          font-size: .8rem;
+          color: white; }
+    .gameMain .ui .uiPlayer2, .gameMain .ui .uiPlayer4 {
+      text-align: right; }
+
 .error {
   margin: .5rem 0;
   color: red;
@@ -236,24 +262,5 @@ form {
 .displayAvatarsPannel {
   opacity: 1;
   pointer-events: auto; }
-
-.ui {
-  margin: 0 auto;
-  padding: 0 10px;
-  width: 480px; }
-  .ui .uiPlayer {
-    width: 50%;
-    display: inline-block; }
-    .ui .uiPlayer img {
-      margin-right: 10px;
-      display: inline-block;
-      width: 32px;
-      height: 32px; }
-    .ui .uiPlayer .uiPlayerInfos {
-      display: inline-block; }
-      .ui .uiPlayer .uiPlayerInfos p {
-        text-align: left; }
-  .ui .uiPlayer2, .ui .uiPlayer4 {
-    text-align: right; }
 
 /*# sourceMappingURL=style.css.map */

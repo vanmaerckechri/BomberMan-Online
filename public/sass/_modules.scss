@@ -101,36 +101,3 @@
 	opacity: 1;
 	pointer-events: auto;
 }
-
-// UI!
-
-.ui
-{
-	margin: 0 auto;
-	padding: 0 10px;
-	width: 480px;
-	.uiPlayer
-	{
-		width: 50%;
-		display: inline-block;
-		img
-		{
-			margin-right: 10px;
-			display: inline-block;
-			width: 32px;
-			height: 32px;
-		}
-		.uiPlayerInfos
-		{
-			display: inline-block;
-			p
-			{
-				text-align: left;
-			}
-		}
-	}
-	.uiPlayer2, .uiPlayer4
-	{
-		text-align: right;
-	}
-}
