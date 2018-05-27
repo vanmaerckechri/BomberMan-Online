@@ -35,8 +35,8 @@ socket.on('exploseBomb', function(bombIndex)
 	if (bombsInGame[bombIndex])
 	{
 		let bomb = 	bombsInGame[bombIndex];
-		let bombPosX = bomb.posCol * tileSize + (tileSize / 2);
-		let bombPosY = bomb.posRow * tileSize + (tileSize / 2);
+		let bombPosX = bomb.posCol * tileSize;
+		let bombPosY = bomb.posRow * tileSize;
 	   	bomb.status = 2;
 	   	bomb.cycle = 0;
 	    mapBoards[bomb.posRow][bomb.posCol].wall = 0;

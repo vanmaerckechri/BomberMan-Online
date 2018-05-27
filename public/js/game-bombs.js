@@ -6,7 +6,7 @@ fireImg.src = 'assets/img/fire.svg';
 
 function exploseBomb(bomb, bombPosX, bombPosY)
 {
-	let returnUseless = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2, bomb, 2, 2);
+	let returnUseless = drawExplosion(bombPosX, bombPosY, bomb, 2, 2);
 	//drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2, bomb);
 	let explosionLenght = 1;
 	let explosionLenghtMax = bomb.explosionLenghtMax + 1;
@@ -20,11 +20,11 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	{
     		if (explosionLenght < bomb.explosionLenghtMax)
     		{
-    			bomb.north = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 32);
+    			bomb.north = drawExplosion(bombPosX, bombPosY - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 32);
     		}
     		else
      		{
-    			bomb.north = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 0);
+    			bomb.north = drawExplosion(bombPosX, bombPosY - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 0);
     		}   			
     	}
     	//east
@@ -32,11 +32,11 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	{
     		if (explosionLenght < bomb.explosionLenghtMax)
     		{
-    			bomb.east = drawExplosion(bombPosX - tileSize / 2 + (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.east, 32, 32);
+    			bomb.east = drawExplosion(bombPosX + (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.east, 32, 32);
     		}
     		else
     		{
-    		    bomb.east = drawExplosion(bombPosX - tileSize / 2 + (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.east, 32, 0);	
+    		    bomb.east = drawExplosion(bombPosX + (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.east, 32, 0);	
     		}
     	}
     	//south
@@ -44,11 +44,11 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	{    	
     		if (explosionLenght < bomb.explosionLenghtMax)
     		{
-    			bomb.south = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 32);
+    			bomb.south = drawExplosion(bombPosX, bombPosY + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 32);
     		}
     		else
     		{
-    			bomb.south = drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2 + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 0);
+    			bomb.south = drawExplosion(bombPosX, bombPosY + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 0);
     		}			
     	}
     	//west
@@ -56,11 +56,11 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	{
     		if (explosionLenght < bomb.explosionLenghtMax)
     		{
-    			bomb.west = drawExplosion(bombPosX - tileSize / 2 - (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.west, 96, 32);
+    			bomb.west = drawExplosion(bombPosX - (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.west, 96, 32);
     		}
     		else
     		{
-    			bomb.west = drawExplosion(bombPosX - tileSize / 2 - (explosionLenght * tileSize), bombPosY - tileSize / 2, bomb, explosionLenght, bomb.west, 96, 0);
+    			bomb.west = drawExplosion(bombPosX - (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.west, 96, 0);
     		}
     	}
     	explosionLenght++;
@@ -140,7 +140,7 @@ function drawBombs()
 
 			if (bomb.status == 2)
 			{
-				exploseBomb(bomb, bombPosX + (tileSize / 2), bombPosY + (tileSize / 2));
+				exploseBomb(bomb, bombPosX, bombPosY);
 			}
 		}
 	}
@@ -199,13 +199,12 @@ function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dont
 	// 5 -> 8: fireCenter (haut, droit, bas, gauche).
 	if (testDraw == dontChangeExplosionLenght)
 	{
-		ctx.drawImage(fireImg, fireImgX, fireImgY, 32, 32, exploDisX, exploDisY, tileSize, tileSize);
-		/*
 		ctx.beginPath();
 		ctx.rect(exploDisX, exploDisY, tileSize, tileSize);
 		ctx.fillStyle = 'orange';
 		ctx.fill();
-		ctx.closePath();*/
+		ctx.closePath();
+		ctx.drawImage(fireImg, fireImgX, fireImgY, 32, 32, exploDisX, exploDisY, tileSize, tileSize);
 	}
 	return testDraw;
 }
