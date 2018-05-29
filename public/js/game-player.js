@@ -98,7 +98,7 @@ function drawPlayer()
                 let collOtherPlayer = false;
                 for (let i = 0, length = players.length; i < length; i++)
                 {
-                    if (i != playerIndex && (playerPosArrayRow - 1.9 < players[i].posY / tileSize && playerPosArrayRow + 1 > players[i].posY / tileSize) && playerPosArrayCol == Math.round(players[i].posX) / tileSize)
+                    if (i != playerIndex && (playerPosArrayRow - 2 < players[i].posY / tileSize && playerPosArrayRow + 1 > players[i].posY / tileSize) && playerPosArrayCol == players[i].posX / tileSize)
                     {
                         collOtherPlayer = true;
                         break;
@@ -116,6 +116,7 @@ function drawPlayer()
                         {
                             players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
                             players[playerIndex].moving = false;
+                            clearInterval(players[playerIndex].playerMovingTempo);
                         }
                     },17);
                 }
@@ -129,7 +130,7 @@ function drawPlayer()
                 let collOtherPlayer = false;
                 for (let i = 0, length = players.length; i < length; i++)
                 {
-                    if (i != playerIndex && (playerPosArrayRow + 1.9 > players[i].posY / tileSize && playerPosArrayRow - 1 < players[i].posY / tileSize) && playerPosArrayCol == Math.round(players[i].posX) / tileSize)
+                    if (i != playerIndex && (playerPosArrayRow + 2 > players[i].posY / tileSize && playerPosArrayRow - 1 < players[i].posY / tileSize) && playerPosArrayCol == players[i].posX / tileSize)
                     {
                         collOtherPlayer = true;
                         break;
@@ -161,7 +162,7 @@ function drawPlayer()
                 let collOtherPlayer = false;
                 for (let i = 0, length = players.length; i < length; i++)
                 {
-                    if (i != playerIndex && playerPosArrayCol + 1.5 > players[i].posX / tileSize && playerPosArrayCol < players[i].posX / tileSize + 1 && playerPosArrayRow == Math.round(players[i].posY) / tileSize)
+                    if (i != playerIndex && playerPosArrayCol + 2 > players[i].posX / tileSize && playerPosArrayCol - 1 < players[i].posX / tileSize && playerPosArrayRow == players[i].posY / tileSize)
                     {
                         collOtherPlayer = true;
                         break;
@@ -194,7 +195,7 @@ function drawPlayer()
                 let collOtherPlayer = false;
                 for (let i = 0, length = players.length; i < length; i++)
                 {
-                    if (i != playerIndex && playerPosArrayCol - 1.5 < players[i].posX / tileSize && playerPosArrayCol > players[i].posX / tileSize - 1 && playerPosArrayRow == Math.round(players[i].posY) / tileSize)
+                    if (i != playerIndex && playerPosArrayCol - 1.5 < players[i].posX / tileSize && playerPosArrayCol + 1 > players[i].posX / tileSize && playerPosArrayRow == players[i].posY / tileSize)
                     {
                         collOtherPlayer = true;
                         break;
