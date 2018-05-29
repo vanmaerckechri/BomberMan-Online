@@ -10,6 +10,10 @@ socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 {
 	players[otherPlayerInfos.order].posX = otherPlayerInfos.playerInfos.posX;
 	players[otherPlayerInfos.order].posY = otherPlayerInfos.playerInfos.posY;
+	players[otherPlayerInfos.order].animationX = otherPlayerInfos.playerInfos.animationX;
+	players[otherPlayerInfos.order].animationXIndex = otherPlayerInfos.playerInfos.animationXIndex;
+	players[otherPlayerInfos.order].animationY = otherPlayerInfos.playerInfos.animationY;
+
 });
 
 socket.on('updateBombFromOtherPl', function(bombInfos)
@@ -108,8 +112,9 @@ let initGame = function()
 	}
 	loadUI();
 	engine();
-	// 25 images/sec pour le déplacement des autres joueurs.
-	setInterval(sharePlayerInfos, 40);
+	// 40 pour 25 images/sec pour le déplacement des autres joueurs.
+	// 
+	setInterval(sharePlayerInfos, 16);
 }
 
 socket.on('initGame', function()

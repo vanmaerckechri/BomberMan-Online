@@ -11,7 +11,7 @@ let player = {
     rightPressed: false,
     bottomPressed: false,
     leftPressed: false,
-    animationX: [57, 114],
+    animationX: [48, 96],
     animationXIndex: 0,
     animationY: 0,
     spacePressed: false,
@@ -146,7 +146,7 @@ function drawPlayer()
                 players[playerIndex].moving = true;
                 players[playerIndex].playerMovingTempo = setInterval(function()
                 {
-                    players[playerIndex].animationY = 316;
+                    players[playerIndex].animationY = 320;
 
                     players[playerIndex].posX += playerMovingSpeed;
                     if (players[playerIndex].posX % tileSize === 0)
@@ -195,7 +195,7 @@ function drawPlayer()
         }
         console.log(players[playerIndex].animationXIndex);
 
-        ctx.drawImage(playerImg, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 51, 64, players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);
+        ctx.drawImage(playerImg, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 48, 64, players[playerIndex].posX, players[playerIndex].posY - (tileSize * 0.3), tileSize, tileSize * 1.3 );
 
         /*
         ctx.beginPath();
@@ -213,13 +213,15 @@ function drawOtherPlayers()
     {
         if (i != playerIndex && players[i].alive == 1)
         {
+            ctx.drawImage(playerImg, players[i].animationX[players[i].animationXIndex], players[i].animationY, 48, 64, players[i].posX, (players[i].posY) - (tileSize * 0.3), tileSize, tileSize * 1.3 );
+            /*
             ctx.beginPath();
             ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
             ctx.fillStyle = players[i].color;
             ctx.strokeStyle = 'rgb(0, 0, 0)';
             ctx.fill();
             ctx.stroke();
-            ctx.closePath();
+            ctx.closePath();*/
         }
     }
 }
