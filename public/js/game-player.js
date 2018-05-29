@@ -11,12 +11,17 @@ let player = {
     rightPressed: false,
     bottomPressed: false,
     leftPressed: false,
+    animationX: [57, 114],
+    animationXIndex: 0,
+    animationY: 0,
     spacePressed: false,
     spaceStopPressed: true,
     color: '',
     alive: 1
     };
 let players = [];
+let playerImg = new Image();
+playerImg.src = 'assets/img/player.png';
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -96,9 +101,12 @@ function drawPlayer()
                 players[playerIndex].moving = true;
                 players[playerIndex].playerMovingTempo = setInterval(function()
                 {
+                    players[playerIndex].animationY = 64;
+
                     players[playerIndex].posY -= playerMovingSpeed;
                     if (players[playerIndex].posY % tileSize === 0)
                     {
+                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
                         players[playerIndex].moving = false;
                         clearInterval(players[playerIndex].playerMovingTempo);
                     }
@@ -115,10 +123,13 @@ function drawPlayer()
             {
                 players[playerIndex].moving = true;
                 players[playerIndex].playerMovingTempo = setInterval(function()
-                {
+                {   
+                    players[playerIndex].animationY = 0;
+
                     players[playerIndex].posY += playerMovingSpeed;
                     if (players[playerIndex].posY % tileSize === 0)
                     {
+                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
                         players[playerIndex].moving = false;
                         clearInterval(players[playerIndex].playerMovingTempo);
                     }
@@ -135,9 +146,12 @@ function drawPlayer()
                 players[playerIndex].moving = true;
                 players[playerIndex].playerMovingTempo = setInterval(function()
                 {
+                    players[playerIndex].animationY = 316;
+
                     players[playerIndex].posX += playerMovingSpeed;
                     if (players[playerIndex].posX % tileSize === 0)
                     {
+                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
                         players[playerIndex].moving = false;
                         clearInterval(players[playerIndex].playerMovingTempo);
                     }
@@ -155,9 +169,12 @@ function drawPlayer()
                 players[playerIndex].moving = true;
                 players[playerIndex].playerMovingTempo = setInterval(function()
                 {
+                    players[playerIndex].animationY = 128;
+
                     players[playerIndex].posX -= playerMovingSpeed;
                     if (players[playerIndex].posX % tileSize === 0)
                     {
+                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
                         players[playerIndex].moving = false;
                         clearInterval(players[playerIndex].playerMovingTempo);
                     }
@@ -176,13 +193,18 @@ function drawPlayer()
             dropBombs(playerIndex, playerPosRow, playerPosCol);
             socket.emit('sendBombInfos', { playerIndex: playerIndex, playerPosRow: playerPosRow, playerPosCol: playerPosCol });
         }
+        console.log(players[playerIndex].animationXIndex);
+
+        ctx.drawImage(playerImg, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 51, 64, players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);
+
+        /*
         ctx.beginPath();
         ctx.rect(players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);
         ctx.fillStyle = players[playerIndex].color;
         ctx.strokeStyle = 'rgb(0, 0, 0)';
         ctx.fill();
         ctx.stroke();
-        ctx.closePath();
+        ctx.closePath();*/
     }
 }
 function drawOtherPlayers()

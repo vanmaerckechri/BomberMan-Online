@@ -495,23 +495,24 @@ function checkVictory(socket)
 		pplAliveNumber += games[socket.room].alive[i];
 		pplAliveIndex = games[socket.room].alive[i] == 1 ? games[socket.room].alive[i] : 0;
 	}
-	// Lorsqu'un seul jouer est en vie, il gagne un point.
-	if (pplAliveNumber === 1)
+	// s'il reste au maximum un joueur dans la partie...
+	if (pplAliveNumber <= 1)
 	{
-		games[socket.room].scores[pplAliveIndex]++;
-	}
-	// Gestion fin de Round.
-	let biggestScore = Math.max(...games[socket.room].scores);
-	if (biggestScore < 2)
-	{
-		games[socket.room].pplInThisRoom = 0;
-		socket.emit('callNextRound', games[socket.room].scores);
-		socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
-	}
-	else
-	{
-		console.log('victoire')
-		//VICTOIRE!
+		// Lorsqu'un seul jouer est en vie, il gagne un point.
+		games[socket.room].scores[pplAliveIndex] = pplAliveNumber === 1 ? games[socket.room].scores[pplAliveIndex] += 1 : games[socket.room].scores[pplAliveIndex];
+		// Gestion fin de Round.
+		let biggestScore = Math.max(...games[socket.room].scores);
+		if (biggestScore < 2)
+		{
+			games[socket.room].pplInThisRoom = 0;
+			socket.emit('callNextRound', games[socket.room].scores);
+			socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
+		}
+		else
+		{
+			console.log('victoire')
+			//VICTOIRE!
+		}
 	}
 }
 
