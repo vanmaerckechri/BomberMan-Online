@@ -485,11 +485,26 @@ function initGame(socket, gameInfos)
 	}
 }
 
-function checkVictory(socket, indexAlive)
-{
-	if (games[socket.room].scores[indexAlive] < 2)
+function checkVictory(socket)
+{	
+	let pplAliveNumber = 0;
+	let pplAliveIndex = 0;
+	// Verifier qu'il reste au maximum un joueur en vie.
+	for (let i = 0, length = games[socket.room].alive.length; i < length; i++)
 	{
-		games[socket.room].pplInThisRoom = 0;	
+		pplAliveNumber += games[socket.room].alive[i];
+		pplAliveIndex = games[socket.room].alive[i] == 1 ? games[socket.room].alive[i] : 0;
+	}
+	// Lorsqu'un seul jouer est en vie, il gagne un point.
+	if (pplAliveNumber === 1)
+	{
+		games[socket.room].scores[pplAliveIndex]++;
+	}
+	// Gestion fin de Round.
+	let biggestScore = Math.max(...games[socket.room].scores);
+	if (biggestScore < 2)
+	{
+		games[socket.room].pplInThisRoom = 0;
 		socket.emit('callNextRound', games[socket.room].scores);
 		socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
 	}
@@ -497,30 +512,6 @@ function checkVictory(socket, indexAlive)
 	{
 		console.log('victoire')
 		//VICTOIRE!
-	}
-}
-
-function countPlayersAlive(socket)
-{
-	let playersAlive = games[socket.room].pplByLobby;
-	let indexAlive;
-	games[socket.room].alive[socket.playerIndex] = 0;
-	for (let i = 0, playersLength = playersAlive; i < playersLength; i++)
-	{
-		if (games[socket.room].alive[i] == 0)
-		{
-			playersAlive--;
-		}
-		else
-		{
-			indexAlive = i;
-		}
-	}
-	// s'il en reste UN en vie, celui-ci gagne un point.
-	if (playersAlive == 1)
-	{
-		games[socket.room].scores[indexAlive]++;
-		checkVictory(socket, indexAlive);
 	}
 }
 
@@ -739,9 +730,9 @@ io.sockets.on('connection', function(socket)
 		socket.broadcast.to(socket.room).emit('updateBombFromOtherPl', bombInfos);
 	});
 
-	socket.on('countPlayersAlive', function()
+	socket.on('updateAliveList', function()
 	{
-		countPlayersAlive(socket);
+		games[socket.room].alive[socket.playerIndex] = 0;
 	});
 
 
@@ -762,6 +753,7 @@ io.sockets.on('connection', function(socket)
         	socket.emit('endExplosion', bombIndex);
 			socket.broadcast.to(socket.room).emit('endExplosion', bombIndex);
             clearTimeout(timingEndOfExplosion);
+            checkVictory(socket);
         }, 1000);
 	});
 

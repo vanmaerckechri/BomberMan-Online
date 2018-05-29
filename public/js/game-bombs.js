@@ -188,7 +188,7 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 			players[i].posY = -1 * tileSize;
 			if (i == playerIndex)
 			{
-				socket.emit('countPlayersAlive');
+				socket.emit('updateAliveList');
 			}
 		}
 	}
@@ -200,8 +200,6 @@ function drawExplosion(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dont
 	//test les collisions.
 	let testDraw = checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionLenght, dontChangeExplosionLenght);
 	//si on ne se retrouve pas au dessus d'un élément indestructible => dessin de l'explosion.
-	// 1 -> 4: fireEnd (haut, droit, bas, gauche).
-	// 5 -> 8: fireCenter (haut, droit, bas, gauche).
 	if (testDraw == dontChangeExplosionLenght)
 	{
 		ctx.drawImage(fireImg, fireImgX, fireImgY, 32, 32, exploDisX, exploDisY, tileSize, tileSize);
