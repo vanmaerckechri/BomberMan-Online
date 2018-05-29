@@ -88,7 +88,9 @@ let initGame = function()
 		// Ajouter ce dernier dans l'array players.
 		players.push(playerTemp);
 		// Lier les avatars aux joueurs.
-		players[i].color = avatars[gameInfos.avatars[i]];
+		let playerImg = new Image();
+		playerImg.src = 'assets/img/player_'+avatars[gameInfos.avatars[i]]+'.png';
+		players[i].color = playerImg;
 		// Mettre à jour ce nouvel objet avec les coordonnées initiales de position des joueurs.
 		switch(i)
 		{

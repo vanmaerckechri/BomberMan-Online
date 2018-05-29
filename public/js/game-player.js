@@ -20,8 +20,6 @@ let player = {
     alive: 1
     };
 let players = [];
-let playerImg = new Image();
-playerImg.src = 'assets/img/player.png';
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -231,7 +229,7 @@ function drawPlayer()
             dropBombs(playerIndex, playerPosRow, playerPosCol);
             socket.emit('sendBombInfos', { playerIndex: playerIndex, playerPosRow: playerPosRow, playerPosCol: playerPosCol });
         }
-        ctx.drawImage(playerImg, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 48, 64, players[playerIndex].posX, players[playerIndex].posY - (tileSize * 0.3), tileSize, tileSize * 1.3 );
+        ctx.drawImage(players[playerIndex].color, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 48, 64, players[playerIndex].posX, players[playerIndex].posY - (tileSize * 0.3), tileSize, tileSize * 1.3 );
 
         /*
         ctx.beginPath();
@@ -249,7 +247,7 @@ function drawOtherPlayers()
     {
         if (i != playerIndex && players[i].alive == 1)
         {
-            ctx.drawImage(playerImg, players[i].animationX[players[i].animationXIndex], players[i].animationY, 48, 64, players[i].posX, (players[i].posY) - (tileSize * 0.3), tileSize, tileSize * 1.3 );
+            ctx.drawImage(players[i].color, players[i].animationX[players[i].animationXIndex], players[i].animationY, 48, 64, players[i].posX, (players[i].posY) - (tileSize * 0.3), tileSize, tileSize * 1.3 );
             /*
             ctx.beginPath();
             ctx.rect(players[i].posX, players[i].posY, tileSize, tileSize);
