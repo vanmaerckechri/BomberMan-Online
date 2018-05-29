@@ -1,4 +1,4 @@
-let tileSize = 48;
+let tileSize = 32;
 let tileNumberByRow = 15;
 let tileNumberByCol = 15;
 let mapBoards = [];

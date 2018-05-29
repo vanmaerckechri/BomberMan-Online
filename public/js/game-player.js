@@ -87,9 +87,9 @@ function drawPlayer()
 {
     if (playerIndex != undefined && players[playerIndex].alive == 1)
     {
-        let playerPosArrayCol = players[playerIndex].posX / tileSize;;
+        let playerPosArrayCol = players[playerIndex].posX / tileSize;
         let playerPosArrayRow = players[playerIndex].posY / tileSize;
-        let playerMovingSpeed = tileSize / 16;
+        let playerMovingSpeed = tileSize / 8;
         // MOVE TOP
         if (players[playerIndex].moving == false && players[playerIndex].topPressed == true)
         {
@@ -118,7 +118,7 @@ function drawPlayer()
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
-                    },10);
+                    },17);
                 }
             }
         }
@@ -150,7 +150,7 @@ function drawPlayer()
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
-                    },10);
+                    },17);
                 }
             }
         }
@@ -182,7 +182,7 @@ function drawPlayer()
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
-                    },10);
+                    },17);
                 }
             }
         }
@@ -215,7 +215,7 @@ function drawPlayer()
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
-                    },10);
+                    },17);
                 }
             }
         }

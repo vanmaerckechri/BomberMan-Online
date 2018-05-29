@@ -113,7 +113,7 @@ let initGame = function()
 	loadUI();
 	engine();
 	// 40 pour 25 images/sec pour le déplacement des autres joueurs.
-	// 
+	// 17 pour 60 images/sec...
 	setInterval(sharePlayerInfos, 16);
 }
 
