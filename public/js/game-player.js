@@ -87,104 +87,142 @@ function drawPlayer()
 {
     if (playerIndex != undefined && players[playerIndex].alive == 1)
     {
-        let playerPosArrayCol;
-        let playerPosArrayRow;
+        let playerPosArrayCol = players[playerIndex].posX / tileSize;;
+        let playerPosArrayRow = players[playerIndex].posY / tileSize;
         let playerMovingSpeed = tileSize / 16;
         // MOVE TOP
         if (players[playerIndex].moving == false && players[playerIndex].topPressed == true)
         {
-            playerPosArrayCol = players[playerIndex].posX / tileSize;
-            playerPosArrayRow = players[playerIndex].posY / tileSize;
-
             if (mapBoards[playerPosArrayRow - 1][playerPosArrayCol].wall < 1)
             {
-                players[playerIndex].moving = true;
-                players[playerIndex].playerMovingTempo = setInterval(function()
+                let collOtherPlayer = false;
+                for (let i = 0, length = players.length; i < length; i++)
                 {
-                    players[playerIndex].animationY = 64;
-
-                    players[playerIndex].posY -= playerMovingSpeed;
-                    if (players[playerIndex].posY % tileSize === 0)
+                    if (i != playerIndex && playerPosArrayRow - 1 == (Math.round(players[i].posY) / tileSize) && playerPosArrayCol == Math.round(players[i].posX) / tileSize)
                     {
-                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
-                        players[playerIndex].moving = false;
-                        clearInterval(players[playerIndex].playerMovingTempo);
+                        collOtherPlayer = true;
+                        break;
                     }
-                },10);
+                }
+                if (collOtherPlayer === false)
+                {
+                    players[playerIndex].moving = true;
+                    players[playerIndex].playerMovingTempo = setInterval(function()
+                    {
+                        players[playerIndex].animationY = 64;
+
+                        players[playerIndex].posY -= playerMovingSpeed;
+                        if (players[playerIndex].posY % tileSize === 0)
+                        {
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].moving = false;
+                            clearInterval(players[playerIndex].playerMovingTempo);
+                        }
+                    },10);
+                }
             }
         }
         // MOVE BOTTOM
         if (players[playerIndex].moving == false && players[playerIndex].bottomPressed == true)
         {
-            playerPosArrayCol = players[playerIndex].posX / tileSize;
-            playerPosArrayRow = players[playerIndex].posY / tileSize;
-
             if (mapBoards[playerPosArrayRow + 1][playerPosArrayCol].wall < 1)
             {
-                players[playerIndex].moving = true;
-                players[playerIndex].playerMovingTempo = setInterval(function()
-                {   
-                    players[playerIndex].animationY = 0;
-
-                    players[playerIndex].posY += playerMovingSpeed;
-                    if (players[playerIndex].posY % tileSize === 0)
+                let collOtherPlayer = false;
+                for (let i = 0, length = players.length; i < length; i++)
+                {
+                    if (i != playerIndex && playerPosArrayRow + 1 == (Math.round(players[i].posY) / tileSize) && playerPosArrayCol == Math.round(players[i].posX) / tileSize)
                     {
-                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
-                        players[playerIndex].moving = false;
-                        clearInterval(players[playerIndex].playerMovingTempo);
+                        collOtherPlayer = true;
+                        break;
                     }
-                },10);
+                }
+                if (collOtherPlayer === false)
+                {
+                    players[playerIndex].moving = true;
+                    players[playerIndex].playerMovingTempo = setInterval(function()
+                    {   
+                        players[playerIndex].animationY = 0;
+
+                        players[playerIndex].posY += playerMovingSpeed;
+                        if (players[playerIndex].posY % tileSize === 0)
+                        {
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].moving = false;
+                            clearInterval(players[playerIndex].playerMovingTempo);
+                        }
+                    },10);
+                }
             }
         }
         // MOVE RIGHT
         if (players[playerIndex].moving == false && players[playerIndex].rightPressed == true)
         {
-            playerPosArrayCol = players[playerIndex].posX / tileSize;
-            playerPosArrayRow = players[playerIndex].posY / tileSize;
             if (mapBoards[playerPosArrayRow][playerPosArrayCol + 1].wall < 1)
             {
-                players[playerIndex].moving = true;
-                players[playerIndex].playerMovingTempo = setInterval(function()
+                let collOtherPlayer = false;
+                for (let i = 0, length = players.length; i < length; i++)
                 {
-                    players[playerIndex].animationY = 320;
-
-                    players[playerIndex].posX += playerMovingSpeed;
-                    if (players[playerIndex].posX % tileSize === 0)
+                    if (i != playerIndex && playerPosArrayRow == (Math.round(players[i].posY) / tileSize) && playerPosArrayCol + 1 == Math.round(players[i].posX) / tileSize)
                     {
-                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
-                        players[playerIndex].moving = false;
-                        clearInterval(players[playerIndex].playerMovingTempo);
+                        collOtherPlayer = true;
+                        break;
                     }
-                },10);
+                }
+                if (collOtherPlayer === false)
+                {
+                    players[playerIndex].moving = true;
+                    players[playerIndex].playerMovingTempo = setInterval(function()
+                    {
+                        players[playerIndex].animationY = 320;
+
+                        players[playerIndex].posX += playerMovingSpeed;
+                        if (players[playerIndex].posX % tileSize === 0)
+                        {
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].moving = false;
+                            clearInterval(players[playerIndex].playerMovingTempo);
+                        }
+                    },10);
+                }
             }
         }
         // MOVE LEFT
         if (players[playerIndex].moving == false && players[playerIndex].leftPressed == true)
         {
-            playerPosArrayCol = players[playerIndex].posX / tileSize;
-            playerPosArrayRow = players[playerIndex].posY / tileSize;
 
             if (mapBoards[playerPosArrayRow][playerPosArrayCol -1].wall < 1)
             {
-                players[playerIndex].moving = true;
-                players[playerIndex].playerMovingTempo = setInterval(function()
+                let collOtherPlayer = false;
+                for (let i = 0, length = players.length; i < length; i++)
                 {
-                    players[playerIndex].animationY = 128;
-
-                    players[playerIndex].posX -= playerMovingSpeed;
-                    if (players[playerIndex].posX % tileSize === 0)
+                    if (i != playerIndex && playerPosArrayRow == (Math.round(players[i].posY) / tileSize) && playerPosArrayCol -1 == Math.round(players[i].posX) / tileSize)
                     {
-                        players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
-                        players[playerIndex].moving = false;
-                        clearInterval(players[playerIndex].playerMovingTempo);
+                        collOtherPlayer = true;
+                        break;
                     }
-                },10);
+                }
+                if (collOtherPlayer === false)
+                {
+                    players[playerIndex].moving = true;
+                    players[playerIndex].playerMovingTempo = setInterval(function()
+                    {
+                        players[playerIndex].animationY = 128;
+
+                        players[playerIndex].posX -= playerMovingSpeed;
+                        if (players[playerIndex].posX % tileSize === 0)
+                        {
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].moving = false;
+                            clearInterval(players[playerIndex].playerMovingTempo);
+                        }
+                    },10);
+                }
             }
         }
         // DROP BOMB
-        let playerPosRow = players[playerIndex].posY / tileSize;
+        let playerPosRow = playerPosArrayRow;
         playerPosRow = parseInt(playerPosRow);
-        let playerPosCol = players[playerIndex].posX / tileSize;
+        let playerPosCol = playerPosArrayCol;
         playerPosCol = parseInt(playerPosCol);
         if (players[playerIndex].bombsNumber > 0 && players[playerIndex].spacePressed == true && mapBoards[playerPosRow][playerPosCol].wall == 0)
         {
@@ -193,8 +231,6 @@ function drawPlayer()
             dropBombs(playerIndex, playerPosRow, playerPosCol);
             socket.emit('sendBombInfos', { playerIndex: playerIndex, playerPosRow: playerPosRow, playerPosCol: playerPosCol });
         }
-        console.log(players[playerIndex].animationXIndex);
-
         ctx.drawImage(playerImg, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 48, 64, players[playerIndex].posX, players[playerIndex].posY - (tileSize * 0.3), tileSize, tileSize * 1.3 );
 
         /*
