@@ -39,7 +39,7 @@ function genMapBoard()
 		mapBoards[r] = [];
         for(let c = 0; c < tileNumberByCol; c++)
         {
-			mapBoards[r][c] = {wall: 0, type: 0, bonus: 0};
+			mapBoards[r][c] = {wall: 0, type: 0, bonus: false};
             //murs indestructibles.
 			if (map01[mapIndex] == 9)
 			{
@@ -75,6 +75,7 @@ function drawMap()
     {
         for(let c = 0; c < tileNumberByCol; c++)
         {
+            tileBonus = mapBoards[r][c].bonus;
             tileType = mapBoards[r][c].type;
            	tileX = c  * tileSize;
     		tileY = r  * tileSize;
@@ -84,12 +85,43 @@ function drawMap()
             //sol.
             if(tileType == 0)
             {
-                ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
+                if (tileBonus === false)
+                {
+                    ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
+                }
+                else
+                {
+                    switch (tileBonus)
+                    {
+                        case 0:
+                            ctx.beginPath();
+                            ctx.rect(tileX, tileY, tileSize, tileSize);
+                            ctx.fillStyle = 'orange';
+                            ctx.fill();
+                            ctx.closePath();                          
+                            break;
+                        case 1:
+                            ctx.beginPath();
+                            ctx.rect(tileX, tileY, tileSize, tileSize);
+                            ctx.fillStyle = 'blue';
+                            ctx.fill();
+                            ctx.closePath();  
+                            break;
+                        case 2:
+                            ctx.beginPath();
+                            ctx.rect(tileX, tileY, tileSize, tileSize);
+                            ctx.fillStyle = 'green';
+                            ctx.fill();
+                            ctx.closePath();    
+                            break;
+                    }
+                }
             }
             //murs destructibles.
             if(tileType == 2)
             {
                 ctx.drawImage(box, tileX, tileY, tileSize, tileSize);
+
             }
             //murs indestructibles.
             if(tileType == 9)
