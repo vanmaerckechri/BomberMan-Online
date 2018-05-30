@@ -32,12 +32,14 @@ box.src = 'assets/img/box1.svg';
 function genMapBoard()
 {
 	let mapIndex = 0;
+    let boxRow = [];
+    let boxCol = [];
 	for(let r = 0; r < tileNumberByRow; r++)
 	{
 		mapBoards[r] = [];
         for(let c = 0; c < tileNumberByCol; c++)
         {
-			mapBoards[r][c] = {wall: 0, type: 0};
+			mapBoards[r][c] = {wall: 0, type: 0, bonus: 0};
             //murs indestructibles.
 			if (map01[mapIndex] == 9)
 			{
@@ -47,11 +49,19 @@ function genMapBoard()
             else if (map01[mapIndex] == 2) 
             {
                 mapBoards[r][c].wall = 1;
+                boxRow.push(r);
+                boxCol.push(c);
             }
 			mapBoards[r][c].type = map01[mapIndex];
 			mapIndex++;
 		}
     }
+    let boxes = 
+    {
+        r: boxRow,
+        c: boxCol
+    }
+    socket.emit('initBonus', boxes);
 }
 
 function drawMap()
@@ -114,3 +124,12 @@ function drawMap()
         }
     }
 }
+
+socket.on('sendBonus', function(boxes)
+{
+    for (let i = 0, length = boxes.c.length; i < length; i++)
+    {
+        mapBoards[boxes.r[i]][boxes.c[i]].bonus = boxes.bonus[i];
+    }
+    
+});

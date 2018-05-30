@@ -757,6 +757,37 @@ io.sockets.on('connection', function(socket)
             checkVictory(socket);
         }, 1000);
 	});
+	// Bonus.
+	socket.on('initBonus', function(boxesInfos)
+	{
+		if (socket.id === games[socket.room].userIds[0])
+		{
+			let boxes = boxesInfos;
+			let bonusNumberMax = 6;
+			let bonusTypeDifferent = 3;
+			let boxesWithBonus = 
+			{
+				c: [],
+				r: [],
+				bonus: []
+			};
+			while(bonusNumberMax > 0)
+			{
 
-
+				let rand = Math.floor(Math.random() * (boxes.c.length));
+				let bonusType = Math.floor(Math.random() * (bonusTypeDifferent));
+				bonusNumberMax -= 1;
+				boxesWithBonus.c.push(boxes.c[rand]);
+				boxesWithBonus.r.push(boxes.r[rand]);
+				boxesWithBonus.bonus.push(bonusType);
+				boxes.c.splice(rand, 1);
+				boxes.r.splice(rand, 1);
+				if (bonusNumberMax <= 0)
+				{
+					socket.emit('sendBonus', boxesWithBonus)
+					socket.broadcast.to(socket.room).emit('sendBonus', boxesWithBonus);
+				}
+			}
+		}
+	});
 });
