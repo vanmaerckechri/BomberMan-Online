@@ -93,17 +93,7 @@ function drawPlayer()
         {
             if (mapBoards[playerPosArrayRow - 1][playerPosArrayCol].wall < 1)
             {
-                let collOtherPlayer = false;
-                for (let i = 0, length = players.length; i < length; i++)
-                {
-                    if (i != playerIndex && (playerPosArrayRow - 2 < players[i].posY / tileSize && playerPosArrayRow + 1 > players[i].posY / tileSize) && playerPosArrayCol == players[i].posX / tileSize)
-                    {
-                        collOtherPlayer = true;
-                        break;
-                    }
-                }
-                if (collOtherPlayer === false)
-                {
+
                     players[playerIndex].moving = true;
                     players[playerIndex].playerMovingTempo = setInterval(function()
                     {
@@ -117,7 +107,6 @@ function drawPlayer()
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
                     },17);
-                }
             }
         }
         // MOVE BOTTOM
@@ -125,17 +114,7 @@ function drawPlayer()
         {
             if (mapBoards[playerPosArrayRow + 1][playerPosArrayCol].wall < 1)
             {
-                let collOtherPlayer = false;
-                for (let i = 0, length = players.length; i < length; i++)
-                {
-                    if (i != playerIndex && (playerPosArrayRow + 2 > players[i].posY / tileSize && playerPosArrayRow - 1 < players[i].posY / tileSize) && playerPosArrayCol == players[i].posX / tileSize)
-                    {
-                        collOtherPlayer = true;
-                        break;
-                    }
-                }
-                if (collOtherPlayer === false)
-                {
+
                     players[playerIndex].moving = true;
                     players[playerIndex].playerMovingTempo = setInterval(function()
                     {   
@@ -149,7 +128,6 @@ function drawPlayer()
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
                     },17);
-                }
             }
         }
         // MOVE RIGHT
@@ -157,17 +135,7 @@ function drawPlayer()
         {
             if (mapBoards[playerPosArrayRow][playerPosArrayCol + 1].wall < 1)
             {
-                let collOtherPlayer = false;
-                for (let i = 0, length = players.length; i < length; i++)
-                {
-                    if (i != playerIndex && playerPosArrayCol + 2 > players[i].posX / tileSize && playerPosArrayCol - 1 < players[i].posX / tileSize && playerPosArrayRow == players[i].posY / tileSize)
-                    {
-                        collOtherPlayer = true;
-                        break;
-                    }
-                }
-                if (collOtherPlayer === false)
-                {
+
                     players[playerIndex].moving = true;
                     players[playerIndex].playerMovingTempo = setInterval(function()
                     {
@@ -181,7 +149,6 @@ function drawPlayer()
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
                     },17);
-                }
             }
         }
         // MOVE LEFT
@@ -190,17 +157,7 @@ function drawPlayer()
 
             if (mapBoards[playerPosArrayRow][playerPosArrayCol -1].wall < 1)
             {
-                let collOtherPlayer = false;
-                for (let i = 0, length = players.length; i < length; i++)
-                {
-                    if (i != playerIndex && playerPosArrayCol - 1.5 < players[i].posX / tileSize && playerPosArrayCol + 1 > players[i].posX / tileSize && playerPosArrayRow == players[i].posY / tileSize)
-                    {
-                        collOtherPlayer = true;
-                        break;
-                    }
-                }
-                if (collOtherPlayer === false)
-                {
+
                     players[playerIndex].moving = true;
                     players[playerIndex].playerMovingTempo = setInterval(function()
                     {
@@ -214,7 +171,6 @@ function drawPlayer()
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
                     },17);
-                }
             }
         }
         // DROP BOMB

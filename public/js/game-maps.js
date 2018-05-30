@@ -86,6 +86,22 @@ function drawMap()
             {
                 ctx.drawImage(unbreakBlock, tileX, tileY, tileSize, tileSize);
             }
+            if (mapBoards[r][c].wall === 3)
+            {
+                mapBoards[r][c].wall = 0;
+            }
+        }
+    }
+    if (players)
+    {
+        for (let i = 0, length = players.length; i < length; i++)
+        {
+            let x = Math.floor(players[i].posX / tileSize);
+            let y = Math.floor(players[i].posY / tileSize);
+            mapBoards[y][x].wall = 3;
+            x = Math.ceil(players[i].posX / tileSize);
+            y = Math.ceil(players[i].posY / tileSize);
+            mapBoards[y][x].wall = 3;
         }
     }
 }
