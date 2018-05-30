@@ -181,11 +181,10 @@ function checkExplosionCollisions(exploDisX, exploDisY, bomb, stopThisExplosionL
 	{
 		let playCol = Math.round(players[i].posX / tileSize);
 		let playRow = Math.round(players[i].posY/ tileSize);
-		if (playCol == (exploDisX / tileSize) && playRow == (exploDisY / tileSize))
+		if (playCol == (exploDisX / tileSize) && playRow == (exploDisY / tileSize) && players[i].alive > 0)
 		{
 			players[i].alive = 0;
-			players[i].posX = -1 * tileSize;
-			players[i].posY = -1 * tileSize;
+			animeDeath(players[i]);
 			if (i == playerIndex)
 			{
 				socket.emit('updateAliveList');

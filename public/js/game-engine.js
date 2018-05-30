@@ -8,8 +8,8 @@ function engine()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawMap();
-    drawPlayer();
     drawBombs();
+    drawPlayer();
     drawOtherPlayers();
     requestAnimationFrame(engine);
 }

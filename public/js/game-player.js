@@ -11,8 +11,8 @@ let player = {
     rightPressed: false,
     bottomPressed: false,
     leftPressed: false,
-    animationX: [48, 96],
-    animationXIndex: 0,
+    animationX: [0, 48, 96],
+    animationXIndex: 1,
     animationY: 0,
     spacePressed: false,
     spaceStopPressed: true,
@@ -80,10 +80,23 @@ function keyUpHandler(e)
         }
     }
 }
+function animeDeath(player)
+{
+    player.animationXIndex = 0;
+    let animeDeathTempo = setInterval(function()
+    {
+        player.animationXIndex += 1;
+        player.animationY = 256;
+        if (player.animationXIndex === 2)
+        {
+            clearInterval(animeDeathTempo);
+        }
+    }, 200);
+}
 
 function drawPlayer()
 {
-    if (playerIndex != undefined && players[playerIndex].alive == 1)
+    if (playerIndex != undefined && players[playerIndex].alive >= 0)
     {
         let playerPosArrayCol = players[playerIndex].posX / tileSize;
         let playerPosArrayRow = players[playerIndex].posY / tileSize;
@@ -102,7 +115,7 @@ function drawPlayer()
                         players[playerIndex].posY -= playerMovingSpeed;
                         if (players[playerIndex].posY % tileSize === 0)
                         {
-                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 2 ? players[playerIndex].animationXIndex += 1 : 1;
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
@@ -123,7 +136,7 @@ function drawPlayer()
                         players[playerIndex].posY += playerMovingSpeed;
                         if (players[playerIndex].posY % tileSize === 0)
                         {
-                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 2 ? players[playerIndex].animationXIndex += 1 : 1;
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
@@ -144,7 +157,7 @@ function drawPlayer()
                         players[playerIndex].posX += playerMovingSpeed;
                         if (players[playerIndex].posX % tileSize === 0)
                         {
-                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 2 ? players[playerIndex].animationXIndex += 1 : 1;
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
@@ -166,7 +179,7 @@ function drawPlayer()
                         players[playerIndex].posX -= playerMovingSpeed;
                         if (players[playerIndex].posX % tileSize === 0)
                         {
-                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 1 ? players[playerIndex].animationXIndex += 1 : 0;
+                            players[playerIndex].animationXIndex = players[playerIndex].animationXIndex < 2 ? players[playerIndex].animationXIndex += 1 : 1;
                             players[playerIndex].moving = false;
                             clearInterval(players[playerIndex].playerMovingTempo);
                         }
@@ -186,7 +199,10 @@ function drawPlayer()
             socket.emit('sendBombInfos', { playerIndex: playerIndex, playerPosRow: playerPosRow, playerPosCol: playerPosCol });
         }
         ctx.drawImage(players[playerIndex].color, players[playerIndex].animationX[players[playerIndex].animationXIndex], players[playerIndex].animationY, 48, 64, players[playerIndex].posX, players[playerIndex].posY - (tileSize * 0.3), tileSize, tileSize * 1.3 );
-
+        if (players[playerIndex].moving === false && players[playerIndex].alive > 0)
+        {
+            players[playerIndex].animationXIndex = 0;
+        }
         /*
         ctx.beginPath();
         ctx.rect(players[playerIndex].posX, players[playerIndex].posY, tileSize, tileSize);
@@ -201,7 +217,7 @@ function drawOtherPlayers()
 {
     for (let i = 0, playersLength = players.length; i < playersLength; i++)
     {
-        if (i != playerIndex && players[i].alive == 1)
+        if (i != playerIndex && players[i].alive >= 0)
         {
             ctx.drawImage(players[i].color, players[i].animationX[players[i].animationXIndex], players[i].animationY, 48, 64, players[i].posX, (players[i].posY) - (tileSize * 0.3), tileSize, tileSize * 1.3 );
             /*

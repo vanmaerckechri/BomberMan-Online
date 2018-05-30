@@ -13,6 +13,7 @@ socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	players[otherPlayerInfos.order].animationX = otherPlayerInfos.playerInfos.animationX;
 	players[otherPlayerInfos.order].animationXIndex = otherPlayerInfos.playerInfos.animationXIndex;
 	players[otherPlayerInfos.order].animationY = otherPlayerInfos.playerInfos.animationY;
+	players[otherPlayerInfos.order].alive = otherPlayerInfos.playerInfos.alive;
 
 });
 
@@ -89,7 +90,8 @@ let initGame = function()
 		players.push(playerTemp);
 		// Lier les avatars aux joueurs.
 		let playerImg = new Image();
-		playerImg.src = 'assets/img/player_'+avatars[gameInfos.avatars[i]]+'.png';
+		//playerImg.src = 'assets/img/player_'+avatars[gameInfos.avatars[i]]+'.png';
+		playerImg.src = 'assets/img/player.png';
 		players[i].color = playerImg;
 		// Mettre à jour ce nouvel objet avec les coordonnées initiales de position des joueurs.
 		switch(i)

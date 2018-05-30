@@ -96,17 +96,21 @@ function drawMap()
     {
         for (let i = 0, length = players.length; i < length; i++)
         {
-            let x = Math.floor(players[i].posX / tileSize);
-            let y = Math.floor(players[i].posY / tileSize);
-            if (mapBoards[y][x].wall === 0)
+            if (players[i].alive > 0)
             {
-                mapBoards[y][x].wall = 3;
+                let x = Math.floor(players[i].posX / tileSize);
+                let y = Math.floor(players[i].posY / tileSize);
+                if (mapBoards[y][x].wall === 0)
+                {
+                    mapBoards[y][x].wall = 3;
+                }
+                x = Math.ceil(players[i].posX / tileSize);
+                y = Math.ceil(players[i].posY / tileSize);
+                if (mapBoards[y][x].wall === 0)
+                {
+                    mapBoards[y][x].wall = 3;
+                }        
             }
-            x = Math.ceil(players[i].posX / tileSize);
-            y = Math.ceil(players[i].posY / tileSize);
-            if (mapBoards[y][x].wall === 0)
-            {
-                mapBoards[y][x].wall = 3;
-            }        }
+        }
     }
 }
