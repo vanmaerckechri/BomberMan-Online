@@ -98,10 +98,15 @@ function drawMap()
         {
             let x = Math.floor(players[i].posX / tileSize);
             let y = Math.floor(players[i].posY / tileSize);
-            mapBoards[y][x].wall = 3;
+            if (mapBoards[y][x].wall === 0)
+            {
+                mapBoards[y][x].wall = 3;
+            }
             x = Math.ceil(players[i].posX / tileSize);
             y = Math.ceil(players[i].posY / tileSize);
-            mapBoards[y][x].wall = 3;
-        }
+            if (mapBoards[y][x].wall === 0)
+            {
+                mapBoards[y][x].wall = 3;
+            }        }
     }
 }
