@@ -178,7 +178,7 @@ function drawPlayer()
         playerPosRow = parseInt(playerPosRow);
         let playerPosCol = playerPosArrayCol;
         playerPosCol = parseInt(playerPosCol);
-        if (players[playerIndex].bombsNumber > 0 && players[playerIndex].spacePressed == true && mapBoards[playerPosRow][playerPosCol].wall == 0)
+        if (players[playerIndex].bombsNumber > 0 && players[playerIndex].spacePressed == true && (mapBoards[playerPosRow][playerPosCol].wall == 0 || mapBoards[playerPosRow][playerPosCol].wall == 3)
         {
             players[playerIndex].bombsNumber--;
             players[playerIndex].spacePressed = false;
