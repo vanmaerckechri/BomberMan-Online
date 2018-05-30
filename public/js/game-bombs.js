@@ -9,16 +9,16 @@ function exploseBomb(bomb, bombPosX, bombPosY)
 	let returnUseless = drawExplosion(bombPosX, bombPosY, bomb, 2, 2);
 	//drawExplosion(bombPosX - tileSize / 2, bombPosY - tileSize / 2, bomb);
 	let explosionLenght = 1;
-	let explosionLenghtMax = bomb.explosionLenghtMax + 1;
+	let explosionLenghtMax = bomb.explosionLenghtMax;
     //distance explosion N-S-O-E
-    while (explosionLenght < explosionLenghtMax)
+    while (explosionLenght <= explosionLenghtMax)
     {
     	let bombPosRow = bomb.posRow;
     	let bombPosCol = bomb.posCol;
     	//north
     	if (bombPosRow > 1 && bomb.north >= explosionLenght)
     	{
-    		if (explosionLenght < bomb.explosionLenghtMax)
+    		if (explosionLenght < explosionLenghtMax)
     		{
     			bomb.north = drawExplosion(bombPosX, bombPosY - (explosionLenght * tileSize), bomb, explosionLenght, bomb.north, 0, 32);
     		}
@@ -30,7 +30,7 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	//east
     	if (bombPosCol < (tileNumberByCol - 2) && bomb.east >= explosionLenght)
     	{
-    		if (explosionLenght < bomb.explosionLenghtMax)
+    		if (explosionLenght < explosionLenghtMax)
     		{
     			bomb.east = drawExplosion(bombPosX + (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.east, 32, 32);
     		}
@@ -42,7 +42,7 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	//south
     	if (bombPosRow < (tileNumberByRow - 2) && bomb.south >= explosionLenght)
     	{    	
-    		if (explosionLenght < bomb.explosionLenghtMax)
+    		if (explosionLenght < explosionLenghtMax)
     		{
     			bomb.south = drawExplosion(bombPosX, bombPosY + (explosionLenght * tileSize), bomb, explosionLenght, bomb.south, 64, 32);
     		}
@@ -54,7 +54,7 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     	//west
     	if (bombPosCol > 1 && bomb.west >= explosionLenght)
     	{
-    		if (explosionLenght < bomb.explosionLenghtMax)
+    		if (explosionLenght < explosionLenghtMax)
     		{
     			bomb.west = drawExplosion(bombPosX - (explosionLenght * tileSize), bombPosY, bomb, explosionLenght, bomb.west, 96, 32);
     		}
@@ -64,7 +64,6 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     		}
     	}
     	explosionLenght++;
-    	console.log(explosionLenght)
     }
 
 	//timing terminer explosion
@@ -86,10 +85,10 @@ function dropBombs(index, playerPosRow, playerPosCol)
 		posCol: 0,
 		posRow: 0,
 		explosionLenghtMax: players[index].explosionLenghtMax,
-		north: 2,
-		east: 2,
-		south: 2,
-		west: 2,
+		north: players[index].explosionLenghtMax,
+		east: players[index].explosionLenghtMax,
+		south: players[index].explosionLenghtMax,
+		west: players[index].explosionLenghtMax,
 		TimingExplosion: '',
 		fromPlayer: index,
 		id: 0
