@@ -64,6 +64,7 @@ function exploseBomb(bomb, bombPosX, bombPosY)
     		}
     	}
     	explosionLenght++;
+    	console.log(explosionLenght)
     }
 
 	//timing terminer explosion
@@ -84,7 +85,7 @@ function dropBombs(index, playerPosRow, playerPosCol)
 		cycle: 0,
 		posCol: 0,
 		posRow: 0,
-		explosionLenghtMax: 2,
+		explosionLenghtMax: players[index].explosionLenghtMax,
 		north: 2,
 		east: 2,
 		south: 2,

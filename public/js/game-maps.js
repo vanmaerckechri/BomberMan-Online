@@ -39,7 +39,7 @@ function genMapBoard()
 		mapBoards[r] = [];
         for(let c = 0; c < tileNumberByCol; c++)
         {
-			mapBoards[r][c] = {wall: 0, type: 0, bonus: false};
+			mapBoards[r][c] = {wall: 0, type: 0, bonus: undefined};
             //murs indestructibles.
 			if (map01[mapIndex] == 9)
 			{
@@ -85,7 +85,7 @@ function drawMap()
             //sol.
             if(tileType == 0)
             {
-                if (tileBonus === false)
+                if (tileBonus === undefined)
                 {
                     ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
                 }
@@ -106,13 +106,6 @@ function drawMap()
                             ctx.fillStyle = 'blue';
                             ctx.fill();
                             ctx.closePath();  
-                            break;
-                        case 2:
-                            ctx.beginPath();
-                            ctx.rect(tileX, tileY, tileSize, tileSize);
-                            ctx.fillStyle = 'green';
-                            ctx.fill();
-                            ctx.closePath();    
                             break;
                     }
                 }
@@ -151,6 +144,20 @@ function drawMap()
                 if (mapBoards[y][x].wall === 0)
                 {
                     mapBoards[y][x].wall = 3;
+                }
+                if (mapBoards[y][x].bonus != undefined)
+                {
+                    switch (mapBoards[y][x].bonus)
+                    {
+                        case 0:
+                            players[i].bombsNumberMax += 1;
+                            players[i].bombsNumber += 1;                
+                            break;
+                        case 1:
+                            players[i].explosionLenghtMax += 1;
+                            break;
+                    }
+                    mapBoards[y][x].bonus = undefined;
                 }        
             }
         }

@@ -14,6 +14,10 @@ socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	players[otherPlayerInfos.order].animationXIndex = otherPlayerInfos.playerInfos.animationXIndex;
 	players[otherPlayerInfos.order].animationY = otherPlayerInfos.playerInfos.animationY;
 	players[otherPlayerInfos.order].alive = otherPlayerInfos.playerInfos.alive;
+	players[otherPlayerInfos.order].bombsNumberMax = otherPlayerInfos.playerInfos.bombsNumberMax;
+	players[otherPlayerInfos.order].bombsNumber = otherPlayerInfos.playerInfos.bombsNumber;
+	players[otherPlayerInfos.order].explosionLenghtMax = otherPlayerInfos.playerInfos.explosionLenghtMax;
+
 
 });
 

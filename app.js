@@ -764,7 +764,7 @@ io.sockets.on('connection', function(socket)
 		{
 			let boxes = boxesInfos;
 			let bonusNumberMax = 6;
-			let bonusTypeDifferent = 3;
+			let bonusTypeDifferent = 2;
 			let boxesWithBonus = 
 			{
 				c: [],

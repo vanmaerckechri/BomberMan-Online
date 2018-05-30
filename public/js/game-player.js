@@ -7,6 +7,7 @@ let player = {
     posY: tileSize,
     bombsNumberMax: 1,
     bombsNumber: 2,
+    explosionLenghtMax: 2,
     topPressed: false,
     rightPressed: false,
     bottomPressed: false,
