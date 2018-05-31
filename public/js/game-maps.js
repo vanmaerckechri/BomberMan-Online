@@ -150,6 +150,7 @@ function drawMap()
                             players[i].explosionLenghtMax += 1;
                             break;
                     }
+                    socket.emit('deleteBonus', { c: x, r: y });
                     mapBoards[y][x].bonus = undefined;
                 }        
             }
@@ -164,4 +165,9 @@ socket.on('sendBonus', function(boxes)
         mapBoards[boxes.r[i]][boxes.c[i]].bonus = boxes.bonus[i];
     }
     
+});
+
+socket.on('deleteBonus', function(bonusPosition)
+{
+    mapBoards[bonusPosition.r][bonusPosition.c].bonus = undefined;    
 });

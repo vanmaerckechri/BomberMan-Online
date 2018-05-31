@@ -790,4 +790,8 @@ io.sockets.on('connection', function(socket)
 			}
 		}
 	});
+	socket.on('deleteBonus', function(bonusPosition)
+	{
+		socket.broadcast.to(socket.room).emit('deleteBonus', bonusPosition);		
+	});
 });

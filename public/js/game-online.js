@@ -17,8 +17,6 @@ socket.on('updateOtherPlayerPos', function(otherPlayerInfos)
 	players[otherPlayerInfos.order].bombsNumberMax = otherPlayerInfos.playerInfos.bombsNumberMax;
 	players[otherPlayerInfos.order].bombsNumber = otherPlayerInfos.playerInfos.bombsNumber;
 	players[otherPlayerInfos.order].explosionLenghtMax = otherPlayerInfos.playerInfos.explosionLenghtMax;
-
-
 });
 
 socket.on('updateBombFromOtherPl', function(bombInfos)
