@@ -148,6 +148,7 @@ function drawMap()
                     players[playerIndex].explosionLenghtMax += 1;
                     break;
             }
+            mapBoards[y][x].bonus = undefined
             socket.emit('deleteBonus', { c: x, r: y });
         }     
     }
