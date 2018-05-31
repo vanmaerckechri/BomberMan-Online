@@ -191,6 +191,13 @@ form {
           color: white; }
     .gameMain .ui .uiPlayer2, .gameMain .ui .uiPlayer4 {
       text-align: right; }
+  .gameMain .menuEndGame {
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    background-color: #40434e;
+    box-shadow: 3px 4px 3px rgba(0, 0, 80, 0.3); }
 
 .error {
   margin: .5rem 0;

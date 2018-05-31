@@ -9,8 +9,8 @@ function engine()
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawMap();
     drawBombs();
-    drawPlayer();
     drawOtherPlayers();
+    drawPlayer();
     requestAnimationFrame(engine);
 }
 

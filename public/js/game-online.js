@@ -69,13 +69,13 @@ socket.on('endExplosion', function(bombIndex)
 let loadUI = function()
 {
 	let uiDiv = document.querySelector('.ui');
+	uiDiv.innerHTML = '';
 	for (let i = 0, pplInGame = gameInfos.userNames.length; i < pplInGame; i++)
 	{
 		let playerNumber = i + 1;
 		let avatarImg = (gameInfos.avatars[i]) + 1;
 		let avatar = '<img src="assets/img/avatar'+avatarImg+'.png" alt="">';
 		uiDiv.innerHTML += '<div class="uiPlayer uiPlayer'+playerNumber+'">'+avatar+'<div class="uiPlayerInfos"><p><b>Player'+playerNumber+':</b> '+gameInfos.userNames[i]+'</p><p><b>Score: </b>'+gameInfos.scores[i]+'</p></div></div>';
-
 	}
 }
 
@@ -122,6 +122,29 @@ let initGame = function()
 	// 17 pour 60 images/sec...
 	setInterval(sharePlayerInfos, 16);
 }
+
+let loadEndMenu = function()
+{
+	let div = document.createElement("div");
+	div.classList.add("menuEndGame");
+	let restart = document.createElement("button");
+	restart.classList.add("button");
+
+	restart.innerHTML = "restart";
+	let leave = document.createElement("button");
+	leave.classList.add("button");
+	leave.innerHTML = "leave";
+	div.appendChild(restart);
+	div.appendChild(leave);
+	document.body.appendChild(div);
+}
+
+socket.on('callVictory', function(scores)
+{
+	gameInfos.scores = scores;
+	loadUI();
+	loadEndMenu();
+});
 
 socket.on('initGame', function()
 {

@@ -449,7 +449,8 @@ function checkToLaunchGame(socket)
 			avatars: avatars,
 			scores: scores,
 			pplByLobby: pplByLobby,
-			pplInThisRoom: 0
+			pplInThisRoom: 0,
+			endOfGame: false
 		};
 		games[gameId] = newGame;
 		for (let i = 0; i < pplByLobby; i++)
@@ -487,31 +488,36 @@ function initGame(socket, gameInfos)
 
 function checkVictory(socket)
 {	
-	let pplAliveNumber = 0;
-	let pplAliveIndex = 0;
-	// Verifier qu'il reste au maximum un joueur en vie.
-	for (let i = 0, length = games[socket.room].alive.length; i < length; i++)
+	if (games[socket.room].endOfGame === false)
 	{
-		pplAliveNumber += games[socket.room].alive[i];
-		pplAliveIndex = games[socket.room].alive[i] == 1 ? games[socket.room].alive[i] : 0;
-	}
-	// s'il reste au maximum un joueur dans la partie...
-	if (pplAliveNumber <= 1)
-	{
-		// Lorsqu'un seul jouer est en vie, il gagne un point.
-		games[socket.room].scores[pplAliveIndex] = pplAliveNumber === 1 ? games[socket.room].scores[pplAliveIndex] += 1 : games[socket.room].scores[pplAliveIndex];
-		// Gestion fin de Round.
-		let biggestScore = Math.max(...games[socket.room].scores);
-		if (biggestScore < 2)
+		let pplAliveNumber = 0;
+		let pplAliveIndex = 0;
+		// Verifier qu'il reste au maximum un joueur en vie.
+		for (let i = 0, length = games[socket.room].alive.length; i < length; i++)
 		{
-			games[socket.room].pplInThisRoom = 0;
-			socket.emit('callNextRound', games[socket.room].scores);
-			socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
+			pplAliveNumber += games[socket.room].alive[i];
+			pplAliveIndex = games[socket.room].alive[i] == 1 ? games[socket.room].alive[i] : 0;
 		}
-		else
+		// s'il reste au maximum un joueur dans la partie...
+		if (pplAliveNumber <= 1)
 		{
-			console.log('victoire')
-			//VICTOIRE!
+			// Gestion fin de Round.
+			let biggestScore = Math.max(...games[socket.room].scores);
+			// Lorsqu'un seul jouer est en vie, il gagne un point.
+			games[socket.room].scores[pplAliveIndex] = pplAliveNumber === 1 ? games[socket.room].scores[pplAliveIndex] += 1 : games[socket.room].scores[pplAliveIndex];
+			if (biggestScore < 1)
+			{
+				games[socket.room].pplInThisRoom = 0;
+				socket.emit('callNextRound', games[socket.room].scores);
+				socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
+			}
+			else
+			{
+				games[socket.room].endOfGame = true;
+				socket.emit('callVictory', games[socket.room].scores);
+				socket.broadcast.to(socket.room).emit('callVictory', games[socket.room].scores);
+				//VICTOIRE!
+			}
 		}
 	}
 }
