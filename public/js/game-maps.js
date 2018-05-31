@@ -20,6 +20,8 @@ let map01 = [
 	9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9,
 	9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
 	];
+let boxRow = [];
+let boxCol = [];
 let floor1 = new Image();
 floor1.src = 'assets/img/normal1.svg';
 let floor2 = new Image();
@@ -36,8 +38,6 @@ bonusRange.src = 'assets/img/bonus_range.svg';
 function genMapBoard()
 {
 	let mapIndex = 0;
-    let boxRow = [];
-    let boxCol = [];
 	for(let r = 0; r < tileNumberByRow; r++)
 	{
 		mapBoards[r] = [];
@@ -60,12 +60,6 @@ function genMapBoard()
 			mapIndex++;
 		}
     }
-    let boxes = 
-    {
-        r: boxRow,
-        c: boxCol
-    }
-    socket.emit('initBonus', boxes);
 }
 
 function drawMap()
@@ -137,24 +131,25 @@ function drawMap()
                 if (mapBoards[y][x].wall === 0)
                 {
                     mapBoards[y][x].wall = 3;
-                }
-                if (mapBoards[y][x].bonus != undefined)
-                {
-                    switch (mapBoards[y][x].bonus)
-                    {
-                        case 0:
-                            players[i].bombsNumberMax += 1;
-                            players[i].bombsNumber += 1;                
-                            break;
-                        case 1:
-                            players[i].explosionLenghtMax += 1;
-                            break;
-                    }
-                    socket.emit('deleteBonus', { c: x, r: y });
-                    mapBoards[y][x].bonus = undefined;
-                }        
+                }   
             }
         }
+        let x = Math.round(players[playerIndex].posX / tileSize);
+        let y = Math.round(players[playerIndex].posY / tileSize);
+        if (mapBoards[y][x].bonus != undefined)
+        {
+            switch (mapBoards[y][x].bonus)
+            {
+                case 0:
+                    players[playerIndex].bombsNumberMax += 1;
+                    players[playerIndex].bombsNumber += 1;                
+                    break;
+                case 1:
+                    players[playerIndex].explosionLenghtMax += 1;
+                    break;
+            }
+            socket.emit('deleteBonus', { c: x, r: y });
+        }     
     }
 }
 
@@ -162,6 +157,7 @@ socket.on('sendBonus', function(boxes)
 {
     for (let i = 0, length = boxes.c.length; i < length; i++)
     {
+        console.log(boxes.bonus[i]);
         mapBoards[boxes.r[i]][boxes.c[i]].bonus = boxes.bonus[i];
     }
     

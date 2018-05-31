@@ -79,6 +79,19 @@ let loadUI = function()
 	}
 }
 
+let loadBonus = function()
+{
+	if (playerIndex === 0)
+	{
+		let boxes = 
+	    {
+	        r: boxRow,
+	        c: boxCol
+	    }
+		socket.emit('initBonus', boxes);
+	}
+}
+
 let initGame = function()
 {
 	gameInfos = JSON.parse(gameInfos);
@@ -117,6 +130,7 @@ let initGame = function()
 		}
 	}
 	loadUI();
+	loadBonus();
 	engine();
 	// 40 pour 25 images/sec pour le déplacement des autres joueurs.
 	// 17 pour 60 images/sec...
