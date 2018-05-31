@@ -506,16 +506,17 @@ function checkVictory(socket)
 			let biggestScore = Math.max(...games[socket.room].scores);
 			if (biggestScore < 2)
 			{
+				// MANCHE SUIVANTE!
 				games[socket.room].pplInThisRoom = 0;
 				socket.emit('callNextRound', games[socket.room].scores);
 				socket.broadcast.to(socket.room).emit('callNextRound', games[socket.room].scores);
 			}
 			else
 			{
+				// VICTOIRE!
 				games[socket.room].endOfGame = true;
 				socket.emit('callVictory', games[socket.room].scores);
 				socket.broadcast.to(socket.room).emit('callVictory', games[socket.room].scores);
-				//VICTOIRE!
 			}
 		}
 	}
@@ -791,7 +792,6 @@ io.sockets.on('connection', function(socket)
 				{
 					socket.emit('sendBonus', boxesWithBonus)
 					socket.broadcast.to(socket.room).emit('sendBonus', boxesWithBonus);
-					console.log(socket.room)
 				}
 			}
 		}
