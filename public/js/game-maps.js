@@ -28,6 +28,10 @@ let unbreakBlock = new Image();
 unbreakBlock.src = 'assets/img/unbreak.svg';
 let box = new Image();
 box.src = 'assets/img/box1.svg';
+let bonusBombMax = new Image();
+bonusBombMax.src = 'assets/img/bonus_bombmax.svg';
+let bonusRange = new Image();
+bonusRange.src = 'assets/img/bonus_range.svg';
 // transforme les tableaux map de dimension unique en tableau à deux dimensions (row / col)
 function genMapBoard()
 {
@@ -85,27 +89,16 @@ function drawMap()
             //sol.
             if(tileType == 0)
             {
-                if (tileBonus === undefined)
-                {
-                    ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
-                }
-                else
+                ctx.drawImage(switchImg[0], tileX, tileY, tileSize, tileSize);
+                if (tileBonus != undefined)
                 {
                     switch (tileBonus)
                     {
                         case 0:
-                            ctx.beginPath();
-                            ctx.rect(tileX, tileY, tileSize, tileSize);
-                            ctx.fillStyle = 'orange';
-                            ctx.fill();
-                            ctx.closePath();                          
+                            ctx.drawImage(bonusBombMax, tileX, tileY, tileSize, tileSize);
                             break;
                         case 1:
-                            ctx.beginPath();
-                            ctx.rect(tileX, tileY, tileSize, tileSize);
-                            ctx.fillStyle = 'blue';
-                            ctx.fill();
-                            ctx.closePath();  
+                            ctx.drawImage(bonusRange, tileX, tileY, tileSize, tileSize);
                             break;
                     }
                 }
